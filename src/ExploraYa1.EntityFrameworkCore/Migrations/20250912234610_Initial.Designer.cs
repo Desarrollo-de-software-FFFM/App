@@ -13,7 +13,7 @@ using Volo.Abp.EntityFrameworkCore;
 namespace ExploraYa1.Migrations
 {
     [DbContext(typeof(ExploraYa1DbContext))]
-    [Migration("20250905222331_Initial")]
+    [Migration("20250912234610_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
