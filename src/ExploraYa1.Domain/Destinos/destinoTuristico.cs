@@ -31,6 +31,6 @@ namespace ExploraYa1.Destinos
         [Range(0, 5, ErrorMessage = "La calificación general debe estar entre 0 y 5")]
         public int calificacionGeneral { get; set; }
 
-
+        public Region Region { get; set; }
     }
 }

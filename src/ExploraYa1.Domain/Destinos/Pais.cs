@@ -9,6 +9,9 @@ namespace ExploraYa1.Destinos
 {
     public class Pais
     {
-        [Required] [StringLength(100)] public required string Nombre { get; set; }
-    }
+        [Required][StringLength(100)] public required string Nombre { get; set; }
+
+        public ICollection<Region> Regiones { get; set; }
+    } 
+
 }

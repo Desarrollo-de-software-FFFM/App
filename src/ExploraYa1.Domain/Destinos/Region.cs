@@ -15,6 +15,10 @@ namespace ExploraYa1.Destinos
         [Required]
         [StringLength(300)]
         public required string Descripcion { get; set; }
-        
+
+        public ICollection<destinoTuristico> DestinosTuristicos { get; set; }
+
+        public Pais Pais { get; set; }
+
     }
 }
