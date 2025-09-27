@@ -12,6 +12,7 @@ using Volo.Abp.Identity.EntityFrameworkCore;
 using Volo.Abp.PermissionManagement.EntityFrameworkCore;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.OpenIddict.EntityFrameworkCore;
+using ExploraYa1.Destinos;
 
 namespace ExploraYa1.EntityFrameworkCore;
 
@@ -22,6 +23,10 @@ public class ExploraYa1DbContext :
     IIdentityDbContext
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
+
+    public DbSet<DestinoTuristico> Destinos { get; set; }
+
+
 
 
     #region Entities from the modules
@@ -69,7 +74,7 @@ public class ExploraYa1DbContext :
         builder.ConfigureIdentity();
         builder.ConfigureOpenIddict();
         builder.ConfigureBlobStoring();
-        
+
         /* Configure your own tables/entities inside here */
 
         //builder.Entity<YourEntity>(b =>
@@ -78,5 +83,75 @@ public class ExploraYa1DbContext :
         //    b.ConfigureByConvention(); //auto configure for the base class props
         //    //...
         //});
+
+
+        builder.Entity<DestinoTuristico>(b =>
+        {
+            
+            b.ToTable(ExploraYa1Consts.DbTablePrefix + "Destinos", ExploraYa1Consts.DbSchema);
+            b.ConfigureByConvention(); 
+
+            
+            b.Property(x => x.Nombre)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            b.Property(x => x.Poblacion)
+                .IsRequired();
+
+            
+            b.Property(x => x.Latitud)
+                .IsRequired();
+
+            b.Property(x => x.Longuitud) 
+                .IsRequired();
+
+            b.Property(x => x.ImagenUrl)
+                .IsRequired()
+                .HasMaxLength(200);
+
+            b.Property(x => x.CalificacionGeneral)
+                .IsRequired();
+
+            b.HasOne<Region>()
+            .WithMany()
+            .HasForeignKey("id")
+            .IsRequired();
+            //.OnDelete(DeleteBehavior.Restrict);
+
+
+        });
+
+        builder.Entity<Region>(b =>
+        {
+            b.ToTable(ExploraYa1Consts.DbTablePrefix + "Regiones", ExploraYa1Consts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.Nombre)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            b.Property(x => x.Descripcion)
+                .HasMaxLength(300);
+
+
+            b.HasOne<Pais>()
+                .WithMany()
+                .HasForeignKey("id")
+                .IsRequired();
+                //.OnDelete(DeleteBehavior.Restrict);
+        });
+
+        
+        builder.Entity<Pais>(b =>
+        {
+            b.ToTable(ExploraYa1Consts.DbTablePrefix + "Paises", ExploraYa1Consts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.Nombre)
+                .IsRequired()
+                .HasMaxLength(100);
+        });
+
     }
 }

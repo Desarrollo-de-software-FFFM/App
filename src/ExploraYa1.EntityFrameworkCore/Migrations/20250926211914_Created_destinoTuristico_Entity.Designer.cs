@@ -13,7 +13,7 @@ using Volo.Abp.EntityFrameworkCore;
 namespace ExploraYa1.Migrations
 {
     [DbContext(typeof(ExploraYa1DbContext))]
-    [Migration("20250924232716_Created_destinoTuristico_Entity")]
+    [Migration("20250926211914_Created_destinoTuristico_Entity")]
     partial class Created_destinoTuristico_Entity
     {
         /// <inheritdoc />
@@ -26,6 +26,117 @@ namespace ExploraYa1.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("ExploraYa1.Destinos.Pais", b =>
+                {
+                    b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("id");
+
+                    b.ToTable("AppPaises", (string)null);
+                });
+
+            modelBuilder.Entity("ExploraYa1.Destinos.Region", b =>
+                {
+                    b.Property<Guid>("id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<Guid>("Paisid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("Paisid");
+
+                    b.ToTable("AppRegiones", (string)null);
+                });
+
+            modelBuilder.Entity("ExploraYa1.Destinos.destinoTuristico", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)")
+                        .HasColumnName("ConcurrencyStamp");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreationTime");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("CreatorId");
+
+                    b.Property<string>("ExtraProperties")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("ExtraProperties");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("LastModificationTime");
+
+                    b.Property<Guid?>("LastModifierId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("LastModifierId");
+
+                    b.Property<Guid?>("Regionid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("calificacionGeneral")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("imagenUrl")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<float>("latitud")
+                        .HasColumnType("real");
+
+                    b.Property<float>("longuitud")
+                        .HasColumnType("real");
+
+                    b.Property<string>("nombre")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("poblacion")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Regionid");
+
+                    b.HasIndex("id");
+
+                    b.ToTable("AppDestinos", (string)null);
+                });
 
             modelBuilder.Entity("Volo.Abp.AuditLogging.AuditLog", b =>
                 {
@@ -1796,6 +1907,38 @@ namespace ExploraYa1.Migrations
                     b.ToTable("AbpSettingDefinitions", (string)null);
                 });
 
+            modelBuilder.Entity("ExploraYa1.Destinos.Region", b =>
+                {
+                    b.HasOne("ExploraYa1.Destinos.Pais", "Pais")
+                        .WithMany("Regiones")
+                        .HasForeignKey("Paisid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ExploraYa1.Destinos.Pais", null)
+                        .WithMany()
+                        .HasForeignKey("id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pais");
+                });
+
+            modelBuilder.Entity("ExploraYa1.Destinos.destinoTuristico", b =>
+                {
+                    b.HasOne("ExploraYa1.Destinos.Region", null)
+                        .WithMany("DestinosTuristicos")
+                        .HasForeignKey("Regionid");
+
+                    b.HasOne("ExploraYa1.Destinos.Region", "Region")
+                        .WithMany()
+                        .HasForeignKey("id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Region");
+                });
+
             modelBuilder.Entity("Volo.Abp.AuditLogging.AuditLogAction", b =>
                 {
                     b.HasOne("Volo.Abp.AuditLogging.AuditLog", null)
@@ -1936,6 +2079,16 @@ namespace ExploraYa1.Migrations
                     b.HasOne("Volo.Abp.OpenIddict.Authorizations.OpenIddictAuthorization", null)
                         .WithMany()
                         .HasForeignKey("AuthorizationId");
+                });
+
+            modelBuilder.Entity("ExploraYa1.Destinos.Pais", b =>
+                {
+                    b.Navigation("Regiones");
+                });
+
+            modelBuilder.Entity("ExploraYa1.Destinos.Region", b =>
+                {
+                    b.Navigation("DestinosTuristicos");
                 });
 
             modelBuilder.Entity("Volo.Abp.AuditLogging.AuditLog", b =>

@@ -4,11 +4,14 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Volo.Abp.Domain.Entities;
 
 namespace ExploraYa1.Destinos
 {
-    public class Region
+    public class Region: Entity<Guid>
     {
+      
+
         [Required]
         [StringLength(100)]
         public required string Nombre { get; set; }
@@ -16,9 +19,11 @@ namespace ExploraYa1.Destinos
         [StringLength(300)]
         public required string Descripcion { get; set; }
 
-        public ICollection<destinoTuristico> DestinosTuristicos { get; set; }
+        public ICollection<DestinoTuristico> DestinosTuristicos { get; set; }
 
         public Pais Pais { get; set; }
+
+        public Guid IdPais { get; set; }
 
     }
 }
