@@ -87,11 +87,11 @@ public class ExploraYa1DbContext :
 
         builder.Entity<DestinoTuristico>(b =>
         {
-            
-            b.ToTable(ExploraYa1Consts.DbTablePrefix + "Destinos", ExploraYa1Consts.DbSchema);
-            b.ConfigureByConvention(); 
 
-            
+            b.ToTable(ExploraYa1Consts.DbTablePrefix + "Destinos", ExploraYa1Consts.DbSchema);
+            b.ConfigureByConvention();
+
+
             b.Property(x => x.Nombre)
                 .IsRequired()
                 .HasMaxLength(100);
@@ -99,11 +99,11 @@ public class ExploraYa1DbContext :
             b.Property(x => x.Poblacion)
                 .IsRequired();
 
-            
+
             b.Property(x => x.Latitud)
                 .IsRequired();
 
-            b.Property(x => x.Longuitud) 
+            b.Property(x => x.Longuitud)
                 .IsRequired();
 
             b.Property(x => x.ImagenUrl)
@@ -139,10 +139,10 @@ public class ExploraYa1DbContext :
                 .WithMany()
                 .HasForeignKey("id")
                 .IsRequired();
-                //.OnDelete(DeleteBehavior.Restrict);
+            //.OnDelete(DeleteBehavior.Restrict);
         });
 
-        
+
         builder.Entity<Pais>(b =>
         {
             b.ToTable(ExploraYa1Consts.DbTablePrefix + "Paises", ExploraYa1Consts.DbSchema);
@@ -153,5 +153,14 @@ public class ExploraYa1DbContext :
                 .HasMaxLength(100);
         });
 
+    }
+
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlServer("Server=(LocalDb)\\MSSQLLocalDB;Database=ExploraYa1;Trusted_Connection=True;TrustServerCertificate=True;");
+        }
     }
 }
