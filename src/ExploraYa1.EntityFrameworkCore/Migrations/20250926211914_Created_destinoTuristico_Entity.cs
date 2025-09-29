@@ -5,10 +5,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ExploraYa1.Migrations
 {
-    /// <inheritdoc />
     public partial class Created_destinoTuristico_Entity : Migration
     {
-        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -41,12 +39,6 @@ namespace ExploraYa1.Migrations
                         principalTable: "AppPaises",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
-                    //table.ForeignKey(
-                      //  name: "FK_AppRegiones_AppPaises_id",
-                        //column: x => x.id,
-                        //principalTable: "AppPaises",
-                        //principalColumn: "id",
-                        //onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -60,7 +52,6 @@ namespace ExploraYa1.Migrations
                     longuitud = table.Column<float>(type: "real", nullable: false),
                     imagenUrl = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     calificacionGeneral = table.Column<int>(type: "int", nullable: false),
-                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Regionid = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ExtraProperties = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
@@ -77,18 +68,7 @@ namespace ExploraYa1.Migrations
                         column: x => x.Regionid,
                         principalTable: "AppRegiones",
                         principalColumn: "id");
-                    //table.ForeignKey(
-                    //    name: "FK_AppDestinos_AppRegiones_id",
-                    //    column: x => x.id,
-                    //    principalTable: "AppRegiones",
-                    //    principalColumn: "id",
-                    //    onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AppDestinos_id",
-                table: "AppDestinos",
-                column: "id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AppDestinos_Regionid",
@@ -101,7 +81,6 @@ namespace ExploraYa1.Migrations
                 column: "Paisid");
         }
 
-        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
@@ -115,3 +94,4 @@ namespace ExploraYa1.Migrations
         }
     }
 }
+
