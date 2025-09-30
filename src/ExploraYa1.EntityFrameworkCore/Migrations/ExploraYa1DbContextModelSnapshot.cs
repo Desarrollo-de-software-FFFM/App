@@ -19,56 +19,18 @@ namespace ExploraYa1.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("_Abp_DatabaseProvider", EfCoreDatabaseProvider.SqlServer)
-                .HasAnnotation("ProductVersion", "9.0.5")
+                .HasAnnotation("ProductVersion", "9.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ExploraYa1.Destinos.Pais", b =>
-                {
-                    b.Property<Guid>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("id");
-
-                    b.ToTable("AppPaises", (string)null);
-                });
-
-            modelBuilder.Entity("ExploraYa1.Destinos.Region", b =>
-                {
-                    b.Property<Guid>("id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Descripcion")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<Guid>("Paisid")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("Paisid");
-
-                    b.ToTable("AppRegiones", (string)null);
-                });
-
-            modelBuilder.Entity("ExploraYa1.Destinos.destinoTuristico", b =>
+            modelBuilder.Entity("ExploraYa1.Destinos.DestinoTuristico", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("CalificacionGeneral")
+                        .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -90,6 +52,14 @@ namespace ExploraYa1.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("ExtraProperties");
 
+                    b.Property<Guid>("IdRegion")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ImagenUrl")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
                     b.Property<DateTime?>("LastModificationTime")
                         .HasColumnType("datetime2")
                         .HasColumnName("LastModificationTime");
@@ -98,41 +68,71 @@ namespace ExploraYa1.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("LastModifierId");
 
-                    b.Property<Guid?>("Regionid")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("calificacionGeneral")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("imagenUrl")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<float>("latitud")
+                    b.Property<float>("Latitud")
                         .HasColumnType("real");
 
-                    b.Property<float>("longuitud")
+                    b.Property<float>("Longuitud")
                         .HasColumnType("real");
 
-                    b.Property<string>("nombre")
+                    b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("poblacion")
+                    b.Property<int>("Poblacion")
                         .HasColumnType("int");
+
+                    b.Property<Guid>("RegionId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Regionid");
-
-                    b.HasIndex("id");
+                    b.HasIndex("RegionId");
 
                     b.ToTable("AppDestinos", (string)null);
+                });
+
+            modelBuilder.Entity("ExploraYa1.Destinos.Pais", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AppPaises", (string)null);
+                });
+
+            modelBuilder.Entity("ExploraYa1.Destinos.Region", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<Guid>("IdPais")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<Guid>("PaisId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PaisId");
+
+                    b.ToTable("AppRegiones", (string)null);
                 });
 
             modelBuilder.Entity("Volo.Abp.AuditLogging.AuditLog", b =>
@@ -1904,36 +1904,26 @@ namespace ExploraYa1.Migrations
                     b.ToTable("AbpSettingDefinitions", (string)null);
                 });
 
-            modelBuilder.Entity("ExploraYa1.Destinos.Region", b =>
+            modelBuilder.Entity("ExploraYa1.Destinos.DestinoTuristico", b =>
                 {
-                    b.HasOne("ExploraYa1.Destinos.Pais", "Pais")
-                        .WithMany("Regiones")
-                        .HasForeignKey("Paisid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ExploraYa1.Destinos.Pais", null)
-                        .WithMany()
-                        .HasForeignKey("id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Pais");
-                });
-
-            modelBuilder.Entity("ExploraYa1.Destinos.destinoTuristico", b =>
-                {
-                    b.HasOne("ExploraYa1.Destinos.Region", null)
-                        .WithMany("DestinosTuristicos")
-                        .HasForeignKey("Regionid");
-
                     b.HasOne("ExploraYa1.Destinos.Region", "Region")
-                        .WithMany()
-                        .HasForeignKey("id")
+                        .WithMany("DestinosTuristicos")
+                        .HasForeignKey("RegionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Region");
+                });
+
+            modelBuilder.Entity("ExploraYa1.Destinos.Region", b =>
+                {
+                    b.HasOne("ExploraYa1.Destinos.Pais", "Pais")
+                        .WithMany("Regiones")
+                        .HasForeignKey("PaisId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pais");
                 });
 
             modelBuilder.Entity("Volo.Abp.AuditLogging.AuditLogAction", b =>

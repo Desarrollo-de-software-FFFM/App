@@ -113,12 +113,11 @@ public class ExploraYa1DbContext :
             b.Property(x => x.CalificacionGeneral)
                 .IsRequired();
 
-            b.HasOne<Region>()
-            .WithMany()
-            .HasForeignKey("id")
-            .IsRequired();
-            //.OnDelete(DeleteBehavior.Restrict);
-
+            // b.HasOne<Region>()
+            //.WithMany(r => r.DestinosTuristicos)
+            //.HasForeignKey(x => x.IdRegion)
+            //.IsRequired();
+            
 
         });
 
@@ -135,11 +134,12 @@ public class ExploraYa1DbContext :
                 .HasMaxLength(300);
 
 
-            b.HasOne<Pais>()
-                .WithMany()
-                .HasForeignKey("id")
-                .IsRequired();
+            //b.HasOne<Pais>()
+            //    .WithMany(p => p.Regiones)
+            //     .HasForeignKey(x => x.IdPais)
+            //     .IsRequired();
             //.OnDelete(DeleteBehavior.Restrict);
+           
         });
 
 

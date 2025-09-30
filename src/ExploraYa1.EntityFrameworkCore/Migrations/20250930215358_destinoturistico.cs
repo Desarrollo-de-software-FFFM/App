@@ -5,39 +5,42 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ExploraYa1.Migrations
 {
-    public partial class Created_destinoTuristico_Entity : Migration
+    /// <inheritdoc />
+    public partial class destinoturistico : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
                 name: "AppPaises",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AppPaises", x => x.id);
+                    table.PrimaryKey("PK_AppPaises", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "AppRegiones",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    Paisid = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    PaisId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IdPais = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AppRegiones", x => x.id);
+                    table.PrimaryKey("PK_AppRegiones", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AppRegiones_AppPaises_Paisid",
-                        column: x => x.Paisid,
+                        name: "FK_AppRegiones_AppPaises_PaisId",
+                        column: x => x.PaisId,
                         principalTable: "AppPaises",
-                        principalColumn: "id",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -46,13 +49,14 @@ namespace ExploraYa1.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    poblacion = table.Column<int>(type: "int", nullable: false),
-                    latitud = table.Column<float>(type: "real", nullable: false),
-                    longuitud = table.Column<float>(type: "real", nullable: false),
-                    imagenUrl = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    calificacionGeneral = table.Column<int>(type: "int", nullable: false),
-                    Regionid = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Poblacion = table.Column<int>(type: "int", nullable: false),
+                    Latitud = table.Column<float>(type: "real", nullable: false),
+                    Longuitud = table.Column<float>(type: "real", nullable: false),
+                    ImagenUrl = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    CalificacionGeneral = table.Column<int>(type: "int", nullable: false),
+                    IdRegion = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RegionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ExtraProperties = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
                     CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -64,23 +68,25 @@ namespace ExploraYa1.Migrations
                 {
                     table.PrimaryKey("PK_AppDestinos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AppDestinos_AppRegiones_Regionid",
-                        column: x => x.Regionid,
+                        name: "FK_AppDestinos_AppRegiones_RegionId",
+                        column: x => x.RegionId,
                         principalTable: "AppRegiones",
-                        principalColumn: "id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AppDestinos_Regionid",
+                name: "IX_AppDestinos_RegionId",
                 table: "AppDestinos",
-                column: "Regionid");
+                column: "RegionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AppRegiones_Paisid",
+                name: "IX_AppRegiones_PaisId",
                 table: "AppRegiones",
-                column: "Paisid");
+                column: "PaisId");
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
@@ -94,4 +100,3 @@ namespace ExploraYa1.Migrations
         }
     }
 }
-
