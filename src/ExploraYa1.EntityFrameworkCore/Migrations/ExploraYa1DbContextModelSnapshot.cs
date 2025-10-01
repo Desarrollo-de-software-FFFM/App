@@ -104,7 +104,7 @@ namespace ExploraYa1.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppPaises", (string)null);
+                    b.ToTable("Pais");
                 });
 
             modelBuilder.Entity("ExploraYa1.Destinos.Region", b =>

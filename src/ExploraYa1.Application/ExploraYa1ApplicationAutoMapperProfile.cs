@@ -1,4 +1,6 @@
 using AutoMapper;
+using ExploraYa1.Destinos;
+using ExploraYa1.Destinosturisticos;
 
 namespace ExploraYa1;
 
@@ -10,8 +12,12 @@ public class ExploraYa1ApplicationAutoMapperProfile : Profile
          * Alternatively, you can split your mapping configurations
          * into multiple profile classes for a better organization. */
 
-        CreateMap<Destinosturisticos.DestinoTuristicoDTO, Destinosturisticos.DestinoTuristicoDTO>();
-        CreateMap<Destinosturisticos.CrearActualizarDestinoDTO, Destinosturisticos.DestinoTuristicoDTO>();
+        CreateMap<DestinoTuristico, DestinoTuristicoDTO>();
+        CreateMap<Destinosturisticos.CrearActualizarDestinoDTO, DestinoTuristico>();
+         
+        
+        
+        
         CreateMap<Destinosturisticos.DestinoTuristicoDTO, Destinosturisticos.RegionDTO>();
         CreateMap<Destinosturisticos.CrearActualizarRegionDTO, Destinosturisticos.RegionDTO>();
         CreateMap<Destinosturisticos.DestinoTuristicoDTO, Destinosturisticos.PaisDTO>();

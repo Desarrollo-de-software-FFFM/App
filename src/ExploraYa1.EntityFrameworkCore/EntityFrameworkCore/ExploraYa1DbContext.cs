@@ -1,4 +1,6 @@
+using ExploraYa1.Destinos;
 using Microsoft.EntityFrameworkCore;
+using System;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.BlobStoring.Database.EntityFrameworkCore;
@@ -9,10 +11,9 @@ using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.FeatureManagement.EntityFrameworkCore;
 using Volo.Abp.Identity;
 using Volo.Abp.Identity.EntityFrameworkCore;
+using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.PermissionManagement.EntityFrameworkCore;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
-using Volo.Abp.OpenIddict.EntityFrameworkCore;
-using ExploraYa1.Destinos;
 
 namespace ExploraYa1.EntityFrameworkCore;
 
@@ -143,15 +144,7 @@ public class ExploraYa1DbContext :
         });
 
 
-        builder.Entity<Pais>(b =>
-        {
-            b.ToTable(ExploraYa1Consts.DbTablePrefix + "Paises", ExploraYa1Consts.DbSchema);
-            b.ConfigureByConvention();
-
-            b.Property(x => x.Nombre)
-                .IsRequired()
-                .HasMaxLength(100);
-        });
+        
 
     }
 
@@ -163,4 +156,5 @@ public class ExploraYa1DbContext :
             optionsBuilder.UseSqlServer("Server=(LocalDb)\\MSSQLLocalDB;Database=ExploraYa1;Trusted_Connection=True;TrustServerCertificate=True;");
         }
     }
+    
 }

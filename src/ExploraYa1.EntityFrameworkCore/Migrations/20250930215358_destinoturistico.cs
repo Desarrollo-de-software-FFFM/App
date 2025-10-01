@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ExploraYa1.Migrations
 {
     /// <inheritdoc />
-    public partial class destinoturistico : Migration
+    public partial class Destinoturistico : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
