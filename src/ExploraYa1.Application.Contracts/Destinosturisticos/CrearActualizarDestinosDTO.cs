@@ -16,7 +16,7 @@ namespace ExploraYa1.Destinosturisticos
             public float Longuitud { get; set; }
             public string ImagenUrl { get; set; }
             public int CalificacionGeneral { get; set; }
-            public Guid IdRegion { get; set; }
+            public Guid RegionId { get; set; }
      
      
     }

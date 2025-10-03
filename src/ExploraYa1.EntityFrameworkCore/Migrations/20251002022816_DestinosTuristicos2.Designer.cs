@@ -4,6 +4,7 @@ using ExploraYa1.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Volo.Abp.EntityFrameworkCore;
 
@@ -12,9 +13,11 @@ using Volo.Abp.EntityFrameworkCore;
 namespace ExploraYa1.Migrations
 {
     [DbContext(typeof(ExploraYa1DbContext))]
-    partial class ExploraYa1DbContextModelSnapshot : ModelSnapshot
+    [Migration("20251002022816_DestinosTuristicos2")]
+    partial class DestinosTuristicos2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,6 +54,9 @@ namespace ExploraYa1.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("ExtraProperties");
+
+                    b.Property<Guid>("IdRegion")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ImagenUrl")
                         .IsRequired()
@@ -101,7 +107,7 @@ namespace ExploraYa1.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppPaises", (string)null);
+                    b.ToTable("Pais");
                 });
 
             modelBuilder.Entity("ExploraYa1.Destinos.Region", b =>
@@ -113,6 +119,9 @@ namespace ExploraYa1.Migrations
                         .IsRequired()
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
+
+                    b.Property<Guid>("IdPais")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Nombre")
                         .IsRequired()

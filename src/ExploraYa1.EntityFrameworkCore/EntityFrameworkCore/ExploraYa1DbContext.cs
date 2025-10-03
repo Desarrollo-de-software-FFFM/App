@@ -119,6 +119,8 @@ public class ExploraYa1DbContext :
             //.HasForeignKey(x => x.IdRegion)
             //.IsRequired();
             
+             
+
 
         });
 
@@ -143,17 +145,26 @@ public class ExploraYa1DbContext :
            
         });
 
+        builder.Entity<Pais>(b =>
+        {
+            b.ToTable(ExploraYa1Consts.DbTablePrefix + "Paises", ExploraYa1Consts.DbSchema);
+            b.ConfigureByConvention();
 
-        
+            b.Property(x => x.Nombre)
+                .IsRequired()
+                .HasMaxLength(100);
 
-    }
+
+
+        });
+        }
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseSqlServer("Server=(LocalDb)\\MSSQLLocalDB;Database=ExploraYa1;Trusted_Connection=True;TrustServerCertificate=True;");
+            optionsBuilder.UseSqlServer("Server=FELIPE-NAVE12;Database=ExploraYa1;Trusted_Connection=True;TrustServerCertificate=True;");
         }
     }
     

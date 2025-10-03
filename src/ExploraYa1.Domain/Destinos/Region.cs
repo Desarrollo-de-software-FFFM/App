@@ -19,11 +19,11 @@ namespace ExploraYa1.Destinos
         [StringLength(300)]
         public required string Descripcion { get; set; }
 
-        public ICollection<DestinoTuristico> DestinosTuristicos { get; set; }
+        public ICollection<DestinoTuristico> DestinosTuristicos { get; set; } = new List<DestinoTuristico>();
 
         public Pais Pais { get; set; }
 
-        public Guid IdPais { get; set; }
+        public Guid PaisId { get; set; }
 
     }
 }

@@ -13,7 +13,7 @@ namespace ExploraYa1.Destinos
 
         [Required][StringLength(100)] public required string Nombre { get; set; }
 
-        public ICollection<Region> Regiones { get; set; }
+        public ICollection<Region> Regiones { get; set; } = new List<Region>();
     } 
 
 }

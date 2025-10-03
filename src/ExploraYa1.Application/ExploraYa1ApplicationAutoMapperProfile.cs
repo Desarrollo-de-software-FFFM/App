@@ -12,15 +12,12 @@ public class ExploraYa1ApplicationAutoMapperProfile : Profile
          * Alternatively, you can split your mapping configurations
          * into multiple profile classes for a better organization. */
 
-        CreateMap<DestinoTuristico, DestinoTuristicoDTO>();
+        CreateMap<DestinoTuristico, Destinosturisticos.DestinoTuristicoDTO>();
         CreateMap<Destinosturisticos.CrearActualizarDestinoDTO, DestinoTuristico>();
          
         
         
         
-        CreateMap<Destinosturisticos.DestinoTuristicoDTO, Destinosturisticos.RegionDTO>();
-        CreateMap<Destinosturisticos.CrearActualizarRegionDTO, Destinosturisticos.RegionDTO>();
-        CreateMap<Destinosturisticos.DestinoTuristicoDTO, Destinosturisticos.PaisDTO>();
-        CreateMap<Destinosturisticos.CrearActualizarPaisDTO, Destinosturisticos.PaisDTO>();
+       
     }
 }
