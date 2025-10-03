@@ -12,6 +12,8 @@ namespace ExploraYa1.Destinos
 {
     public class DestinoTuristico : AuditedAggregateRoot<Guid>
     {
+   
+
         [Required]
         [StringLength(100)]
         public string Nombre { get; set; }

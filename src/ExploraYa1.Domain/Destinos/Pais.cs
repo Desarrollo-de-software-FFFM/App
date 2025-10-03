@@ -10,7 +10,7 @@ namespace ExploraYa1.Destinos
 {
     public class Pais: Entity<Guid>
     {
-
+        
         [Required][StringLength(100)] public required string Nombre { get; set; }
 
         public ICollection<Region> Regiones { get; set; } = new List<Region>();

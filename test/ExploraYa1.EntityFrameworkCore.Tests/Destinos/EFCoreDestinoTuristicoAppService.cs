@@ -10,7 +10,7 @@ namespace ExploraYa1.Destinos
     [Collection(ExploraYa1TestConsts.CollectionDefinitionName)]
 
 
-    public class EFCoreDestinoTuristicoAppService_tests : DestinoTuristicoAppService_tests<ExploraYa1EntityFrameworkCoreTestModule>
+    public class EFCoreDestinoTuristicoAppService_test : DestinoTuristicoAppService_tests<ExploraYa1EntityFrameworkCoreTestModule>
     {
     }
 }

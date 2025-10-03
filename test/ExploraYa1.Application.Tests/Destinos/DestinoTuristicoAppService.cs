@@ -1,17 +1,15 @@
-﻿using ExploraYa1.DestinosTuristicos;
+﻿using System;
+using ExploraYa1.DestinosTuristicos;
 using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp;
-using Volo.Abp.Modularity;
-using Xunit;
-using Volo.Abp.Testing;
-using Volo.Abp.Autofac;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.Autofac;
+using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Modularity;
+using Volo.Abp.Testing;
 using Volo.Abp.Validation;
+using Xunit;
 
 
 namespace ExploraYa1.Destinos
@@ -33,6 +31,8 @@ namespace ExploraYa1.Destinos
         [Fact]
         public async Task CreateAsync_ShouldReturnCreatedDestinosDto()
         {
+            
+
             // Arrange
             var crearDestinoDTO = new CrearActualizarDestinoDTO
             {
@@ -42,7 +42,10 @@ namespace ExploraYa1.Destinos
                 Poblacion = 500,
                 CalificacionGeneral = 4,
                 ImagenUrl = "asdasdasd",
-                RegionId = Guid.NewGuid() // Asegúrate de usar un GUID válido
+                RegionId = new Guid("22222222 - 2222 - 2222 - 2222 - 222222222222")
+
+
+                // Asegúrate de usar un GUID válido
 
             };
 

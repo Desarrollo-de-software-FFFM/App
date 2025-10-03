@@ -10,7 +10,7 @@ namespace ExploraYa1.Destinos
 {
     public class Region: Entity<Guid>
     {
-      
+       
 
         [Required]
         [StringLength(100)]
