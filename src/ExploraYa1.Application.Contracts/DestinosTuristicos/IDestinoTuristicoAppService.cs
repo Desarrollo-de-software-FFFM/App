@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 
-namespace ExploraYa1.Destinosturisticos
+namespace ExploraYa1.DestinosTuristicos
 {
-    public interface IDestinosAppService :
+    public interface IDestinoTuristicoAppService :
     
         ICrudAppService<
         DestinoTuristicoDTO,

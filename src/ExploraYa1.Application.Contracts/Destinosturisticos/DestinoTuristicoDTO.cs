@@ -8,7 +8,7 @@ using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities;
 
 
-namespace ExploraYa1.Destinosturisticos
+namespace ExploraYa1.DestinosTuristicos
 {
     public class DestinoTuristicoDTO: AuditedEntityDto<Guid>
 

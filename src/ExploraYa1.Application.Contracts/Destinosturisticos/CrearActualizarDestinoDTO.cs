@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 
-namespace ExploraYa1.Destinosturisticos
+namespace ExploraYa1.DestinosTuristicos
 {
     public class CrearActualizarDestinoDTO
     {

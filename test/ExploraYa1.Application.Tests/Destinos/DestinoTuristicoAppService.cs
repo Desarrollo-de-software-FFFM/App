@@ -1,4 +1,4 @@
-﻿using ExploraYa1.Destinosturisticos;
+﻿using ExploraYa1.DestinosTuristicos;
 using Shouldly;
 using System;
 using System.Collections.Generic;
@@ -23,11 +23,11 @@ namespace ExploraYa1.Destinos
 
 
     {
-        private readonly IDestinosAppService _destinosAppService;
+        private readonly IDestinoTuristicoAppService _destinosAppService;
 
         protected DestinoTuristicoAppService_tests()
         {
-            _destinosAppService = GetRequiredService<IDestinosAppService>();
+            _destinosAppService = GetRequiredService<IDestinoTuristicoAppService>();
         }
 
         [Fact]
