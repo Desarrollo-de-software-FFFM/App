@@ -26,7 +26,8 @@ public class ExploraYa1DbContext :
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
 
     public DbSet<DestinoTuristico> Destinos { get; set; }
-
+    public DbSet<Pais> Paises { get; set; }
+    public DbSet<Region> Regiones { get; set; }
 
 
 
@@ -118,8 +119,13 @@ public class ExploraYa1DbContext :
             //.WithMany(r => r.DestinosTuristicos)
             //.HasForeignKey(x => x.IdRegion)
             //.IsRequired();
-            
-             
+
+            b.HasOne<Region>()
+     .WithMany()
+     .HasForeignKey(x => x.RegionId)  // ? asegurate que en la entidad DestinoTuristico exista esta propiedad
+     .IsRequired();
+
+
 
 
         });
@@ -142,7 +148,12 @@ public class ExploraYa1DbContext :
             //     .HasForeignKey(x => x.IdPais)
             //     .IsRequired();
             //.OnDelete(DeleteBehavior.Restrict);
-           
+
+            b.HasOne<Pais>()
+     .WithMany()
+     .HasForeignKey(x => x.PaisId)
+     .IsRequired();
+
         });
 
         builder.Entity<Pais>(b =>
@@ -164,7 +175,7 @@ public class ExploraYa1DbContext :
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseSqlServer("Server=FELIPE-NAVE12;Database=ExploraYa1;Trusted_Connection=True;TrustServerCertificate=True;");
+            optionsBuilder.UseSqlServer("Server=(LocalDb)\\MSSQLLocalDB;Database=ExploraYa1;Trusted_Connection=True;TrustServerCertificate=True;");
         }
     }
     

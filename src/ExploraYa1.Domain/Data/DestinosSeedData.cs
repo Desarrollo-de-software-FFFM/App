@@ -29,22 +29,22 @@ namespace ExploraYa1
             if (await _paisRepository.GetCountAsync() > 0) return;
 
             // Crear País
-           // var argentina = await _paisRepository.InsertAsync(new Pais { Id = Guid.NewGuid(), Nombre = "Argentina" }, autoSave: true);
+            var argentina = await _paisRepository.InsertAsync(new Pais { Nombre = "Argentina" }, autoSave: true);
 
             // Crear Región
-           // var buenosAires = await _regionRepository.InsertAsync(new Region { Id = Guid.NewGuid(), Nombre = "Buenos Aires", Descripcion = "Región de prueba", PaisId = argentina.Id }, autoSave: true);
+            var buenosAires = await _regionRepository.InsertAsync(new Region {  Nombre = "Buenos Aires", Descripcion = "Región de prueba", PaisId = argentina.Id }, autoSave: true);
 
             // Crear Destino Turístico
             await _destinoRepository.InsertAsync(new DestinoTuristico
             {
                 //Id = Guid.NewGuid(),
                 Nombre = "Parque Nacional Iguazú",
-                Latitud = -25.6953f,
-                Longuitud = -54.4367f,
+                Latitud = 25,
+                Longuitud = 54,
                 Poblacion = 0,
                 CalificacionGeneral = 5,
                 ImagenUrl = "iguazu.jpg",
-               // RegionId = buenosAires.Id
+                RegionId = buenosAires.Id
             }, autoSave: true);
         }
     }
