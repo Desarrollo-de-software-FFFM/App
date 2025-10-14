@@ -23,7 +23,7 @@ namespace ExploraYa1.Destinos
 
         public Pais Pais { get; set; }
 
-        public Guid PaisId { get; set; }
+         public Guid PaisId { get; set; }
 
     }
 }
