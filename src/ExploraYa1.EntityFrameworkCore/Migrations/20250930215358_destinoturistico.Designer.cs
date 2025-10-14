@@ -4,6 +4,7 @@ using ExploraYa1.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Volo.Abp.EntityFrameworkCore;
 
@@ -12,9 +13,11 @@ using Volo.Abp.EntityFrameworkCore;
 namespace ExploraYa1.Migrations
 {
     [DbContext(typeof(ExploraYa1DbContext))]
-    partial class ExploraYa1DbContextModelSnapshot : ModelSnapshot
+    [Migration("20250930215358_destinoturistico")]
+    partial class Destinoturistico
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,6 +55,9 @@ namespace ExploraYa1.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("ExtraProperties");
 
+                    b.Property<Guid>("IdRegion")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("ImagenUrl")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -82,14 +88,9 @@ namespace ExploraYa1.Migrations
                     b.Property<Guid>("RegionId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("RegionId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("RegionId");
-
-                    b.HasIndex("RegionId1");
 
                     b.ToTable("AppDestinos", (string)null);
                 });
@@ -119,6 +120,9 @@ namespace ExploraYa1.Migrations
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
+                    b.Property<Guid>("IdPais")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -127,14 +131,9 @@ namespace ExploraYa1.Migrations
                     b.Property<Guid>("PaisId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("PaisId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("PaisId");
-
-                    b.HasIndex("PaisId1");
 
                     b.ToTable("AppRegiones", (string)null);
                 });
@@ -1910,28 +1909,24 @@ namespace ExploraYa1.Migrations
 
             modelBuilder.Entity("ExploraYa1.Destinos.DestinoTuristico", b =>
                 {
-                    b.HasOne("ExploraYa1.Destinos.Region", null)
-                        .WithMany()
+                    b.HasOne("ExploraYa1.Destinos.Region", "Region")
+                        .WithMany("DestinosTuristicos")
                         .HasForeignKey("RegionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ExploraYa1.Destinos.Region", null)
-                        .WithMany("DestinosTuristicos")
-                        .HasForeignKey("RegionId1");
+                    b.Navigation("Region");
                 });
 
             modelBuilder.Entity("ExploraYa1.Destinos.Region", b =>
                 {
-                    b.HasOne("ExploraYa1.Destinos.Pais", null)
-                        .WithMany()
+                    b.HasOne("ExploraYa1.Destinos.Pais", "Pais")
+                        .WithMany("Regiones")
                         .HasForeignKey("PaisId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ExploraYa1.Destinos.Pais", null)
-                        .WithMany("Regiones")
-                        .HasForeignKey("PaisId1");
+                    b.Navigation("Pais");
                 });
 
             modelBuilder.Entity("Volo.Abp.AuditLogging.AuditLogAction", b =>

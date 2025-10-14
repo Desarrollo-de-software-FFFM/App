@@ -1,4 +1,6 @@
+using ExploraYa1.Destinos;
 using Microsoft.EntityFrameworkCore;
+using System;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.BlobStoring.Database.EntityFrameworkCore;
@@ -9,9 +11,9 @@ using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.FeatureManagement.EntityFrameworkCore;
 using Volo.Abp.Identity;
 using Volo.Abp.Identity.EntityFrameworkCore;
+using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.PermissionManagement.EntityFrameworkCore;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
-using Volo.Abp.OpenIddict.EntityFrameworkCore;
 
 namespace ExploraYa1.EntityFrameworkCore;
 
@@ -22,6 +24,11 @@ public class ExploraYa1DbContext :
     IIdentityDbContext
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
+
+    public DbSet<DestinoTuristico> Destinos { get; set; }
+    public DbSet<Pais> Paises { get; set; }
+    public DbSet<Region> Regiones { get; set; }
+
 
 
     #region Entities from the modules
@@ -69,7 +76,7 @@ public class ExploraYa1DbContext :
         builder.ConfigureIdentity();
         builder.ConfigureOpenIddict();
         builder.ConfigureBlobStoring();
-        
+
         /* Configure your own tables/entities inside here */
 
         //builder.Entity<YourEntity>(b =>
@@ -78,5 +85,98 @@ public class ExploraYa1DbContext :
         //    b.ConfigureByConvention(); //auto configure for the base class props
         //    //...
         //});
+
+
+        builder.Entity<DestinoTuristico>(b =>
+        {
+
+            b.ToTable(ExploraYa1Consts.DbTablePrefix + "Destinos", ExploraYa1Consts.DbSchema);
+            b.ConfigureByConvention();
+
+
+            b.Property(x => x.Nombre)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            b.Property(x => x.Poblacion)
+                .IsRequired();
+
+
+            b.Property(x => x.Latitud)
+                .IsRequired();
+
+            b.Property(x => x.Longuitud)
+                .IsRequired();
+
+            b.Property(x => x.ImagenUrl)
+                .IsRequired()
+                .HasMaxLength(200);
+
+            b.Property(x => x.CalificacionGeneral)
+                .IsRequired();
+
+            // b.HasOne<Region>()
+            //.WithMany(r => r.DestinosTuristicos)
+            //.HasForeignKey(x => x.IdRegion)
+            //.IsRequired();
+
+            b.HasOne<Region>()
+     .WithMany()
+     .HasForeignKey(x => x.RegionId)  // ? asegurate que en la entidad DestinoTuristico exista esta propiedad
+     .IsRequired();
+
+
+
+
+        });
+
+        builder.Entity<Region>(b =>
+        {
+            b.ToTable(ExploraYa1Consts.DbTablePrefix + "Regiones", ExploraYa1Consts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.Nombre)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            b.Property(x => x.Descripcion)
+                .HasMaxLength(300);
+
+
+            //b.HasOne<Pais>()
+            //    .WithMany(p => p.Regiones)
+            //     .HasForeignKey(x => x.IdPais)
+            //     .IsRequired();
+            //.OnDelete(DeleteBehavior.Restrict);
+
+            b.HasOne<Pais>()
+     .WithMany()
+     .HasForeignKey(x => x.PaisId)
+     .IsRequired();
+
+        });
+
+        builder.Entity<Pais>(b =>
+        {
+            b.ToTable(ExploraYa1Consts.DbTablePrefix + "Paises", ExploraYa1Consts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.Nombre)
+                .IsRequired()
+                .HasMaxLength(100);
+
+
+
+        });
+        }
+
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlServer("Server=(LocalDb)\\MSSQLLocalDB;Database=ExploraYa1;Trusted_Connection=True;TrustServerCertificate=True;");
+        }
     }
+    
 }

@@ -4,6 +4,7 @@ using ExploraYa1.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Volo.Abp.EntityFrameworkCore;
 
@@ -12,9 +13,11 @@ using Volo.Abp.EntityFrameworkCore;
 namespace ExploraYa1.Migrations
 {
     [DbContext(typeof(ExploraYa1DbContext))]
-    partial class ExploraYa1DbContextModelSnapshot : ModelSnapshot
+    [Migration("20251003155706_Destinosconpaises2.5")]
+    partial class Destinosconpaises25
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -127,14 +130,9 @@ namespace ExploraYa1.Migrations
                     b.Property<Guid>("PaisId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("PaisId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("PaisId");
-
-                    b.HasIndex("PaisId1");
 
                     b.ToTable("AppRegiones", (string)null);
                 });
@@ -1910,7 +1908,7 @@ namespace ExploraYa1.Migrations
 
             modelBuilder.Entity("ExploraYa1.Destinos.DestinoTuristico", b =>
                 {
-                    b.HasOne("ExploraYa1.Destinos.Region", null)
+                    b.HasOne("ExploraYa1.Destinos.Region", "Region")
                         .WithMany()
                         .HasForeignKey("RegionId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1919,19 +1917,19 @@ namespace ExploraYa1.Migrations
                     b.HasOne("ExploraYa1.Destinos.Region", null)
                         .WithMany("DestinosTuristicos")
                         .HasForeignKey("RegionId1");
+
+                    b.Navigation("Region");
                 });
 
             modelBuilder.Entity("ExploraYa1.Destinos.Region", b =>
                 {
-                    b.HasOne("ExploraYa1.Destinos.Pais", null)
-                        .WithMany()
+                    b.HasOne("ExploraYa1.Destinos.Pais", "Pais")
+                        .WithMany("Regiones")
                         .HasForeignKey("PaisId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ExploraYa1.Destinos.Pais", null)
-                        .WithMany("Regiones")
-                        .HasForeignKey("PaisId1");
+                    b.Navigation("Pais");
                 });
 
             modelBuilder.Entity("Volo.Abp.AuditLogging.AuditLogAction", b =>
