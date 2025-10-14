@@ -20,10 +20,21 @@ namespace ExploraYa1.DestinosTuristicos
         CrearActualizarDestinoDTO>, //Used to create/update a book
     IDestinoTuristicoAppService //implement the IBookAppService
     {
-        public DestinoTuristicoAppService(IRepository<DestinoTuristico, Guid> repository)
+        
+
+    private readonly ICitySearchService _citySearchService;
+        public DestinoTuristicoAppService(IRepository<DestinoTuristico, Guid> repository, ICitySearchService citySearchService)
             : base(repository)
         {
-
+            _citySearchService = citySearchService;
+        }
+        public async Task<CitySearchResultDto> SearchCitiesAsync(CitySearchRequestDto request)
+        {
+            return await _citySearchService.SearchCitiesAsync(request);
         }
     }
 }
+
+
+
+
