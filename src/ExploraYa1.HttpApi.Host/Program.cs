@@ -23,7 +23,7 @@ public class Program
         {
             Log.Information("Starting ExploraYa1.HttpApi.Host.");
             var builder = WebApplication.CreateBuilder(args);
-            builder.Services.AddHttpClient<ICitySearchService, GeoDbCitySearchService>();
+            //builder.Services.AddHttpClient<ICitySearchService, GeoDbCitySearchService>();
             builder.Host
                 .AddAppSettingsSecretsJson()
                 .UseAutofac()
