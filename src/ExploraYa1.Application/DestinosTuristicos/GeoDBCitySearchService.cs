@@ -49,9 +49,9 @@ namespace ExploraYa1.DestinosTuristicos
                 {
                     Name = c.City ?? string.Empty,
                     Country = c.Country ?? string.Empty,
-                    Latitude = c.Latitude,
-                    Longitude = c.Longitude
-               
+                    //Latitude = c.Latitude,
+                    //Longitude = c.Longitude
+
                 }).ToList();
 
                 return new CitySearchResultDto { Cities = cities };
@@ -69,10 +69,10 @@ namespace ExploraYa1.DestinosTuristicos
 
         private class GeoDbCity
         {
-            public string? City { get; set; }
-            public string? Country { get; set; }
-            public double Latitude { get; set; }
-            public double Longitude { get; set; }
+            public string City { get; set; }
+            public string Country { get; set; }
+            //public double Latitude { get; set; }
+            //public double Longitude { get; set; }
         }
     }
 }
