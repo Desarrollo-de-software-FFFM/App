@@ -6,6 +6,9 @@ using Volo.Abp.AutoMapper;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Modularity;
 using System.Net.Http;
+using ExploraYa1.Destinos;
+using ExploraYa1.DestinosTuristicos;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ExploraYa1;
 
@@ -26,5 +29,8 @@ public class ExploraYa1ApplicationModule : AbpModule
         {
             options.AddMaps<ExploraYa1ApplicationModule>();
         });
+
+        // Registra el servicio HttpClient para GeoDbCitySearchService
+        //object value = context.Services.AddHttpClient<ICitySearchService, GeoDbCitySearchService>();
     }
 }
