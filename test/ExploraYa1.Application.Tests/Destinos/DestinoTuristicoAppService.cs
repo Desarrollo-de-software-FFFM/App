@@ -38,7 +38,7 @@ namespace ExploraYa1.Destinos
         }
 
     
-    [Fact]
+        [Fact]
         public async Task SearchCitiesAsync_ShouldReturnResults()
         {
             // Arrange
