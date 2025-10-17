@@ -21,40 +21,38 @@ namespace ExploraYa1.Destinos
 
     public abstract class DestinoTuristicoAppService_tests<TStartupModule> : ExploraYa1ApplicationTestBase<TStartupModule>
         where TStartupModule : IAbpModule
-
-
     {
         private readonly IDestinoTuristicoAppService _destinosAppService;
+        private readonly IRepository<DestinoTuristico, Guid> _destinoRepository;
+        private readonly IRepository<Region, Guid> _regionRepository;
+        private readonly IRepository<Pais, Guid> _paisRepository;
+        private readonly ICitySearchService _citySearchService;
 
-        protected DestinoTuristicoAppService_tests() => _destinosAppService = GetRequiredService<IDestinoTuristicoAppService>();
+        protected DestinoTuristicoAppService_tests()
+        {
+            _destinoRepository = GetRequiredService<IRepository<DestinoTuristico, Guid>>();
+            _regionRepository = GetRequiredService<IRepository<Region, Guid>>();
+            _paisRepository = GetRequiredService<IRepository<Pais, Guid>>();
+            _citySearchService = GetRequiredService<ICitySearchService>();
+            _destinosAppService = new DestinoTuristicoAppService(_destinoRepository, _citySearchService);
+        }
 
         [Fact]
         public async Task CreateAsync_ShouldReturnCreatedDestinosDto()
         {
-
-            var paisRepo = GetRequiredService<IRepository<Pais, Guid>>();
-            var pais1 = await paisRepo.InsertAsync(new Pais
+            // Arrange
+            var pais = await _paisRepository.InsertAsync(new Pais
             {
-                Nombre = "Argentina",
-                 
+                Nombre = "Argentina"
             }, autoSave: true);
 
-            var regionRepo = GetRequiredService<IRepository<Region, Guid>>();
-            var region1 = await regionRepo.InsertAsync(new Region
+            var region = await _regionRepository.InsertAsync(new Region
             {
                 Nombre = "Región de test",
                 Descripcion = "Para prueba",
-                PaisId = pais1.Id // o un país que hayas creado
+                PaisId = pais.Id
             }, autoSave: true);
 
-
-            var allRegiones = await regionRepo.GetListAsync();
-            var allPaises = await paisRepo.GetListAsync();
-
-            allPaises.Count.ShouldBe(1);
-            allRegiones.Count.ShouldBe(1);
-
-            // Arrange
             var crearDestinoDTO = new CrearActualizarDestinoDTO
             {
                 Nombre = "ParqueNacional",
@@ -63,18 +61,11 @@ namespace ExploraYa1.Destinos
                 Poblacion = 500,
                 CalificacionGeneral = 4,
                 ImagenUrl = "asdasdasd",
-                RegionId = region1.Id
-                
-
-
-                // Asegúrate de usar un GUID válido
-
+                RegionId = region.Id
             };
 
             // Act
             var result = await _destinosAppService.CreateAsync(crearDestinoDTO);
-
-
 
             // Assert
             result.ShouldNotBeNull();
@@ -88,18 +79,28 @@ namespace ExploraYa1.Destinos
             result.RegionId.ShouldBe(crearDestinoDTO.RegionId);
         }
 
-        public async Task SearchCitiesAsync_ReturnsResults()
+        [Fact]
+        public async Task SearchCitiesAsync_ShouldReturnResults()
         {
             // Arrange
             var request = new CitySearchRequestDto { PartialName = "Test" };
-            var expected = new CitySearchResultDto
+            var expectedCities = new List<CityDto>
             {
-                Cities = new List<CityDto> { new CityDto { Name = "TestCity", Country = "TestCountry"} }
+                new CityDto
+                {
+                    Name = "TestCity",
+                    Country = "TestCountry"
+                }
             };
+
+            var mockCitySearchService = Substitute.For<ICitySearchService>();
+            mockCitySearchService
+                .SearchCitiesAsync(Arg.Any<CitySearchRequestDto>())
+                .Returns(Task.FromResult(new CitySearchResultDto { Cities = expectedCities }));
+
+            // No necesitas el repositorio real para este test, puedes usar un mock si el constructor lo permite
             var repoMock = Substitute.For<IRepository<DestinoTuristico, Guid>>();
-            var citySearchMock = Substitute.For<ICitySearchService>();
-            citySearchMock.SearchCitiesAsync(request).Returns(expected);
-            var service = new DestinoTuristicoAppService(repoMock, citySearchMock);
+            var service = new DestinoTuristicoAppService(repoMock, mockCitySearchService);
 
             // Act
             var result = await service.SearchCitiesAsync(request);
@@ -108,9 +109,8 @@ namespace ExploraYa1.Destinos
             result.ShouldNotBeNull();
             result.Cities.Count.ShouldBe(1);
             result.Cities[0].Name.ShouldBe("TestCity");
+            result.Cities[0].Country.ShouldBe("TestCountry");
         }
-
-
 
 
     }

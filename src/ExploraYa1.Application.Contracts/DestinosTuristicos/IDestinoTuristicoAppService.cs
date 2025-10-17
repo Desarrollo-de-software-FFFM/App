@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ExploraYa1.Destinos;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,7 +16,8 @@ namespace ExploraYa1.DestinosTuristicos
         Guid,
         PagedAndSortedResultRequestDto,
         CrearActualizarDestinoDTO>
-
     {
+        // Agregar el método que falta
+        Task<CitySearchResultDto> SearchCitiesAsync(CitySearchRequestDto request);
     }  
 }
