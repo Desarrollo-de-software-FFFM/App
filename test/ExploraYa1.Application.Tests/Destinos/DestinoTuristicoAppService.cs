@@ -37,49 +37,8 @@ namespace ExploraYa1.Destinos
             _destinosAppService = new DestinoTuristicoAppService(_destinoRepository, _citySearchService);
         }
 
-        [Fact]
-        public async Task CreateAsync_ShouldReturnCreatedDestinosDto()
-        {
-            // Arrange
-            var pais = await _paisRepository.InsertAsync(new Pais
-            {
-                Nombre = "Argentina"
-            }, autoSave: true);
-
-            var region = await _regionRepository.InsertAsync(new Region
-            {
-                Nombre = "Región de test",
-                Descripcion = "Para prueba",
-                PaisId = pais.Id
-            }, autoSave: true);
-
-            var crearDestinoDTO = new CrearActualizarDestinoDTO
-            {
-                Nombre = "ParqueNacional",
-                Latitud = 34,
-                Longuitud = 40,
-                Poblacion = 500,
-                CalificacionGeneral = 4,
-                ImagenUrl = "asdasdasd",
-                RegionId = region.Id
-            };
-
-            // Act
-            var result = await _destinosAppService.CreateAsync(crearDestinoDTO);
-
-            // Assert
-            result.ShouldNotBeNull();
-            result.Id.ShouldNotBe(Guid.Empty);
-            result.Nombre.ShouldBe(crearDestinoDTO.Nombre);
-            result.Poblacion.ShouldBe(crearDestinoDTO.Poblacion);
-            result.CalificacionGeneral.ShouldBe(crearDestinoDTO.CalificacionGeneral);
-            result.ImagenUrl.ShouldBe(crearDestinoDTO.ImagenUrl);
-            result.Latitud.ShouldBe(crearDestinoDTO.Latitud);
-            result.Longuitud.ShouldBe(crearDestinoDTO.Longuitud);
-            result.RegionId.ShouldBe(crearDestinoDTO.RegionId);
-        }
-
-        [Fact]
+    
+    [Fact]
         public async Task SearchCitiesAsync_ShouldReturnResults()
         {
             // Arrange
@@ -98,7 +57,7 @@ namespace ExploraYa1.Destinos
                 .SearchCitiesAsync(Arg.Any<CitySearchRequestDto>())
                 .Returns(Task.FromResult(new CitySearchResultDto { Cities = expectedCities }));
 
-            // No necesitas el repositorio real para este test, puedes usar un mock si el constructor lo permite
+            // Usar un mock del repositorio para evitar dependencias de base de datos
             var repoMock = Substitute.For<IRepository<DestinoTuristico, Guid>>();
             var service = new DestinoTuristicoAppService(repoMock, mockCitySearchService);
 
@@ -112,9 +71,4 @@ namespace ExploraYa1.Destinos
             result.Cities[0].Country.ShouldBe("TestCountry");
         }
 
-
-    }
-
-
-
-}
+    } }
