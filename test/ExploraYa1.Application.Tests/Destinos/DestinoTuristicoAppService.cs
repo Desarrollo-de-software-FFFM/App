@@ -1,6 +1,8 @@
-﻿using System;
-using ExploraYa1.DestinosTuristicos;
+﻿using ExploraYa1.DestinosTuristicos;
+using NSubstitute;
 using Shouldly;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
@@ -10,6 +12,7 @@ using Volo.Abp.Modularity;
 using Volo.Abp.Testing;
 using Volo.Abp.Validation;
 using Xunit;
+using static OpenIddict.Abstractions.OpenIddictConstants;
 
 
 namespace ExploraYa1.Destinos
@@ -84,6 +87,31 @@ namespace ExploraYa1.Destinos
             result.Longuitud.ShouldBe(crearDestinoDTO.Longuitud);
             result.RegionId.ShouldBe(crearDestinoDTO.RegionId);
         }
+
+        public async Task SearchCitiesAsync_ReturnsResults()
+        {
+            // Arrange
+            var request = new CitySearchRequestDto { PartialName = "Test" };
+            var expected = new CitySearchResultDto
+            {
+                Cities = new List<CityDto> { new CityDto { Name = "TestCity", Country = "TestCountry"} }
+            };
+            var repoMock = Substitute.For<IRepository<DestinoTuristico, Guid>>();
+            var citySearchMock = Substitute.For<ICitySearchService>();
+            citySearchMock.SearchCitiesAsync(request).Returns(expected);
+            var service = new DestinoTuristicoAppService(repoMock, citySearchMock);
+
+            // Act
+            var result = await service.SearchCitiesAsync(request);
+
+            // Assert
+            result.ShouldNotBeNull();
+            result.Cities.Count.ShouldBe(1);
+            result.Cities[0].Name.ShouldBe("TestCity");
+        }
+
+
+
 
     }
 
