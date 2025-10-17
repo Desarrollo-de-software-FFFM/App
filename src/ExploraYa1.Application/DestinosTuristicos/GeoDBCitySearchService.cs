@@ -39,6 +39,11 @@ namespace ExploraYa1.DestinosTuristicos
                 var url = $"https://wft-geo-db.p.rapidapi.com/v1/geo/cities?namePrefix={Uri.EscapeDataString(request.PartialName)}&limit=5";
 
                 var response = await _httpClient.GetAsync(url);
+
+                // Si la respuesta es nula, simula un error de red
+                if (response == null)
+                    throw new HttpRequestException("No se pudo obtener respuesta del servidor.");
+
                 response.EnsureSuccessStatusCode();
 
                 var json = await response.Content.ReadFromJsonAsync<GeoDbResponse>();
@@ -49,17 +54,16 @@ namespace ExploraYa1.DestinosTuristicos
                 {
                     Name = c.City ?? string.Empty,
                     Country = c.Country ?? string.Empty,
-                   
                     Latitude = c.Latitude,
                     Longitude = c.Longitude
-
                 }).ToList();
 
                 return new CitySearchResultDto { Cities = cities };
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error al buscar ciudades: {ex.Message}");
+                // Lanza la excepción original para que el test la capture correctamente
+                throw;
             }
         }
 
