@@ -1,0 +1,182 @@
+using ExploraYa1.Destinos;
+using Microsoft.EntityFrameworkCore;
+using System;
+using Volo.Abp.AuditLogging.EntityFrameworkCore;
+using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
+using Volo.Abp.BlobStoring.Database.EntityFrameworkCore;
+using Volo.Abp.Data;
+using Volo.Abp.DependencyInjection;
+using Volo.Abp.EntityFrameworkCore;
+using Volo.Abp.EntityFrameworkCore.Modeling;
+using Volo.Abp.FeatureManagement.EntityFrameworkCore;
+using Volo.Abp.Identity;
+using Volo.Abp.Identity.EntityFrameworkCore;
+using Volo.Abp.OpenIddict.EntityFrameworkCore;
+using Volo.Abp.PermissionManagement.EntityFrameworkCore;
+using Volo.Abp.SettingManagement.EntityFrameworkCore;
+
+namespace ExploraYa1.EntityFrameworkCore;
+
+[ReplaceDbContext(typeof(IIdentityDbContext))]
+[ConnectionStringName("Default")]
+public class ExploraYa1DbContext :
+    AbpDbContext<ExploraYa1DbContext>,
+    IIdentityDbContext
+{
+    /* Add DbSet properties for your Aggregate Roots / Entities here. */
+
+    public DbSet<DestinoTuristico> Destinos { get; set; }
+    public DbSet<Pais> Paises { get; set; }
+    public DbSet<Region> Regiones { get; set; }
+
+
+
+    #region Entities from the modules
+
+    /* Notice: We only implemented IIdentityProDbContext 
+     * and replaced them for this DbContext. This allows you to perform JOIN
+     * queries for the entities of these modules over the repositories easily. You
+     * typically don't need that for other modules. But, if you need, you can
+     * implement the DbContext interface of the needed module and use ReplaceDbContext
+     * attribute just like IIdentityProDbContext .
+     *
+     * More info: Replacing a DbContext of a module ensures that the related module
+     * uses this DbContext on runtime. Otherwise, it will use its own DbContext class.
+     */
+
+    // Identity
+    public DbSet<IdentityUser> Users { get; set; }
+    public DbSet<IdentityRole> Roles { get; set; }
+    public DbSet<IdentityClaimType> ClaimTypes { get; set; }
+    public DbSet<OrganizationUnit> OrganizationUnits { get; set; }
+    public DbSet<IdentitySecurityLog> SecurityLogs { get; set; }
+    public DbSet<IdentityLinkUser> LinkUsers { get; set; }
+    public DbSet<IdentityUserDelegation> UserDelegations { get; set; }
+    public DbSet<IdentitySession> Sessions { get; set; }
+
+    #endregion
+
+    public ExploraYa1DbContext(DbContextOptions<ExploraYa1DbContext> options)
+        : base(options)
+    {
+
+    }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+
+        /* Include modules to your migration db context */
+
+        builder.ConfigurePermissionManagement();
+        builder.ConfigureSettingManagement();
+        builder.ConfigureBackgroundJobs();
+        builder.ConfigureAuditLogging();
+        builder.ConfigureFeatureManagement();
+        builder.ConfigureIdentity();
+        builder.ConfigureOpenIddict();
+        builder.ConfigureBlobStoring();
+
+        /* Configure your own tables/entities inside here */
+
+        //builder.Entity<YourEntity>(b =>
+        //{
+        //    b.ToTable(ExploraYa1Consts.DbTablePrefix + "YourEntities", ExploraYa1Consts.DbSchema);
+        //    b.ConfigureByConvention(); //auto configure for the base class props
+        //    //...
+        //});
+
+
+        builder.Entity<DestinoTuristico>(b =>
+        {
+
+            b.ToTable(ExploraYa1Consts.DbTablePrefix + "Destinos", ExploraYa1Consts.DbSchema);
+            b.ConfigureByConvention();
+
+
+            b.Property(x => x.Nombre)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            b.Property(x => x.Poblacion)
+                .IsRequired();
+
+
+            b.Property(x => x.Latitud)
+                .IsRequired();
+
+            b.Property(x => x.Longuitud)
+                .IsRequired();
+
+            b.Property(x => x.ImagenUrl)
+                .IsRequired()
+                .HasMaxLength(200);
+
+            b.Property(x => x.CalificacionGeneral)
+                .IsRequired();
+
+            // b.HasOne<Region>()
+            //.WithMany(r => r.DestinosTuristicos)
+            //.HasForeignKey(x => x.IdRegion)
+            //.IsRequired();
+
+            b.HasOne<Region>()
+     .WithMany()
+     .HasForeignKey(x => x.RegionId)  // ? asegurate que en la entidad DestinoTuristico exista esta propiedad
+     .IsRequired();
+
+
+
+
+        });
+
+        builder.Entity<Region>(b =>
+        {
+            b.ToTable(ExploraYa1Consts.DbTablePrefix + "Regiones", ExploraYa1Consts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.Nombre)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            b.Property(x => x.Descripcion)
+                .HasMaxLength(300);
+
+
+            //b.HasOne<Pais>()
+            //    .WithMany(p => p.Regiones)
+            //     .HasForeignKey(x => x.IdPais)
+            //     .IsRequired();
+            //.OnDelete(DeleteBehavior.Restrict);
+
+            b.HasOne<Pais>()
+     .WithMany()
+     .HasForeignKey(x => x.PaisId)
+     .IsRequired();
+
+        });
+
+        builder.Entity<Pais>(b =>
+        {
+            b.ToTable(ExploraYa1Consts.DbTablePrefix + "Paises", ExploraYa1Consts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.Nombre)
+                .IsRequired()
+                .HasMaxLength(100);
+
+
+
+        });
+        }
+
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlServer("Server=FELIPE-NAVE12;Database=ExploraYa1;Trusted_Connection=True;TrustServerCertificate=True;");
+        }
+    }
+    
+}
