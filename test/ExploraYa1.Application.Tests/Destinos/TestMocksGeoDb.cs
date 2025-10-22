@@ -12,7 +12,7 @@ using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace ExploraYa1.Destinos
 {
-    public class Mocksgeodb
+    public class TestMocksGeoDb
     {
         [Fact]
         public async Task SearchCitiesAsync_ShouldReturnResults()
