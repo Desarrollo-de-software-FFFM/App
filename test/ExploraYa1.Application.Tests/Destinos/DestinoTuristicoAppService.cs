@@ -1,6 +1,8 @@
-﻿using System;
-using ExploraYa1.DestinosTuristicos;
+﻿using ExploraYa1.DestinosTuristicos;
+using NSubstitute;
 using Shouldly;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
@@ -10,6 +12,7 @@ using Volo.Abp.Modularity;
 using Volo.Abp.Testing;
 using Volo.Abp.Validation;
 using Xunit;
+using static OpenIddict.Abstractions.OpenIddictConstants;
 
 
 namespace ExploraYa1.Destinos
@@ -18,14 +21,22 @@ namespace ExploraYa1.Destinos
 
     public abstract class DestinoTuristicoAppService_tests<TStartupModule> : ExploraYa1ApplicationTestBase<TStartupModule>
         where TStartupModule : IAbpModule
-
-
     {
         private readonly IDestinoTuristicoAppService _destinosAppService;
+        private readonly IRepository<DestinoTuristico, Guid> _destinoRepository;
+        private readonly IRepository<Region, Guid> _regionRepository;
+        private readonly IRepository<Pais, Guid> _paisRepository;
+        private readonly ICitySearchService _citySearchService;
 
-        protected DestinoTuristicoAppService_tests() => _destinosAppService = GetRequiredService<IDestinoTuristicoAppService>();
+        protected DestinoTuristicoAppService_tests()
+        {
+            _destinoRepository = GetRequiredService<IRepository<DestinoTuristico, Guid>>();
+            _regionRepository = GetRequiredService<IRepository<Region, Guid>>();
+            _paisRepository = GetRequiredService<IRepository<Pais, Guid>>();
+            _citySearchService = GetRequiredService<ICitySearchService>();
+            _destinosAppService = new DestinoTuristicoAppService(_destinoRepository, _citySearchService);
+        }
 
-        [Fact]
         public async Task CreateAsync_ShouldReturnCreatedDestinosDto()
         {
 
@@ -33,7 +44,7 @@ namespace ExploraYa1.Destinos
             var pais1 = await paisRepo.InsertAsync(new Pais
             {
                 Nombre = "Argentina",
-                 
+
             }, autoSave: true);
 
             var regionRepo = GetRequiredService<IRepository<Region, Guid>>();
@@ -61,7 +72,7 @@ namespace ExploraYa1.Destinos
                 CalificacionGeneral = 4,
                 ImagenUrl = "asdasdasd",
                 RegionId = region1.Id
-                
+
 
 
                 // Asegúrate de usar un GUID válido
@@ -84,9 +95,6 @@ namespace ExploraYa1.Destinos
             result.Longuitud.ShouldBe(crearDestinoDTO.Longuitud);
             result.RegionId.ShouldBe(crearDestinoDTO.RegionId);
         }
+        
 
-    }
-
-
-
-}
+    } }
