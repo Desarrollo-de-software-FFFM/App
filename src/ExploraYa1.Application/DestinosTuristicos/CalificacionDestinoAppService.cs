@@ -28,12 +28,8 @@ namespace ExploraYa1.DestinosTuristicos
             _currentUser = currentUser;
         }
 
-        public Task<CalificacionDto> CrearCalificacionAsync(CrearActualizarCalificacionDTO input)
-        {
-            throw new NotImplementedException();
-        }
 
-        public async Task<CalificacionDto> CrearOpinionAsync(CrearActualizarCalificacionDTO input)
+        public async Task<CalificacionDto> CrearCalificacionAsync(CrearActualizarCalificacionDTO input)
         {
             return await _crearOpinionService.CrearCalificacionAsync(input);
         }

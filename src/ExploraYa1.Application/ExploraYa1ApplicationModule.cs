@@ -32,5 +32,6 @@ public class ExploraYa1ApplicationModule : AbpModule
 
         // Registra el servicio HttpClient para GeoDbCitySearchService
          object value = context.Services.AddHttpClient<ICitySearchService, GeoDbCitySearchService>();
+           context.Services.AddTransient<ICrearActualizarCalificacion, CrearCalificacionService>();
     }
 }
