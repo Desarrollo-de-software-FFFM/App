@@ -9,7 +9,10 @@ namespace ExploraYa1.Destinos
         [Required]
         public Guid DestinoTuristicoId { get; set; }
 
-         [Required]
+        [Required]
+        public int Puntuacion { get; set; }
+
+        [Required]
         public string? Comentario { get; set; }
     }
 }
