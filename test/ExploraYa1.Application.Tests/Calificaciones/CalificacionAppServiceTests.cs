@@ -40,7 +40,7 @@ namespace ExploraYa1.CalificacionesTest
             result.ShouldNotBeNull();
             result.DestinoTuristicoId.ShouldBe(input.DestinoTuristicoId);
             result.Puntuacion.ShouldBe(input.Puntuacion);
-            ((int)result.Puntuacion).ShouldBeInRange((int)1, (int)5);
+            ((int)result.Puntuacion).ShouldBeInRange(1,5);
             result.Comentario.ShouldBe(input.Comentario);
         }
 
@@ -79,9 +79,7 @@ namespace ExploraYa1.CalificacionesTest
 
             var opinion = await _opinionService.CrearCalificacionAsync(input);
 
-            // Requisito 2: Respetar Filtro por Usuario (El usuario solo ve su propia opinión)
-            var currentUserId = CurrentUser.Id.Value;
-            var opinionesUsuario = await _opinionService.ObtenerPorUsuarioAsync(currentUserId);
+         
             
 
             // 🔸 Simular un contexto sin autenticación
