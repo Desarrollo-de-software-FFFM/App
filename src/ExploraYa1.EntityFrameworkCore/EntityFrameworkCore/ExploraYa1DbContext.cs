@@ -120,9 +120,10 @@ public class ExploraYa1DbContext :
             //.HasForeignKey(x => x.IdRegion)
             //.IsRequired();
 
-            b.HasOne<Region>()
-     .WithMany()
-     .HasForeignKey(x => x.RegionId)  // ? asegurate que en la entidad DestinoTuristico exista esta propiedad
+            b.HasOne(d => d.Region)
+     .WithMany(r => r.DestinosTuristicos)
+     .HasForeignKey(d => d.RegionId)
+     .OnDelete(DeleteBehavior.Restrict)
      .IsRequired();
 
 
@@ -149,9 +150,10 @@ public class ExploraYa1DbContext :
             //     .IsRequired();
             //.OnDelete(DeleteBehavior.Restrict);
 
-            b.HasOne<Pais>()
-     .WithMany()
-     .HasForeignKey(x => x.PaisId)
+            b.HasOne(r => r.Pais)
+     .WithMany(p => p.Regiones)   
+     .HasForeignKey(r => r.PaisId)
+     .OnDelete(DeleteBehavior.Restrict)
      .IsRequired();
 
         });
