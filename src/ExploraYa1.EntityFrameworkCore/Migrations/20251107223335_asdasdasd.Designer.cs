@@ -13,8 +13,8 @@ using Volo.Abp.EntityFrameworkCore;
 namespace ExploraYa1.Migrations
 {
     [DbContext(typeof(ExploraYa1DbContext))]
-    [Migration("20251002022816_DestinosTuristicos2")]
-    partial class DestinosTuristicos2
+    [Migration("20251107223335_asdasdasd")]
+    partial class asdasdasd
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,6 +26,58 @@ namespace ExploraYa1.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("ExploraYa1.Destinos.CalificacionDestino", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Comentario")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)")
+                        .HasColumnName("ConcurrencyStamp");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreationTime");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("CreatorId");
+
+                    b.Property<Guid>("DestinoTuristicoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ExtraProperties")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("ExtraProperties");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("LastModificationTime");
+
+                    b.Property<Guid?>("LastModifierId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("LastModifierId");
+
+                    b.Property<int>("Puntuacion")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AppCalificaciones", (string)null);
+                });
 
             modelBuilder.Entity("ExploraYa1.Destinos.DestinoTuristico", b =>
                 {
@@ -54,9 +106,6 @@ namespace ExploraYa1.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("ExtraProperties");
-
-                    b.Property<Guid>("IdRegion")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ImagenUrl")
                         .IsRequired()
@@ -107,7 +156,7 @@ namespace ExploraYa1.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Pais");
+                    b.ToTable("AppPaises", (string)null);
                 });
 
             modelBuilder.Entity("ExploraYa1.Destinos.Region", b =>
@@ -119,9 +168,6 @@ namespace ExploraYa1.Migrations
                         .IsRequired()
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
-
-                    b.Property<Guid>("IdPais")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
@@ -1912,7 +1958,7 @@ namespace ExploraYa1.Migrations
                     b.HasOne("ExploraYa1.Destinos.Region", "Region")
                         .WithMany("DestinosTuristicos")
                         .HasForeignKey("RegionId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Region");
@@ -1923,7 +1969,7 @@ namespace ExploraYa1.Migrations
                     b.HasOne("ExploraYa1.Destinos.Pais", "Pais")
                         .WithMany("Regiones")
                         .HasForeignKey("PaisId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Pais");

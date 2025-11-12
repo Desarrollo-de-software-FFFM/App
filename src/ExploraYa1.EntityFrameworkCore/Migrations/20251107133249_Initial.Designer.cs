@@ -13,8 +13,8 @@ using Volo.Abp.EntityFrameworkCore;
 namespace ExploraYa1.Migrations
 {
     [DbContext(typeof(ExploraYa1DbContext))]
-    [Migration("20251003164322_Destinosconpaises2.8")]
-    partial class Destinosconpaises28
+    [Migration("20251107133249_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1906,7 +1906,7 @@ namespace ExploraYa1.Migrations
                     b.HasOne("ExploraYa1.Destinos.Region", "Region")
                         .WithMany("DestinosTuristicos")
                         .HasForeignKey("RegionId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Region");
@@ -1917,7 +1917,7 @@ namespace ExploraYa1.Migrations
                     b.HasOne("ExploraYa1.Destinos.Pais", "Pais")
                         .WithMany("Regiones")
                         .HasForeignKey("PaisId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Pais");

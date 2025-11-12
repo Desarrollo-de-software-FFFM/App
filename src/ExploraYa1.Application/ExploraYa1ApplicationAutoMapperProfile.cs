@@ -14,10 +14,11 @@ public class ExploraYa1ApplicationAutoMapperProfile : Profile
 
         CreateMap<DestinoTuristico, DestinoTuristicoDTO>();
         CreateMap<CrearActualizarDestinoDTO, DestinoTuristico>();
-         
-        
-        
-        
-       
+
+        CreateMap<CalificacionDestino, CalificacionDto>()
+            .ForMember(d => d.DestinoTuristicoId, opt => opt.MapFrom(s => s.DestinoTuristicoId));
+
+
+
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.IO;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -16,11 +18,11 @@ class Program
             .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
             .MinimumLevel.Override("Volo.Abp", LogEventLevel.Warning)
 #if DEBUG
-                .MinimumLevel.Override("ExploraYa1", LogEventLevel.Debug)
+            .MinimumLevel.Override("ExploraYa1", LogEventLevel.Debug)
 #else
-                .MinimumLevel.Override("ExploraYa1", LogEventLevel.Information)
+            .MinimumLevel.Override("ExploraYa1", LogEventLevel.Information)
 #endif
-                .Enrich.FromLogContext()
+            .Enrich.FromLogContext()
             .WriteTo.Async(c => c.File("Logs/logs.txt"))
             .WriteTo.Async(c => c.Console())
             .CreateLogger();
@@ -30,10 +32,25 @@ class Program
 
     public static IHostBuilder CreateHostBuilder(string[] args) =>
         Host.CreateDefaultBuilder(args)
+            .ConfigureAppConfiguration((hostingContext, config) =>
+            {
+                // ✅ Obtiene la carpeta donde está el ensamblado del migrador
+                var basePath = Path.GetDirectoryName(typeof(Program).Assembly.Location);
+
+                config.SetBasePath(basePath!);
+                config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+                config.AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", optional: true);
+                config.AddEnvironmentVariables();
+            })
             .AddAppSettingsSecretsJson()
-            .ConfigureLogging((context, logging) => logging.ClearProviders())
+            .ConfigureLogging((context, logging) =>
+            {
+                logging.ClearProviders();
+            })
             .ConfigureServices((hostContext, services) =>
             {
                 services.AddHostedService<DbMigratorHostedService>();
             });
 }
+
+

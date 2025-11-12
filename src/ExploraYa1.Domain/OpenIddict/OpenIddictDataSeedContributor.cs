@@ -69,52 +69,49 @@ public class OpenIddictDataSeedContributor : IDataSeedContributor, ITransientDep
     private async Task CreateApplicationsAsync()
     {
         var commonScopes = new List<string> {
-            OpenIddictConstants.Permissions.Scopes.Address,
-            OpenIddictConstants.Permissions.Scopes.Email,
-            OpenIddictConstants.Permissions.Scopes.Phone,
-            OpenIddictConstants.Permissions.Scopes.Profile,
-            OpenIddictConstants.Permissions.Scopes.Roles,
-            "ExploraYa1"
-        };
+        OpenIddictConstants.Permissions.Scopes.Address,
+        OpenIddictConstants.Permissions.Scopes.Email,
+        OpenIddictConstants.Permissions.Scopes.Phone,
+        OpenIddictConstants.Permissions.Scopes.Profile,
+        OpenIddictConstants.Permissions.Scopes.Roles,
+        "ExploraYa1"
+    };
 
         var configurationSection = _configuration.GetSection("OpenIddict:Applications");
 
+        // =============================================================
+        // ✅ ExploraYa1_App — Cliente público Angular / Postman / Swagger
+        // =============================================================
 
-        //Console Test / Angular Client
-        var consoleAndAngularClientId = configurationSection["ExploraYa1_App:ClientId"];
-        if (!consoleAndAngularClientId.IsNullOrWhiteSpace())
+        var appClientId = configurationSection["ExploraYa1_App:ClientId"];
+        if (!appClientId.IsNullOrWhiteSpace())
         {
-            var consoleAndAngularClientRootUrl = configurationSection["ExploraYa1_App:RootUrl"]?.TrimEnd('/');
+            var appRootUrl = configurationSection["ExploraYa1_App:RootUrl"]?.TrimEnd('/');
+
             await CreateApplicationAsync(
                 applicationType: OpenIddictConstants.ApplicationTypes.Web,
-                name: consoleAndAngularClientId!,
-                type: OpenIddictConstants.ClientTypes.Public,
+                name: appClientId!,
+                type: OpenIddictConstants.ClientTypes.Public,        // ✅ CLIENTE PUBLICO
                 consentType: OpenIddictConstants.ConsentTypes.Implicit,
-                displayName: "Console Test / Angular Application",
-                secret: null,
+                displayName: "ExploraYa1 Angular / Postman Client",
+                secret: null,                                         // ✅ NO SECRET
                 grantTypes: new List<string> {
-                    OpenIddictConstants.GrantTypes.AuthorizationCode,
-                    OpenIddictConstants.GrantTypes.Password,
-                    OpenIddictConstants.GrantTypes.ClientCredentials,
-                    OpenIddictConstants.GrantTypes.RefreshToken,
-                    "LinkLogin",
-                    "Impersonation"
+                OpenIddictConstants.GrantTypes.AuthorizationCode, // ✅ Login normal
+                OpenIddictConstants.GrantTypes.Password,          // ✅ Token desde Postman / Swagger
+                OpenIddictConstants.GrantTypes.RefreshToken       // ✅ Refresh tokens habilitados
                 },
                 scopes: commonScopes,
-                redirectUris: new List<string> { consoleAndAngularClientRootUrl },
-                postLogoutRedirectUris: new List<string> { consoleAndAngularClientRootUrl },
-                clientUri: consoleAndAngularClientRootUrl,
+                redirectUris: new List<string> { appRootUrl },
+                postLogoutRedirectUris: new List<string> { appRootUrl },
+                clientUri: appRootUrl,
                 logoUri: "/images/clients/angular.svg"
             );
         }
 
-        
-        
+        // =============================================================
+        // ✅ Swagger Client
+        // =============================================================
 
-
-
-
-        // Swagger Client
         var swaggerClientId = configurationSection["ExploraYa1_Swagger:ClientId"];
         if (!swaggerClientId.IsNullOrWhiteSpace())
         {
@@ -127,16 +124,19 @@ public class OpenIddictDataSeedContributor : IDataSeedContributor, ITransientDep
                 consentType: OpenIddictConstants.ConsentTypes.Implicit,
                 displayName: "Swagger Application",
                 secret: null,
-                grantTypes: new List<string> { OpenIddictConstants.GrantTypes.AuthorizationCode, },
+                grantTypes: new List<string> {
+                OpenIddictConstants.GrantTypes.AuthorizationCode
+                },
                 scopes: commonScopes,
-                redirectUris: new List<string> { $"{swaggerRootUrl}/swagger/oauth2-redirect.html" },
+                redirectUris: new List<string> {
+                $"{swaggerRootUrl}/swagger/oauth2-redirect.html"
+                },
                 clientUri: swaggerRootUrl.EnsureEndsWith('/') + "swagger",
                 logoUri: "/images/clients/swagger.svg"
             );
         }
-
-
     }
+
 
     private async Task CreateApplicationAsync(
         [NotNull] string applicationType,
