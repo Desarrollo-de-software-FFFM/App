@@ -24,6 +24,58 @@ namespace ExploraYa1.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("ExploraYa1.Destinos.CalificacionDestino", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Comentario")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)")
+                        .HasColumnName("ConcurrencyStamp");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreationTime");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("CreatorId");
+
+                    b.Property<Guid>("DestinoTuristicoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ExtraProperties")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("ExtraProperties");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("LastModificationTime");
+
+                    b.Property<Guid?>("LastModifierId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("LastModifierId");
+
+                    b.Property<int>("Puntuacion")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AppCalificaciones", (string)null);
+                });
+
             modelBuilder.Entity("ExploraYa1.Destinos.DestinoTuristico", b =>
                 {
                     b.Property<Guid>("Id")
@@ -82,14 +134,9 @@ namespace ExploraYa1.Migrations
                     b.Property<Guid>("RegionId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("RegionId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("RegionId");
-
-                    b.HasIndex("RegionId1");
 
                     b.ToTable("AppDestinos", (string)null);
                 });
@@ -127,14 +174,9 @@ namespace ExploraYa1.Migrations
                     b.Property<Guid>("PaisId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("PaisId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("PaisId");
-
-                    b.HasIndex("PaisId1");
 
                     b.ToTable("AppRegiones", (string)null);
                 });
@@ -1910,28 +1952,24 @@ namespace ExploraYa1.Migrations
 
             modelBuilder.Entity("ExploraYa1.Destinos.DestinoTuristico", b =>
                 {
-                    b.HasOne("ExploraYa1.Destinos.Region", null)
-                        .WithMany()
+                    b.HasOne("ExploraYa1.Destinos.Region", "Region")
+                        .WithMany("DestinosTuristicos")
                         .HasForeignKey("RegionId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("ExploraYa1.Destinos.Region", null)
-                        .WithMany("DestinosTuristicos")
-                        .HasForeignKey("RegionId1");
+                    b.Navigation("Region");
                 });
 
             modelBuilder.Entity("ExploraYa1.Destinos.Region", b =>
                 {
-                    b.HasOne("ExploraYa1.Destinos.Pais", null)
-                        .WithMany()
+                    b.HasOne("ExploraYa1.Destinos.Pais", "Pais")
+                        .WithMany("Regiones")
                         .HasForeignKey("PaisId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("ExploraYa1.Destinos.Pais", null)
-                        .WithMany("Regiones")
-                        .HasForeignKey("PaisId1");
+                    b.Navigation("Pais");
                 });
 
             modelBuilder.Entity("Volo.Abp.AuditLogging.AuditLogAction", b =>

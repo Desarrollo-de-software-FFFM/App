@@ -41,7 +41,7 @@ namespace ExploraYa1.Destinos
         {
 
             var paisRepo = GetRequiredService<IRepository<Pais, Guid>>();
-            var pais1 = await paisRepo.InsertAsync(new Pais
+            var pais = await paisRepo.InsertAsync(new Pais
             {
                 Nombre = "Argentina",
 
@@ -52,7 +52,7 @@ namespace ExploraYa1.Destinos
             {
                 Nombre = "Región de test",
                 Descripcion = "Para prueba",
-                PaisId = pais1.Id // o un país que hayas creado
+                PaisId = pais.Id // o un país que hayas creado
             }, autoSave: true);
 
 

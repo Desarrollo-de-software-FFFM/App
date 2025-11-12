@@ -423,6 +423,18 @@ namespace ExploraYa1.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AppPaises",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppPaises", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OpenIddictApplications",
                 columns: table => new
                 {
@@ -722,6 +734,26 @@ namespace ExploraYa1.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AppRegiones",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
+                    PaisId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppRegiones", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AppRegiones_AppPaises_PaisId",
+                        column: x => x.PaisId,
+                        principalTable: "AppPaises",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OpenIddictAuthorizations",
                 columns: table => new
                 {
@@ -767,6 +799,36 @@ namespace ExploraYa1.Migrations
                         principalTable: "AbpEntityChanges",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AppDestinos",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Poblacion = table.Column<int>(type: "int", nullable: false),
+                    Latitud = table.Column<float>(type: "real", nullable: false),
+                    Longuitud = table.Column<float>(type: "real", nullable: false),
+                    ImagenUrl = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    CalificacionGeneral = table.Column<int>(type: "int", nullable: false),
+                    RegionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ExtraProperties = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    LastModificationTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastModifierId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppDestinos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AppDestinos_AppRegiones_RegionId",
+                        column: x => x.RegionId,
+                        principalTable: "AppRegiones",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -1027,6 +1089,16 @@ namespace ExploraYa1.Migrations
                 column: "UserName");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AppDestinos_RegionId",
+                table: "AppDestinos",
+                column: "RegionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppRegiones_PaisId",
+                table: "AppRegiones",
+                column: "PaisId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OpenIddictApplications_ClientId",
                 table: "OpenIddictApplications",
                 column: "ClientId");
@@ -1136,6 +1208,9 @@ namespace ExploraYa1.Migrations
                 name: "AbpUserTokens");
 
             migrationBuilder.DropTable(
+                name: "AppDestinos");
+
+            migrationBuilder.DropTable(
                 name: "OpenIddictScopes");
 
             migrationBuilder.DropTable(
@@ -1157,10 +1232,16 @@ namespace ExploraYa1.Migrations
                 name: "AbpUsers");
 
             migrationBuilder.DropTable(
+                name: "AppRegiones");
+
+            migrationBuilder.DropTable(
                 name: "OpenIddictAuthorizations");
 
             migrationBuilder.DropTable(
                 name: "AbpAuditLogs");
+
+            migrationBuilder.DropTable(
+                name: "AppPaises");
 
             migrationBuilder.DropTable(
                 name: "OpenIddictApplications");

@@ -14,6 +14,7 @@ using Volo.Abp.Identity.EntityFrameworkCore;
 using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.PermissionManagement.EntityFrameworkCore;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
+using Volo.Abp.Users;
 
 namespace ExploraYa1.EntityFrameworkCore;
 
@@ -29,7 +30,7 @@ public class ExploraYa1DbContext :
     public DbSet<Pais> Paises { get; set; }
     public DbSet<Region> Regiones { get; set; }
 
-
+    public DbSet<CalificacionDestino> Opiniones { get; set; }
 
     #region Entities from the modules
 
@@ -56,11 +57,28 @@ public class ExploraYa1DbContext :
 
     #endregion
 
+    private readonly ICurrentUser? _currentUser;
+
+    // Propiedad de instancia usada por el HasQueryFilter (permite cambiar por instancia de DbContext)
+    private Guid? CurrentUserId { get; set; }
+
+    // Constructor principal usado en runtime (inyección de ICurrentUser)
+    public ExploraYa1DbContext(DbContextOptions<ExploraYa1DbContext> options, ICurrentUser currentUser)
+        : base(options)
+    {
+        _currentUser = currentUser;
+        CurrentUserId = _currentUser?.Id;
+    }
+
+    // Constructor adicional para tiempo de diseño / migraciones (IDesignTimeDbContextFactory)
+    // Deja _currentUser nulo y CurrentUserId a null para evitar dependencias en el factory.
     public ExploraYa1DbContext(DbContextOptions<ExploraYa1DbContext> options)
         : base(options)
     {
-
+        _currentUser = null;
+        CurrentUserId = null;
     }
+
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -120,9 +138,10 @@ public class ExploraYa1DbContext :
             //.HasForeignKey(x => x.IdRegion)
             //.IsRequired();
 
-            b.HasOne<Region>()
-     .WithMany()
-     .HasForeignKey(x => x.RegionId)  // ? asegurate que en la entidad DestinoTuristico exista esta propiedad
+            b.HasOne(d => d.Region)
+     .WithMany(r => r.DestinosTuristicos)
+     .HasForeignKey(d => d.RegionId)
+     .OnDelete(DeleteBehavior.Restrict)
      .IsRequired();
 
 
@@ -149,9 +168,10 @@ public class ExploraYa1DbContext :
             //     .IsRequired();
             //.OnDelete(DeleteBehavior.Restrict);
 
-            b.HasOne<Pais>()
-     .WithMany()
-     .HasForeignKey(x => x.PaisId)
+            b.HasOne(r => r.Pais)
+     .WithMany(p => p.Regiones)   
+     .HasForeignKey(r => r.PaisId)
+     .OnDelete(DeleteBehavior.Restrict)
      .IsRequired();
 
         });
@@ -168,7 +188,21 @@ public class ExploraYa1DbContext :
 
 
         });
-        }
+       
+        builder.Entity<CalificacionDestino>(b =>
+        {
+            b.ToTable(ExploraYa1Consts.DbTablePrefix + "Calificaciones", ExploraYa1Consts.DbSchema);
+            b.ConfigureByConvention();
+            b.Property(x => x.Puntuacion).IsRequired();
+            b.Property(x => x.Comentario).IsRequired().HasMaxLength(2000);
+            b.Property(x => x.DestinoTuristicoId).IsRequired();
+            b.Property(x => x.UserId).IsRequired();
+        });
+
+
+
+
+    }
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
