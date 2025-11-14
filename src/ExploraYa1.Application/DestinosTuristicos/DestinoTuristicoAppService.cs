@@ -28,7 +28,7 @@ namespace ExploraYa1.DestinosTuristicos
         {
             _citySearchService = citySearchService;
         }
-        public async Task<CitySearchResultDto> SearchCitiesAsync(CitySearchRequestDto request)
+        public async Task<PagedResultDto<CityDto>> SearchCitiesAsync(CitySearchRequestDto request)
         {
             return await _citySearchService.SearchCitiesAsync(request);
         }

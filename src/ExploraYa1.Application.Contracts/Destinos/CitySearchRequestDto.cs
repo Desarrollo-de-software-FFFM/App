@@ -1,7 +1,13 @@
-﻿namespace ExploraYa1.Destinos
+﻿using Volo.Abp.Application.Dtos; // <-- ¡Importante añadir esto!
+
+namespace ExploraYa1.Destinos
 {
-    public class CitySearchRequestDto
+    // 1. Hereda de PagedAndSortedResultRequestDto
+    public class CitySearchRequestDto : PagedAndSortedResultRequestDto //cambiado para el frontend
     {
         public string PartialName { get; set; }
+
+        // 2. Añade la propiedad que faltaba
+        public string Country { get; set; }
     }
 }

@@ -2,7 +2,7 @@ import type { CrearActualizarDestinoDTO, DestinoTuristicoDTO } from './models';
 import { RestService, Rest } from '@abp/ng.core';
 import type { PagedAndSortedResultRequestDto, PagedResultDto } from '@abp/ng.core';
 import { Injectable } from '@angular/core';
-import type { CitySearchRequestDto, CitySearchResultDto } from '../destinos/models';
+import type { CityDto, CitySearchRequestDto } from '../destinos/models';
 
 @Injectable({
   providedIn: 'root',
@@ -46,7 +46,7 @@ export class DestinoTuristicoService {
   
 
   searchCities = (request: CitySearchRequestDto, config?: Partial<Rest.Config>) =>
-    this.restService.request<any, CitySearchResultDto>({
+    this.restService.request<any, PagedResultDto<CityDto>>({
       method: 'POST',
       url: '/api/app/destino-turistico/search-cities',
       body: request,

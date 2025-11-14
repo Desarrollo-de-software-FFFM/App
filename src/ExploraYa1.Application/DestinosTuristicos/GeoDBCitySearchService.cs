@@ -7,7 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
-using static Volo.Abp.Identity.Settings.IdentitySettingNames;
+using Volo.Abp.Application.Dtos; // <-- CAMBIO: Importar DTOs de ABP
 
 namespace ExploraYa1.DestinosTuristicos
 {
@@ -19,6 +19,7 @@ namespace ExploraYa1.DestinosTuristicos
         {
             _httpClient = httpClient;
 
+            // (Tu configuración de HttpClient está bien, la dejo igual)
             const string rapidApiKey = "41c717a457mshcfe32e8d4cdaf10p198265jsn4230693ac3f1";
             const string rapidApiHost = "wft-geo-db.p.rapidapi.com";
 
@@ -27,28 +28,36 @@ namespace ExploraYa1.DestinosTuristicos
             _httpClient.DefaultRequestHeaders.Add("X-RapidAPI-Host", rapidApiHost);
         }
 
-        public async Task<CitySearchResultDto> SearchCitiesAsync(CitySearchRequestDto request)
+        // <-- CAMBIO: Actualizado el tipo de retorno para que coincida con la interfaz
+        public async Task<PagedResultDto<CityDto>> SearchCitiesAsync(CitySearchRequestDto request)
         {
             if (string.IsNullOrEmpty(request.PartialName))
             {
-                return new CitySearchResultDto { Cities = new List<CityDto>() };
+                // <-- CAMBIO: Devolver un PagedResultDto vacío
+                return new PagedResultDto<CityDto>(0, new List<CityDto>());
             }
 
             try
             {
-                var url = $"https://wft-geo-db.p.rapidapi.com/v1/geo/cities?namePrefix={Uri.EscapeDataString(request.PartialName)}&limit=5";
+                // <-- CAMBIO: Usar los parámetros de paginación en la URL
+                // La API de GeoDb usa 'limit' (MaxResultCount) y 'offset' (SkipCount)
+                var url = $"https://wft-geo-db.p.rapidapi.com/v1/geo/cities" +
+                          $"?namePrefix={Uri.EscapeDataString(request.PartialName)}" +
+                          $"&limit={request.MaxResultCount}" +
+                          $"&offset={request.SkipCount}";
 
                 var response = await _httpClient.GetAsync(url);
 
-                // Si la respuesta es nula, simula un error de red
                 if (response == null)
                     throw new HttpRequestException("No se pudo obtener respuesta del servidor.");
 
                 response.EnsureSuccessStatusCode();
 
                 var json = await response.Content.ReadFromJsonAsync<GeoDbResponse>();
-                if (json?.Data == null)
-                    return new CitySearchResultDto { Cities = new List<CityDto>() };
+
+                // <-- CAMBIO: Comprobar si hay datos o metadata
+                if (json?.Data == null || json.Metadata == null)
+                    return new PagedResultDto<CityDto>(0, new List<CityDto>());
 
                 var cities = json.Data.Select(c => new CityDto
                 {
@@ -58,11 +67,14 @@ namespace ExploraYa1.DestinosTuristicos
                     Longitude = c.Longitude
                 }).ToList();
 
-                return new CitySearchResultDto { Cities = cities };
+                // <-- CAMBIO: Devolver el PagedResultDto con el totalCount de la API
+                return new PagedResultDto<CityDto>(
+                    json.Metadata.TotalCount, // El conteo total de la API
+                    cities                   // Los resultados de la página actual
+                );
             }
             catch (Exception ex)
             {
-                // Lanza la excepción original para que el test la capture correctamente
                 throw;
             }
         }
@@ -70,16 +82,20 @@ namespace ExploraYa1.DestinosTuristicos
         private class GeoDbResponse
         {
             public List<GeoDbCity> Data { get; set; } = new();
+            public GeoDbMetadata Metadata { get; set; } // <-- CAMBIO: Añadir Metadata
+        }
+
+        // <-- CAMBIO: Añadir clase para la Metadata de la API
+        private class GeoDbMetadata
+        {
+            public int TotalCount { get; set; }
         }
 
         private class GeoDbCity
         {
             public string? City { get; set; }
             public string? Country { get; set; }
-            
-           
             public double Latitude { get; set; }
-            
             public double Longitude { get; set; }
         }
     }

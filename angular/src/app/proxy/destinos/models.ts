@@ -1,11 +1,4 @@
-
-export interface CalificacionDto {
-  destinoTuristicoId?: string;
-  userId?: string;
-  puntuacion: number;
-  comentario?: string;
-  creationTime?: string;
-}
+import type { PagedAndSortedResultRequestDto } from '@abp/ng.core';
 
 export interface CityDto {
   name?: string;
@@ -14,16 +7,7 @@ export interface CityDto {
   longitude: number;
 }
 
-export interface CitySearchRequestDto {
+export interface CitySearchRequestDto extends PagedAndSortedResultRequestDto {
   partialName?: string;
-}
-
-export interface CitySearchResultDto {
-  cities: CityDto[];
-}
-
-export interface CrearActualizarCalificacionDTO {
-  destinoTuristicoId: string;
-  puntuacion: number;
-  comentario: string;
+  country?: string;
 }

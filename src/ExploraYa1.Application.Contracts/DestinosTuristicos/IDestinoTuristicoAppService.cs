@@ -18,6 +18,6 @@ namespace ExploraYa1.DestinosTuristicos
         CrearActualizarDestinoDTO>
     {
         // Agregar el método que falta
-        Task<CitySearchResultDto> SearchCitiesAsync(CitySearchRequestDto request);
+        Task<PagedResultDto<CityDto>> SearchCitiesAsync(CitySearchRequestDto request);
     }  
 }
