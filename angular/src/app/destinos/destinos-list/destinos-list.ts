@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PagedResultDto, CoreModule } from '@abp/ng.core';
 import { DestinoTuristicoService } from '../../proxy/destinos-turisticos/destino-turistico.service';
-import { DestinationDto, DestinationSearchInputDto } from '../../proxy/destinations/models';
+import { CityDto, CitySearchRequestDto } from '../../proxy/destinos/models';
 import { finalize } from 'rxjs/operators';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from 'src/environments/environment';
@@ -23,7 +23,7 @@ export class DestinationsListComponent implements OnInit {
   /**
    * Lista de destinos obtenidos de la API
    */
-  destinations: DestinationDto[] = [];
+  destinations: CityDto[] = [];
 
   /**
    * Indica si hay una petición en curso
@@ -37,10 +37,10 @@ export class DestinationsListComponent implements OnInit {
    * - skipCount: Número de registros a saltar (para paginación)
    * - maxResultCount: Número máximo de registros por página
    */
-  searchParams: DestinationSearchInputDto = {
+  searchParams: CitySearchRequestDto = {
     skipCount: 0,
     maxResultCount: 10,
-    query: '',
+    partialName: '',
     country: '',
   };
 
@@ -78,7 +78,7 @@ export class DestinationsListComponent implements OnInit {
         })
       )
       .subscribe({
-        next: (result: PagedResultDto<DestinationDto>) => {
+        next: (result: PagedResultDto<CityDto>) => {
           // Asignar los resultados al array de destinos
           this.destinations = result.items || [];
           this.totalCount = result.totalCount || 0;
@@ -109,7 +109,7 @@ export class DestinationsListComponent implements OnInit {
    * Limpia los filtros de búsqueda y recarga todos los destinos
    */
   clearSearch(): void {
-    this.searchParams.query = '';
+    this.searchParams.partialName = '';
     this.searchParams.country = '';
     this.onSearch();
   }
@@ -153,7 +153,7 @@ export class DestinationsListComponent implements OnInit {
    *
    * @param destination - Destino turístico
    */
-  openInMaps(destination: DestinationDto): void {
+  openInMaps(destination: CityDto): void {
     const url = `https://www.google.com/maps/search/?api=1&query=${destination.latitude},${destination.longitude}`;
     window.open(url, '_blank');
   }
