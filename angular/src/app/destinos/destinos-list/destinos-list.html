@@ -19,7 +19,7 @@
           id="search-query"
           type="text"
           class="form-control"
-          [(ngModel)]="searchParams.query"
+          [(ngModel)]="searchParams.partialName"
           (keyup.enter)="onSearch()"
           [placeholder]="'::Destinations:SearchPlaceholder' | abpLocalization"
         />

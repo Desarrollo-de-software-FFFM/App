@@ -9,12 +9,13 @@ import { finalize } from 'rxjs/operators';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from 'src/environments/environment';
 
+
 @Component({
   selector: 'app-destinations-list',
   standalone: true,
   imports: [CommonModule, FormsModule, CoreModule, NgbPaginationModule],
-  templateUrl: './destinations-list.component.html',
-  styleUrls: ['./destinations-list.component.scss'],
+  templateUrl: './destinos-list.html',
+  styleUrls: ['./destinos-list.scss'],
 })
 export class DestinationsListComponent implements OnInit {
   // Inyección de dependencias usando la nueva sintaxis de inject()
