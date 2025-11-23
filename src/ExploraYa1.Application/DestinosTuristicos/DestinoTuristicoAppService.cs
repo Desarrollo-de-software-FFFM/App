@@ -13,24 +13,35 @@ namespace ExploraYa1.DestinosTuristicos
 {
     public class DestinoTuristicoAppService :
     CrudAppService<
-        DestinoTuristico, //The Book entity
-        DestinoTuristicoDTO, //Used to show books
-        Guid, //Primary key of the book entity
-        PagedAndSortedResultRequestDto, //Used for paging/sorting
-        CrearActualizarDestinoDTO>, //Used to create/update a book
-    IDestinoTuristicoAppService //implement the IBookAppService
+        DestinoTuristico,
+        DestinoTuristicoDTO,
+        Guid,
+        PagedAndSortedResultRequestDto,
+        CrearActualizarDestinoDTO>,
+    IDestinoTuristicoAppService
     {
-        
+        private readonly ICitySearchService _citySearchService;
 
-    private readonly ICitySearchService _citySearchService;
         public DestinoTuristicoAppService(IRepository<DestinoTuristico, Guid> repository, ICitySearchService citySearchService)
             : base(repository)
         {
             _citySearchService = citySearchService;
         }
-        public async Task<CitySearchResultDto> SearchCitiesAsync(CitySearchRequestDto request)
+
+        // 👇 CAMBIO IMPORTANTE AQUÍ 👇
+        // Cambiamos el tipo de retorno a PagedResultDto<CityDto>
+        public async Task<PagedResultDto<CityDto>> SearchCitiesAsync(CitySearchRequestDto request)
         {
-            return await _citySearchService.SearchCitiesAsync(request);
+            // 1. Obtenemos los resultados del servicio externo
+            var result = await _citySearchService.SearchCitiesAsync(request);
+
+            // 2. Convertimos (mapeamos) la respuesta al formato estándar de ABP
+            // Usamos result.Cities.Count como total (o 0 si es nulo)
+            // y devolvemos la lista de ciudades.
+            return new PagedResultDto<CityDto>(
+                result.Cities?.Count ?? 0,
+                result.Cities ?? new List<CityDto>()
+            );
         }
     }
 }
