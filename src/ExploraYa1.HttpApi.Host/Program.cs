@@ -1,10 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using ExploraYa1.Destinos;
+using ExploraYa1.DestinosTuristicos;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
+using System;
+using System.Threading.Tasks;
 
 namespace ExploraYa1;
 
@@ -21,6 +23,7 @@ public class Program
         {
             Log.Information("Starting ExploraYa1.HttpApi.Host.");
             var builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddHttpClient<ICitySearchService, GeoDbCitySearchService>();
             builder.Host
                 .AddAppSettingsSecretsJson()
                 .UseAutofac()
@@ -59,5 +62,17 @@ public class Program
         {
             Log.CloseAndFlush();
         }
+        //var builder = WebApplication.CreateBuilder(args);
+
+        // ... otros servicios como AddControllers(), etc.
+
+        // ESTA LÍNEA ES LA QUE RESUELVE EL PROBLEMA
+        // Le dice a la app: "Cuando alguien pida ICitySearchService,
+        // crea una instancia de GeoDbCitySearchService y dale un HttpClient gestionado".
+        //builder.Services.AddHttpClient<ICitySearchService, GeoDbCitySearchService>();
+
+
+
+
     }
 }
