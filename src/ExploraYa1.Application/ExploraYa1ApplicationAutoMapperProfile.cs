@@ -1,6 +1,7 @@
 using AutoMapper;
 using ExploraYa1.Destinos;
 using ExploraYa1.DestinosTuristicos;
+using ExploraYa1.Experiencias; // <--- Asegúrate de tener este using
 
 namespace ExploraYa1;
 
@@ -12,6 +13,7 @@ public class ExploraYa1ApplicationAutoMapperProfile : Profile
          * Alternatively, you can split your mapping configurations
          * into multiple profile classes for a better organization. */
 
+  
         CreateMap<DestinoTuristico, DestinoTuristicoDTO>();
         CreateMap<CrearActualizarDestinoDTO, DestinoTuristico>();
 
@@ -19,6 +21,8 @@ public class ExploraYa1ApplicationAutoMapperProfile : Profile
             .ForMember(d => d.DestinoTuristicoId, opt => opt.MapFrom(s => s.DestinoTuristicoId));
 
 
+        CreateMap<Experiencia, ExperienciaDto>();
 
+        CreateMap<CrearActualizarExperienciaDto, Experiencia>();
     }
 }

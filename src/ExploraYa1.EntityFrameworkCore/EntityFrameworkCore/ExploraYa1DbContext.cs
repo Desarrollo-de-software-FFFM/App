@@ -1,4 +1,5 @@
 using ExploraYa1.Destinos;
+using ExploraYa1.Experiencias;
 using Microsoft.EntityFrameworkCore;
 using System;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
@@ -32,6 +33,7 @@ public class ExploraYa1DbContext :
 
     public DbSet<CalificacionDestino> Opiniones { get; set; }
 
+    public DbSet<Experiencia> Experiencias { get; set; }
     #region Entities from the modules
 
     /* Notice: We only implemented IIdentityProDbContext 
@@ -199,7 +201,28 @@ public class ExploraYa1DbContext :
             b.Property(x => x.UserId).IsRequired();
         });
 
+        builder.Entity<Experiencia>(b =>
+        {
+            
+            b.ToTable(ExploraYa1Consts.DbTablePrefix + "Experiencias", ExploraYa1Consts.DbSchema);
 
+            
+            b.ConfigureByConvention();
+
+            
+            b.Property(x => x.Comentario)
+                .IsRequired()
+                .HasMaxLength(1000); 
+
+            b.Property(x => x.Valoracion)
+                .IsRequired();
+
+           
+            b.HasOne<DestinoTuristico>()
+                .WithMany() 
+                .HasForeignKey(x => x.DestinoId)
+                .OnDelete(DeleteBehavior.Cascade); 
+        });
 
 
     }
@@ -209,7 +232,7 @@ public class ExploraYa1DbContext :
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseSqlServer("Server=FELIPE-NAVE12;Database=ExploraYa1;Trusted_Connection=True;TrustServerCertificate=True;");
+            optionsBuilder.UseSqlServer("Server=(LocalDb)\\MSSQLLocalDB;Database=ExploraYa1;Trusted_Connection=True;TrustServerCertificate=True;");
         }
     }
     
