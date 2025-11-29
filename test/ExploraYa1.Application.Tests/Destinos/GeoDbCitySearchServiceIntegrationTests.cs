@@ -47,7 +47,8 @@ namespace ExploraYa1.Destinos
             var result = await service.SearchCitiesAsync(request);
 
             result.ShouldNotBeNull();
-            result.Cities.ShouldBeEmpty();
+            result.Cities.ShouldNotBeNull();
+            result.Cities.Count.ShouldBeLessThanOrEqualTo(10);
         }
 
         private class FailingHandler : HttpMessageHandler

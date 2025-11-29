@@ -146,5 +146,54 @@ namespace ExploraYa1.DestinosTuristicos
             public double Latitude { get; set; }
             public double Longitude { get; set; }
         }
+
+        public async Task<CityInformationDto> GetCityDetailsAsync(int cityId)
+        {
+            var url = $"https://wft-geo-db.p.rapidapi.com/v1/geo/cities/{cityId}";
+
+            var response = await _httpClient.GetAsync(url);
+
+            if (response == null)
+                throw new HttpRequestException("No se pudo obtener respuesta del servidor GeoDB.");
+
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadFromJsonAsync<GeoDbDetailResponse>();
+
+            if (json?.Data == null)
+                throw new Exception("No se encontró información de la ciudad.");
+
+            var c = json.Data;
+
+            return new CityInformationDto
+            {
+                Id = c.Id,
+                Name = c.City ?? "",
+                Country = c.Country ?? "",
+                Region = c.Region ?? "",
+                Population = c.Population ?? 0,
+                Latitude = c.Latitude,
+                Longitude = c.Longitude,
+                Timezone = c.Timezone ?? ""
+            };
+        }
+
+        private class GeoDbDetailResponse
+        {
+            public GeoDbDetailCity Data { get; set; } = new();
+        }
+
+        private class GeoDbDetailCity
+        {
+            public int Id { get; set; }
+            public string? City { get; set; }
+            public string? Country { get; set; }
+            public string? Region { get; set; }
+            public int? Population { get; set; }
+            public double Latitude { get; set; }
+            public double Longitude { get; set; }
+            public string? Timezone { get; set; }
+        }
+
     }
 }
