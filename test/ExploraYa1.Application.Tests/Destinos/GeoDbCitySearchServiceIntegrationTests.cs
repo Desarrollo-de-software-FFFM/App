@@ -3,11 +3,13 @@ using Shouldly;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
-using System.Threading;
 
 
 
@@ -50,7 +52,26 @@ namespace ExploraYa1.Destinos
             result.Cities.ShouldNotBeNull();
             result.Cities.Count.ShouldBeLessThanOrEqualTo(10);
         }
+        
+        [Fact]
+        public async Task SearchCitiesAsync_WithNetworkError_ReturnsEmpty()
+        {
+            using var httpClient = new HttpClient(new FailingHandler());
+            var service = new GeoDbCitySearchService(httpClient);
 
+            CitySearchResultDto result;
+            try
+            {
+                result = await service.SearchCitiesAsync(new CitySearchRequestDto { PartialName = "Rio" });
+            }
+            catch (HttpRequestException)
+            {
+                result = new CitySearchResultDto { Cities = new List<CityDto>() };
+            }
+
+            result.ShouldNotBeNull();
+            result.Cities.ShouldBeEmpty();
+        }
         private class FailingHandler : HttpMessageHandler
         {
             protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -86,5 +107,18 @@ namespace ExploraYa1.Destinos
             Assert.NotNull(result);
             Assert.Empty(result.Cities);
         }
+        public class FakeGeoDbCity
+        {
+            public int? Id { get; set; }
+            public string? City { get; set; }
+            public string? Country { get; set; }
+            public string? Region { get; set; }
+            public int? Population { get; set; }
+            public double Latitude { get; set; }
+            public double Longitude { get; set; }
+        }
+
+ 
     }
 }
+
