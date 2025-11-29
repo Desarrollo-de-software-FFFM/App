@@ -7,31 +7,34 @@ using Volo.Abp;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Users;
-using Volo.Abp.Authorization;      
+using Volo.Abp.Authorization;
 using Microsoft.AspNetCore.Authorization;
 
 namespace ExploraYa1.DestinosTuristicos
 {
-    [Authorize] 
+    [Authorize]
     public class FavoritoAppService : ApplicationService, IFavoritoAppService
     {
         private readonly IRepository<Favorito, Guid> _favoritoRepository;
         private readonly IRepository<DestinoTuristico, Guid> _destinoRepository;
+        private readonly ICurrentUser _currentUser;
 
         public FavoritoAppService(
             IRepository<Favorito, Guid> favoritoRepository,
-            IRepository<DestinoTuristico, Guid> destinoRepository)
+            IRepository<DestinoTuristico, Guid> destinoRepository,
+            ICurrentUser currentUser)
         {
             _favoritoRepository = favoritoRepository;
             _destinoRepository = destinoRepository;
+            _currentUser = currentUser;
         }
 
         public virtual async Task<FavoritoDto> AgregarFavoritoAsync(Guid destinoTuristicoId)
         {
-            if (!CurrentUser.IsAuthenticated)
+            if (!_currentUser.IsAuthenticated)
                 throw new AbpAuthorizationException("Debes iniciar sesión para agregar favoritos.");
 
-            var userId = CurrentUser.GetId(); // extensión de ABP
+            var userId = _currentUser.GetId();
 
             var destino = await _destinoRepository.FirstOrDefaultAsync(d => d.Id == destinoTuristicoId);
             if (destino == null)
@@ -57,10 +60,10 @@ namespace ExploraYa1.DestinosTuristicos
 
         public virtual async Task EliminarFavoritoAsync(Guid destinoTuristicoId)
         {
-            if (!CurrentUser.IsAuthenticated)
+            if (!_currentUser.IsAuthenticated)
                 throw new AbpAuthorizationException("Debes iniciar sesión para eliminar favoritos.");
 
-            var userId = CurrentUser.GetId();
+            var userId = _currentUser.GetId();
 
             var favorito = await _favoritoRepository.FirstOrDefaultAsync(f =>
                 f.DestinoTuristicoId == destinoTuristicoId && f.UserId == userId);
@@ -73,10 +76,10 @@ namespace ExploraYa1.DestinosTuristicos
 
         public virtual async Task<List<FavoritoDto>> ObtenerPorUsuarioAsync(Guid usuarioId)
         {
-            if (!CurrentUser.IsAuthenticated)
+            if (!_currentUser.IsAuthenticated)
                 throw new AbpAuthorizationException("Debe estar autenticado para ver sus favoritos.");
 
-            var currentUserId = CurrentUser.GetId();
+            var currentUserId = _currentUser.GetId();
 
             if (currentUserId != usuarioId)
                 throw new AbpAuthorizationException("No tiene permiso para ver los favoritos de otro usuario.");
