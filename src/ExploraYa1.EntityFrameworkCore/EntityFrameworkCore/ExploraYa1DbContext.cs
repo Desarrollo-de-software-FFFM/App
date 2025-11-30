@@ -1,4 +1,5 @@
 using ExploraYa1.Destinos;
+using ExploraYa1.Notificaciones;
 using Microsoft.EntityFrameworkCore;
 using System;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
@@ -31,6 +32,9 @@ public class ExploraYa1DbContext :
     public DbSet<Region> Regiones { get; set; }
 
     public DbSet<CalificacionDestino> Opiniones { get; set; }
+
+    public DbSet<Notificacion> Notificaciones { get; set; }
+
 
     #region Entities from the modules
 
@@ -199,6 +203,16 @@ public class ExploraYa1DbContext :
             b.Property(x => x.UserId).IsRequired();
         });
 
+        builder.Entity<Notificacion>(b =>
+        {
+            b.ToTable("AppNotificaciones");
+
+            b.ConfigureByConvention();
+
+            b.Property(x => x.Titulo).IsRequired().HasMaxLength(200);
+            b.Property(x => x.Mensaje).IsRequired().HasMaxLength(2000);
+            b.Property(x => x.Leida).IsRequired();
+        });
 
 
 
