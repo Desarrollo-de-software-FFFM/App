@@ -1,17 +1,18 @@
-﻿using Volo.Abp.PermissionManagement;
-using Volo.Abp.SettingManagement;
+﻿using ExploraYa1.Destinos;
+using ExploraYa1.DestinosTuristicos;
+using ExploraYa1.OpenIddict;
+using Microsoft.Extensions.DependencyInjection;
+using System.Net.Http;
 using Volo.Abp.Account;
-using Volo.Abp.Identity;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.FeatureManagement;
+using Volo.Abp.Identity;
 using Volo.Abp.Modularity;
-using System.Net.Http;
-using ExploraYa1.Destinos;
-using ExploraYa1.DestinosTuristicos;
-using Microsoft.Extensions.DependencyInjection;
+using Volo.Abp.PermissionManagement;
+using Volo.Abp.SettingManagement;
+
 
 namespace ExploraYa1;
-
 [DependsOn(
     typeof(ExploraYa1DomainModule),
     typeof(ExploraYa1ApplicationContractsModule),
@@ -20,7 +21,8 @@ namespace ExploraYa1;
     typeof(AbpIdentityApplicationModule),
     typeof(AbpAccountApplicationModule),
     typeof(AbpSettingManagementApplicationModule)
-    )]
+    //typeof(AbpOpenIddictApplicationModule)   // <-- AGREGAR ESTO
+)]
 public class ExploraYa1ApplicationModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
@@ -33,5 +35,7 @@ public class ExploraYa1ApplicationModule : AbpModule
         // Registra el servicio HttpClient para GeoDbCitySearchService
          object value = context.Services.AddHttpClient<ICitySearchService, GeoDbCitySearchService>();
            context.Services.AddTransient<ICrearActualizarCalificacion, CrearCalificacionService>();
+        context.Services.AddTransient<OpenIddictDataSeedContributor>();
+
     }
 }
