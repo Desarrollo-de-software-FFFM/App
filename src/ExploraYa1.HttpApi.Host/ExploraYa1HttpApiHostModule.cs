@@ -105,7 +105,7 @@ public class ExploraYa1HttpApiHostModule : AbpModule
             {
                 options.DisableTransportSecurityRequirement = true;
             });
-            
+
             Configure<ForwardedHeadersOptions>(options =>
             {
                 options.ForwardedHeaders = ForwardedHeaders.XForwardedProto;
@@ -189,30 +189,32 @@ public class ExploraYa1HttpApiHostModule : AbpModule
         });
     }
 
-    private static void ConfigureSwagger(ServiceConfigurationContext context,IConfiguration configuration)
+    private static void ConfigureSwagger(ServiceConfigurationContext context, IConfiguration configuration)
     {
         context.Services.AddAbpSwaggerGen(
             options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "ExploraYa1 API", Version = "v1" }); 
-    
+                    Title = "ExploraYa1 API",
+                    Version = "v1"
+                });
+
                 options.DocInclusionPredicate((docName, description) => true);
-                    options.CustomSchemaIds(type => type.FullName);
+                options.CustomSchemaIds(type => type.FullName);
 
-                    // Agregar definición de seguridad 
-                    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                    {
-                        Description = "Ingrese el token JWT en el formato: Bearer { token }", 
-    
+                // Agregar definición de seguridad 
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "Ingrese el token JWT en el formato: Bearer { token }",
+
                     Name = "Authorization",
-                        In = ParameterLocation.Header,
-                        Type = SecuritySchemeType.ApiKey,
-                        Scheme = "Bearer"
-                    });
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
 
-                    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                 {
                     new OpenApiSecurityScheme
@@ -226,8 +228,8 @@ public class ExploraYa1HttpApiHostModule : AbpModule
                     Array.Empty<string>()
                 }
                 });
-                });
-            }
+            });
+    }
 
     private void ConfigureCors(ServiceConfigurationContext context, IConfiguration configuration)
     {
@@ -304,12 +306,15 @@ public class ExploraYa1HttpApiHostModule : AbpModule
         app.UseAbpSerilogEnrichers();
         app.UseConfiguredEndpoints();
     }
+
+    // -------------------------------------------------------------
+    // Forzar ejecución de los DataSeed contributors al iniciar la API
+    // (esto garantiza que OpenIddict cree sus clientes y scopes)
+    // -------------------------------------------------------------
     public override async Task OnPostApplicationInitializationAsync(ApplicationInitializationContext context)
     {
         var dataSeeder = context.ServiceProvider.GetRequiredService<IDataSeeder>();
         await dataSeeder.SeedAsync();
     }
-
-
-
 }
+

@@ -41,6 +41,7 @@ public class ExploraYa1ApplicationModule : AbpModule
 
         // 🔥 REGISTRO CORRECTO DEL DATA SEED CONTRIBUTOR
         context.Services.AddTransient<IDataSeedContributor, OpenIddictDataSeedContributor>();
+
     }
 }
 
