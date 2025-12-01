@@ -3,8 +3,11 @@ using ExploraYa1.DestinosTuristicos;
 using ExploraYa1.OpenIddict;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http;
+using System.Threading.Tasks;
+using Volo.Abp;
 using Volo.Abp.Account;
 using Volo.Abp.AutoMapper;
+using Volo.Abp.Data;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Identity;
 using Volo.Abp.Modularity;
@@ -21,8 +24,9 @@ namespace ExploraYa1;
     typeof(AbpIdentityApplicationModule),
     typeof(AbpAccountApplicationModule),
     typeof(AbpSettingManagementApplicationModule)
-    //typeof(AbpOpenIddictApplicationModule)   // <-- AGREGAR ESTO
+    
 )]
+
 public class ExploraYa1ApplicationModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
@@ -38,4 +42,12 @@ public class ExploraYa1ApplicationModule : AbpModule
         context.Services.AddTransient<OpenIddictDataSeedContributor>();
 
     }
+    public override async Task OnPostApplicationInitializationAsync(ApplicationInitializationContext context)
+    {
+        var dataSeeder = context.ServiceProvider.GetRequiredService<IDataSeeder>();
+        await dataSeeder.SeedAsync();
+    }
+
+
+
 }
