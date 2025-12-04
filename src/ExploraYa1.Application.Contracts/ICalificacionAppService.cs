@@ -12,5 +12,14 @@ namespace ExploraYa1.Destinos
     {
         Task<CalificacionDto> CrearCalificacionAsync(CrearActualizarCalificacionDTO input);
         Task<List<CalificacionDto>> ObtenerPorUsuarioAsync(Guid usuarioId);
+
+        //NUEVAS FIRMAS
+        Task<CalificacionDto> EditarCalificacionAsync(Guid destinoId, CrearActualizarCalificacionDTO input);
+
+        Task EliminarCalificacionAsync(Guid destinoId);
+
+        Task<double> ObtenerPromedioAsync(Guid destinoId);
+
+        Task<List<CalificacionDto>> ListarComentariosAsync(Guid destinoId);
     }
 }
