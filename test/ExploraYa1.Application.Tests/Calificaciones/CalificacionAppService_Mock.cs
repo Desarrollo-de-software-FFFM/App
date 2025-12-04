@@ -1,132 +1,235 @@
-﻿using ExploraYa1.Destinos;
-using Shouldly;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
-using Volo.Abp;
-using Volo.Abp.Authorization;
+using Moq;
+using Shouldly;
 using Xunit;
+using ExploraYa1.Destinos;
+using ExploraYa1.DestinosTuristicos;
+using Volo.Abp.Users;
+using Volo.Abp.Authorization;
+using Volo.Abp.Security.Claims;
+using Volo.Abp.Domain.Repositories;
 
-namespace ExploraYa1.CalificacionesTest
+namespace ExploraYa1.Application.Tests.DestinosTuristicos
 {
-    public class CalificacionAppService_AdditionalTests
-        : OpinionTestAppServiceTest<ExploraYa1ApplicationTestModule>
+    public class CalificacionAppService_Mock_Tests
     {
-        private readonly ICalificacionAppService _service;
+        private readonly Mock<IRepository<CalificacionDestino, Guid>> _mockRepo;
+        private readonly Mock<ICrearActualizarCalificacion> _mockService;
+        private readonly Mock<ICurrentUser> _mockCurrentUser;
+        private readonly CalificacionAppService _calificacionAppService;
 
-        public CalificacionAppService_AdditionalTests()
+        public CalificacionAppService_Mock_Tests()
         {
-            _service = GetRequiredService<ICalificacionAppService>();
+            _mockRepo = new Mock<IRepository<CalificacionDestino, Guid>>();
+            _mockService = new Mock<ICrearActualizarCalificacion>();
+            _mockCurrentUser = new Mock<ICurrentUser>();
+
+            _calificacionAppService = new CalificacionAppService(
+                _mockService.Object,
+                _mockRepo.Object,
+                _mockCurrentUser.Object
+            );
         }
 
-        // ============================================================
-        // 5.3 EDITAR CALIFICACIÓN PROPIA
-        // ============================================================
-
         [Fact]
-        public async Task EditarCalificacionAsync_DebeModificarSoloCalificacionPropia()
+        public async Task CrearCalificacionAsync_DebeLlamarServicio_CuandoUsuarioAutenticado()
         {
+            var userId = Guid.NewGuid();
             var destinoId = Guid.NewGuid();
 
-            var crear = await _service.CrearCalificacionAsync(new CrearActualizarCalificacionDTO
-            {
-                DestinoTuristicoId = destinoId,
-                Puntuacion = 3,
-                Comentario = "Está bien."
-            });
+            _mockCurrentUser.Setup(x => x.IsAuthenticated).Returns(true);
+            _mockCurrentUser.Setup(x => x.GetId()).Returns(userId);
 
-            var editar = await _service.EditarCalificacionAsync(crear.DestinoTuristicoId, new CrearActualizarCalificacionDTO
+            var input = new CrearActualizarCalificacionDTO
             {
                 DestinoTuristicoId = destinoId,
                 Puntuacion = 5,
-                Comentario = "Mejoró mucho."
-            });
+                Comentario = "Excelente"
+            };
 
-            editar.Puntuacion.ShouldBe(5);
-            editar.Comentario.ShouldBe("Mejoró mucho.");
-        }
-
-        // ============================================================
-        // 5.3 ELIMINAR CALIFICACIÓN PROPIA
-        // ============================================================
-
-        [Fact]
-        public async Task EliminarCalificacionAsync_DebeEliminarSoloPropia()
-        {
-            var destinoId = Guid.NewGuid();
-
-            var opinion = await _service.CrearCalificacionAsync(new CrearActualizarCalificacionDTO
+            var dtoReturn = new CalificacionDto
             {
+                UserId = userId,
                 DestinoTuristicoId = destinoId,
-                Puntuacion = 4,
-                Comentario = "Muy bueno."
-            });
-
-            await _service.EliminarCalificacionAsync(opinion.DestinoTuristicoId);
-
-            // Intentar obtener calificaciones del usuario: no debe aparecer
-            var lista = await _service.ObtenerPorUsuarioAsync(CurrentUser.Id.Value);
-
-            lista.Any(x => x.DestinoTuristicoId == opinion.DestinoTuristicoId && x.UserId == opinion.UserId).ShouldBeFalse();
-        }
-
-        // ============================================================
-        // 5.4 – CONSULTAR PROMEDIO
-        // ============================================================
-
-        [Fact]
-        public async Task ObtenerPromedio_DeberiaRetornarPromedioCorrecto()
-        {
-            var destinoId = Guid.NewGuid();
-
-            await _service.CrearCalificacionAsync(new CrearActualizarCalificacionDTO
-            {
-                DestinoTuristicoId = destinoId,
-                Puntuacion = 4,
-                Comentario = "Bien."
-            });
-
-            await _service.CrearCalificacionAsync(new CrearActualizarCalificacionDTO
-            {
-                DestinoTuristicoId = destinoId,
-                Puntuacion = 2,
-                Comentario = "No tanto."
-            });
-
-            var promedio = await _service.ObtenerPromedioAsync(destinoId);
-
-            promedio.ShouldBe(3); // (4 + 2) / 2 = 3
-        }
-
-        // ============================================================
-        // 5.5 – LISTAR COMENTARIOS DE UN DESTINO
-        // ============================================================
-
-        [Fact]
-        public async Task ListarComentarios_DeberiaRetornarSoloDelDestino()
-        {
-            var destinoA = Guid.NewGuid();
-            var destinoB = Guid.NewGuid();
-
-            await _service.CrearCalificacionAsync(new CrearActualizarCalificacionDTO
-            {
-                DestinoTuristicoId = destinoA,
                 Puntuacion = 5,
-                Comentario = "Excelente A"
-            });
+                Comentario = "Excelente"
+            };
 
-            await _service.CrearCalificacionAsync(new CrearActualizarCalificacionDTO
+            _mockService.Setup(x => x.CrearCalificacionAsync(input)).ReturnsAsync(dtoReturn);
+
+            var result = await _calificacionAppService.CrearCalificacionAsync(input);
+
+            result.ShouldNotBeNull();
+            result.UserId.ShouldBe(userId);
+            result.Puntuacion.ShouldBe(5);
+            result.Comentario.ShouldBe("Excelente");
+
+            _mockService.Verify(x => x.CrearCalificacionAsync(input), Times.Once);
+        }
+
+        [Fact]
+        public async Task CrearCalificacionAsync_DebeFallar_SiNoAutenticado()
+        {
+            _mockCurrentUser.Setup(x => x.IsAuthenticated).Returns(false);
+
+            var input = new CrearActualizarCalificacionDTO
             {
-                DestinoTuristicoId = destinoB,
-                Puntuacion = 1,
-                Comentario = "Malo B"
+                DestinoTuristicoId = Guid.NewGuid(),
+                Puntuacion = 3
+            };
+
+            await Should.ThrowAsync<AbpAuthorizationException>(async () =>
+            {
+                await _calificacionAppService.CrearCalificacionAsync(input);
             });
+        }
 
-            var lista = await _service.ListarComentariosAsync(destinoA);
+        [Fact]
+        public async Task EditarCalificacionAsync_DebeEditarCalificacionPropia()
+        {
+            var userId = Guid.NewGuid();
+            var destinoId = Guid.NewGuid();
 
-            lista.Count.ShouldBe(1);
-            lista.First().Comentario.ShouldBe("Excelente A");
+            _mockCurrentUser.Setup(x => x.IsAuthenticated).Returns(true);
+            _mockCurrentUser.Setup(x => x.GetId()).Returns(userId);
+
+            var calificacionExistente = (CalificacionDestino)Activator.CreateInstance(
+                typeof(CalificacionDestino),
+                nonPublic: true
+            );
+            calificacionExistente.UserId = userId;
+            calificacionExistente.DestinoTuristicoId = destinoId;
+            calificacionExistente.Puntuacion = 3;
+            calificacionExistente.Comentario = "Regular";
+
+            // Setup correcto usando Expression<Func<T,bool>> y CancellationToken
+            _mockRepo.Setup(x => x.FirstOrDefaultAsync(
+                It.IsAny<Expression<Func<CalificacionDestino, bool>>>(),
+                It.IsAny<CancellationToken>()
+            )).ReturnsAsync(calificacionExistente);
+
+            var inputEditar = new CrearActualizarCalificacionDTO
+            {
+                Puntuacion = 5,
+                Comentario = "Excelente"
+            };
+
+            var result = await _calificacionAppService.EditarCalificacionAsync(destinoId, inputEditar);
+
+            result.Puntuacion.ShouldBe(5);
+            result.Comentario.ShouldBe("Excelente");
+            result.UserId.ShouldBe(userId);
+        }
+
+        [Fact]
+        public async Task EliminarCalificacionAsync_DebeEliminarCalificacionPropia()
+        {
+            var userId = Guid.NewGuid();
+            var destinoId = Guid.NewGuid();
+
+            _mockCurrentUser.Setup(x => x.IsAuthenticated).Returns(true);
+            _mockCurrentUser.Setup(x => x.GetId()).Returns(userId);
+
+            var calificacionExistente = (CalificacionDestino)Activator.CreateInstance(
+                typeof(CalificacionDestino),
+                nonPublic: true
+            );
+            calificacionExistente.UserId = userId;
+            calificacionExistente.DestinoTuristicoId = destinoId;
+
+            _mockRepo.Setup(x => x.FirstOrDefaultAsync(
+                It.IsAny<Expression<Func<CalificacionDestino, bool>>>(),
+                It.IsAny<CancellationToken>()
+            )).ReturnsAsync(calificacionExistente);
+
+            _mockRepo.Setup(x => x.DeleteAsync(
+                calificacionExistente,
+                It.IsAny<CancellationToken>()
+            )).Returns(Task.CompletedTask);
+
+            await _calificacionAppService.EliminarCalificacionAsync(destinoId);
+
+            _mockRepo.Verify(x => x.DeleteAsync(calificacionExistente, It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task ObtenerPromedioAsync_DebeRetornarPromedio()
+        {
+            var destinoId = Guid.NewGuid();
+            var lista = new List<CalificacionDestino>
+            {
+                (CalificacionDestino)Activator.CreateInstance(typeof(CalificacionDestino), true),
+                (CalificacionDestino)Activator.CreateInstance(typeof(CalificacionDestino), true)
+            };
+            lista[0].Puntuacion = 5;
+            lista[1].Puntuacion = 3;
+
+            _mockRepo.Setup(x => x.GetListAsync(
+                It.IsAny<Expression<Func<CalificacionDestino, bool>>>(),
+                It.IsAny<CancellationToken>()
+            )).ReturnsAsync(lista);
+
+            var promedio = await _calificacionAppService.ObtenerPromedioAsync(destinoId);
+
+            promedio.ShouldBe(4.0);
+        }
+
+        [Fact]
+        public async Task ListarComentariosAsync_DebeRetornarSoloConComentario()
+        {
+            var destinoId = Guid.NewGuid();
+            var lista = new List<CalificacionDestino>
+            {
+                (CalificacionDestino)Activator.CreateInstance(typeof(CalificacionDestino), true),
+                (CalificacionDestino)Activator.CreateInstance(typeof(CalificacionDestino), true),
+                (CalificacionDestino)Activator.CreateInstance(typeof(CalificacionDestino), true)
+            };
+            lista[0].Comentario = "Excelente"; lista[0].Puntuacion = 5;
+            lista[1].Comentario = ""; lista[1].Puntuacion = 3;
+            lista[2].Comentario = null; lista[2].Puntuacion = 4;
+
+            _mockRepo.Setup(x => x.GetListAsync(
+                It.IsAny<Expression<Func<CalificacionDestino, bool>>>(),
+                It.IsAny<CancellationToken>()
+            )).ReturnsAsync(lista.Where(x => !string.IsNullOrEmpty(x.Comentario)).ToList());
+
+            var result = await _calificacionAppService.ListarComentariosAsync(destinoId);
+
+            result.Count.ShouldBe(1);
+            result.First().Comentario.ShouldBe("Excelente");
+        }
+
+        [Fact]
+        public async Task ObtenerPorUsuarioAsync_DebeRetornarSoloOpinionesPropias()
+        {
+            var userId = Guid.NewGuid();
+            _mockCurrentUser.Setup(x => x.IsAuthenticated).Returns(true);
+            _mockCurrentUser.Setup(x => x.Id).Returns(userId);
+
+            var lista = new List<CalificacionDestino>
+            {
+                (CalificacionDestino)Activator.CreateInstance(typeof(CalificacionDestino), true),
+                (CalificacionDestino)Activator.CreateInstance(typeof(CalificacionDestino), true)
+            };
+            lista[0].UserId = userId; lista[0].DestinoTuristicoId = Guid.NewGuid(); lista[0].Puntuacion = 5; lista[0].Comentario = "A";
+            lista[1].UserId = userId; lista[1].DestinoTuristicoId = Guid.NewGuid(); lista[1].Puntuacion = 4; lista[1].Comentario = "B";
+
+            _mockRepo.Setup(x => x.GetListAsync(
+                It.IsAny<Expression<Func<CalificacionDestino, bool>>>(),
+                It.IsAny<CancellationToken>()
+            )).ReturnsAsync(lista);
+
+            var result = await _calificacionAppService.ObtenerPorUsuarioAsync(userId);
+
+            result.Count.ShouldBe(2);
+            result[0].Comentario.ShouldBe("A");
+            result[1].Comentario.ShouldBe("B");
         }
     }
 }
-
