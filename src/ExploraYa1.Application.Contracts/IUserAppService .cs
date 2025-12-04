@@ -14,7 +14,6 @@ namespace ExploraYa1
         Task ChangePasswordAsync(ChangePasswordDto input);
         Task DeleteMyAccountAsync();
         Task<UserProfileDto> GetPublicProfileAsync(Guid userId);
-        Task UpdateUserProfileAsync(UpdateUserProfileDto input);
 
     }
 }
