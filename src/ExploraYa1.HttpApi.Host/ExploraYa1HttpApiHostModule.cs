@@ -24,6 +24,7 @@ using Volo.Abp.Account;
 using Volo.Abp.Account.Web;
 using Volo.Abp.AspNetCore.MultiTenancy;
 using Volo.Abp.AspNetCore.Mvc;
+using Volo.Abp.AspNetCore.Mvc.AntiForgery;
 using Volo.Abp.AspNetCore.Mvc.UI.Bundling;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite.Bundling;
@@ -86,7 +87,15 @@ public class ExploraYa1HttpApiHostModule : AbpModule
                 serverBuilder.SetIssuer(new Uri(configuration["AuthServer:Authority"]!));
             });
         }
+        Configure<AbpAntiForgeryOptions>(options =>
+        {
+            options.AutoValidate = false;
+        });
+
+
     }
+
+
 
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
