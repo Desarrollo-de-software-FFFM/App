@@ -13,7 +13,6 @@ namespace ExploraYa1.Notificaciones
 
         Task MarcarLeidaAsync(Guid id);
         Task MarcarNoLeidaAsync(Guid id);
-
         Task CrearNotificacionCambioDestinoAsync(Guid destinoId, string detalle);
     }
 
