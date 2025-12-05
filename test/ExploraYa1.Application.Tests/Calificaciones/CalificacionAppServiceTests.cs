@@ -1,15 +1,19 @@
-﻿using ExploraYa1.Destinos;
+﻿using ExploraYa1;
+using ExploraYa1.Destinos;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Shouldly;
 using System;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Authorization;
+using Volo.Abp.EntityFrameworkCore;
+using Volo.Abp.EventBus.Distributed;
 using Volo.Abp.Modularity;
 using Volo.Abp.Testing;
 using Volo.Abp.Users;
 using Xunit;
-using ExploraYa1;
 
 namespace ExploraYa1.CalificacionesTest
 {
@@ -40,7 +44,7 @@ namespace ExploraYa1.CalificacionesTest
             result.ShouldNotBeNull();
             result.DestinoTuristicoId.ShouldBe(input.DestinoTuristicoId);
             result.Puntuacion.ShouldBe(input.Puntuacion);
-            ((int)result.Puntuacion).ShouldBeInRange(1,5);
+            ((int)result.Puntuacion).ShouldBeInRange(1, 5);
             result.Comentario.ShouldBe(input.Comentario);
         }
 
@@ -48,7 +52,6 @@ namespace ExploraYa1.CalificacionesTest
         public async Task CrearOpinionAsync_NoDebePermitirDuplicados()
         {
             var destinoId = Guid.NewGuid();
-
             var input = new CrearActualizarCalificacionDTO
             {
                 DestinoTuristicoId = destinoId,
@@ -65,11 +68,9 @@ namespace ExploraYa1.CalificacionesTest
         [Fact]
         public async Task Debe_RespetarFiltroPorUsuario_Y_RequerirAutenticacion()
         {
-            // Requisito 1: Requerir Autenticación (se verifica al inicio)
             CurrentUser.IsAuthenticated.ShouldBeTrue();
 
             var destinoId = Guid.NewGuid();
-
             var input = new CrearActualizarCalificacionDTO
             {
                 DestinoTuristicoId = destinoId,
@@ -79,29 +80,21 @@ namespace ExploraYa1.CalificacionesTest
 
             var opinion = await _opinionService.CrearCalificacionAsync(input);
 
-         
-            
-
-            // 🔸 Simular un contexto sin autenticación
             var currentUserMock = GetRequiredService<ICurrentUser>();
             currentUserMock.IsAuthenticated.Returns(false);
             currentUserMock.Id.Returns((Guid?)null);
 
-            // Verificar que al intentar la operación sin autenticación, se lance la excepción de autorización
             await Should.ThrowAsync<AbpAuthorizationException>(
                 async () => await _opinionService.ObtenerPorUsuarioAsync(Guid.NewGuid())
             );
         }
 
-
-        //Asegurar que el endpoint de crear una opinion falla con 401 si no se provee token
-
         [Fact]
         public async Task CrearOpinionAsync_DebeFallarCon401SiNoSeProveeToken()
         {
-            // Simular un contexto sin autenticación
             CurrentUser.IsAuthenticated.Returns(false);
             CurrentUser.Id.Returns((Guid?)null);
+
             var input = new CrearActualizarCalificacionDTO
             {
                 DestinoTuristicoId = Guid.NewGuid(),
@@ -109,14 +102,79 @@ namespace ExploraYa1.CalificacionesTest
                 Comentario = "No me gustó mucho."
             };
 
-            // Verificar que al intentar crear una opinión sin autenticación, se lance la excepción de autorización de ABP.
             await Should.ThrowAsync<AbpAuthorizationException>(
                 async () => await _opinionService.CrearCalificacionAsync(input)
             );
-
-
-
         }
 
+        [Fact]
+        public async Task EditarCalificacionAsync_DebeEditarCalificacionPropia()
+        {
+            var destinoId = Guid.NewGuid();
+            var input = new CrearActualizarCalificacionDTO
+            {
+                DestinoTuristicoId = destinoId,
+                Puntuacion = 3,
+                Comentario = "Correcto."
+            };
+            var opinion = await _opinionService.CrearCalificacionAsync(input);
+
+            var inputEditar = new CrearActualizarCalificacionDTO
+            {
+                Puntuacion = 5,
+                Comentario = "Excelente."
+            };
+            var resultadoEditar = await _opinionService.EditarCalificacionAsync(destinoId, inputEditar);
+
+            resultadoEditar.Puntuacion.ShouldBe(5);
+            resultadoEditar.Comentario.ShouldBe("Excelente.");
+            resultadoEditar.UserId.ShouldBe(CurrentUser.Id.Value);
+        }
+
+        [Fact]
+        public async Task EliminarCalificacionAsync_DebeEliminarCalificacionPropia()
+        {
+            var destinoId = Guid.NewGuid();
+            var input = new CrearActualizarCalificacionDTO
+            {
+                DestinoTuristicoId = destinoId,
+                Puntuacion = 4,
+                Comentario = "Bien."
+            };
+            await _opinionService.CrearCalificacionAsync(input);
+
+            await _opinionService.EliminarCalificacionAsync(destinoId);
+
+            var opiniones = await _opinionService.ObtenerPorUsuarioAsync(CurrentUser.Id.Value);
+            opiniones.ShouldNotContain(op => op.DestinoTuristicoId == destinoId);
+        }
+
+        [Fact]
+        public async Task ObtenerPromedioAsync_DebeRetornarPromedioCorrecto()
+        {
+            var destinoId = Guid.NewGuid();
+
+            await _opinionService.CrearCalificacionAsync(new CrearActualizarCalificacionDTO { DestinoTuristicoId = destinoId, Puntuacion = 5, Comentario = "A" });
+            await _opinionService.CrearCalificacionAsync(new CrearActualizarCalificacionDTO { DestinoTuristicoId = destinoId, Puntuacion = 3, Comentario = "B" });
+
+            var promedio = await _opinionService.ObtenerPromedioAsync(destinoId);
+
+            promedio.ShouldBe(4.0);
+        }
+
+        [Fact]
+        public async Task ListarComentariosAsync_DebeRetornarSoloComentariosNoVacios()
+        {
+            var destinoId = Guid.NewGuid();
+
+            await _opinionService.CrearCalificacionAsync(new CrearActualizarCalificacionDTO { DestinoTuristicoId = destinoId, Puntuacion = 5, Comentario = "Excelente" });
+            await _opinionService.CrearCalificacionAsync(new CrearActualizarCalificacionDTO { DestinoTuristicoId = destinoId, Puntuacion = 3, Comentario = "" });
+            await _opinionService.CrearCalificacionAsync(new CrearActualizarCalificacionDTO { DestinoTuristicoId = destinoId, Puntuacion = 4, Comentario = null });
+
+            var comentarios = await _opinionService.ListarComentariosAsync(destinoId);
+
+            comentarios.Count.ShouldBe(1);
+            comentarios[0].Comentario.ShouldBe("Excelente");
+        }
     }
 }
