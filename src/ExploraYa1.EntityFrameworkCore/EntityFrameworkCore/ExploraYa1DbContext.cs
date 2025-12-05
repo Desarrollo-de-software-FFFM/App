@@ -1,4 +1,5 @@
 using ExploraYa1.Destinos;
+using ExploraYa1.UserProfiles;
 using Microsoft.EntityFrameworkCore;
 using System;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
@@ -31,6 +32,8 @@ public class ExploraYa1DbContext :
     public DbSet<Region> Regiones { get; set; }
 
     public DbSet<CalificacionDestino> Opiniones { get; set; }
+
+    public DbSet<UserProfile> UserProfiles { get; set; }
 
     #region Entities from the modules
 
@@ -198,6 +201,26 @@ public class ExploraYa1DbContext :
             b.Property(x => x.DestinoTuristicoId).IsRequired();
             b.Property(x => x.UserId).IsRequired();
         });
+
+        {
+            base.OnModelCreating(builder);
+
+            // 2. Mapea la entidad
+            builder.Entity<UserProfile>(b =>
+            {
+                b.ToTable(ExploraYa1Consts.DbTablePrefix + "UserProfiles",
+                          ExploraYa1Consts.DbSchema);
+
+                b.ConfigureByConvention(); // Configuración estándar de ABP
+
+                // Añade un índice único para UserId para asegurar 1:1 con IdentityUser
+                b.HasIndex(x => x.UserId).IsUnique();
+            });
+
+            // ... otros mapeos ...
+        }
+
+
 
 
 
