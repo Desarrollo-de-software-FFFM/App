@@ -13,6 +13,8 @@ using Volo.Abp.Modularity;
 using Volo.Abp.PermissionManagement;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.OpenIddict;
+using ExploraYa1.EntityFrameworkCore;
+
 
 namespace ExploraYa1;
 
@@ -23,8 +25,9 @@ namespace ExploraYa1;
     typeof(AbpFeatureManagementApplicationModule),
     typeof(AbpIdentityApplicationModule),
     typeof(AbpAccountApplicationModule),
-    typeof(AbpSettingManagementApplicationModule)
-    
+    typeof(AbpSettingManagementApplicationModule),
+    typeof(ExploraYa1EntityFrameworkCoreModule)
+
 )]
 public class ExploraYa1ApplicationModule : AbpModule
 {

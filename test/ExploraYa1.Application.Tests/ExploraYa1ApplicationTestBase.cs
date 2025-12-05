@@ -7,4 +7,5 @@ public abstract class ExploraYa1ApplicationTestBase<TStartupModule> : ExploraYa1
     where TStartupModule : IAbpModule
 {
     protected ICurrentUser CurrentUser => GetRequiredService<ICurrentUser>();
+    
 }
