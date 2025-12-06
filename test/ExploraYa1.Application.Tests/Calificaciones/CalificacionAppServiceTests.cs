@@ -11,6 +11,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Authorization;
+using Volo.Abp.Domain.Repositories;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.EventBus.Distributed;
 using Volo.Abp.Modularity;
@@ -158,39 +159,45 @@ namespace ExploraYa1.CalificacionesTest
         }
 
         [Fact]
-        public async Task ObtenerPromedioAsync_DebeRetornarPromedioCorrecto()
+        public async Task ObtenerPromedioAsync_DebeRetornarPromedioCorrecto_ConRepositorio()
         {
             var destinoId = Guid.NewGuid();
-
             var usuarios = new[] { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };
             var puntuaciones = new[] { 4, 5, 3 };
 
-            // ⚡ Crear un scope de DI para mantener el DbContext vivo durante todo el test
-            using (var scope = ServiceProvider.CreateScope())
+            // Obtener el repositorio directamente
+            var repo = ServiceProvider.GetRequiredService<IRepository<CalificacionDestino, Guid>>();
+
+            for (int i = 0; i < usuarios.Length; i++)
             {
-                var calificacionService = scope.ServiceProvider.GetRequiredService<CalificacionAppService>();
+                // Crear instancia usando reflection para usar constructor protegido
+                var calificacion = (CalificacionDestino)Activator.CreateInstance(
+                    typeof(CalificacionDestino),
+                    nonPublic: true
+                );
 
-                for (int i = 0; i < usuarios.Length; i++)
-                {
-                    // Cambiar el usuario actual en la misma instancia del servicio
-                    LoginAs(usuarios[i]);
+                // Asignar propiedades con reflection
+                typeof(CalificacionDestino).GetProperty("UserId").SetValue(calificacion, usuarios[i]);
+                typeof(CalificacionDestino).GetProperty("DestinoTuristicoId").SetValue(calificacion, destinoId);
+                typeof(CalificacionDestino).GetProperty("Puntuacion").SetValue(calificacion, puntuaciones[i]);
+                typeof(CalificacionDestino).GetProperty("Comentario").SetValue(calificacion, $"Calificación {i + 1}");
 
-                    var input = new CrearActualizarCalificacionDTO
-                    {
-                        DestinoTuristicoId = destinoId,
-                        Puntuacion = puntuaciones[i],
-                        Comentario = $"Calificación {i + 1}"
-                    };
-
-                    await calificacionService.CrearCalificacionAsync(input);
-                }
-
-                // Calcular promedio usando la misma instancia dentro del scope
-                var promedio = await calificacionService.ObtenerPromedioAsync(destinoId);
-
-                promedio.ShouldBe(puntuaciones.Average());
+                // Insertar directamente en el repositorio y guardar cambios
+                await repo.InsertAsync(calificacion, autoSave: true);
             }
+
+            // Obtener el servicio
+            var calificacionService = ServiceProvider.GetRequiredService<CalificacionAppService>();
+
+            // Calcular promedio usando el servicio
+            var promedio = await calificacionService.ObtenerPromedioAsync(destinoId);
+
+            // Verificar que el promedio es correcto
+            promedio.ShouldBe(puntuaciones.Average());
         }
+
+
+
 
 
 
