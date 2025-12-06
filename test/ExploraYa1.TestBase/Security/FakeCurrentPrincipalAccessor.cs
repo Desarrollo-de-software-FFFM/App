@@ -1,26 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Security.Claims;
 
-namespace ExploraYa1.Security;
-
-[Dependency(ReplaceServices = true)]
-public class FakeCurrentPrincipalAccessor : ThreadCurrentPrincipalAccessor
+namespace ExploraYa1.CalificacionesTest
 {
-    protected override ClaimsPrincipal GetClaimsPrincipal()
+    [Dependency(ReplaceServices = true)]
+    public class FakeCurrentPrincipalAccessor : ThreadCurrentPrincipalAccessor
     {
-        return GetPrincipal();
-    }
+        private ClaimsPrincipal _principal;
 
-    private ClaimsPrincipal GetPrincipal()
-    {
-        return new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
+        /// <summary>
+        /// Establece un ClaimsPrincipal explícito (usuario autenticado o no autenticado)
+        /// </summary>
+        public void SetPrincipal(ClaimsPrincipal principal)
         {
-            new Claim(AbpClaimTypes.UserId, "2e701e62-0953-4dd3-910b-dc6cc93ccb0d"),
-            new Claim(AbpClaimTypes.UserName, "admin"),
-            new Claim(AbpClaimTypes.Email, "admin@abp.io")
-        }));
+            _principal = principal;
+        }
+
+        /// <summary>
+        /// Devuelve exactamente el principal seteado, o un principal no autenticado si es null
+        /// </summary>
+        protected override ClaimsPrincipal GetClaimsPrincipal()
+        {
+            // Si no hay principal seteado, devolver siempre usuario NO autenticado
+            return _principal ?? new ClaimsPrincipal(new ClaimsIdentity());
+        }
     }
 }

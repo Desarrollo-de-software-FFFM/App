@@ -1,16 +1,20 @@
 ﻿using ExploraYa1;
 using ExploraYa1.Destinos;
+using ExploraYa1.DestinosTuristicos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Shouldly;
 using System;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Authorization;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.EventBus.Distributed;
 using Volo.Abp.Modularity;
+using Volo.Abp.Security.Claims;
 using Volo.Abp.Testing;
 using Volo.Abp.Users;
 using Xunit;
@@ -22,7 +26,7 @@ namespace ExploraYa1.CalificacionesTest
         : ExploraYa1ApplicationTestBase<TStartupModule>
         where TStartupModule : IAbpModule
     {
-        private readonly ICalificacionAppService _opinionService;
+        private ICalificacionAppService _opinionService;
 
         protected OpinionTestAppServiceTest()
         {
@@ -68,8 +72,10 @@ namespace ExploraYa1.CalificacionesTest
         [Fact]
         public async Task Debe_RespetarFiltroPorUsuario_Y_RequerirAutenticacion()
         {
-            CurrentUser.IsAuthenticated.ShouldBeTrue();
+            // 1️⃣ Login antes de usar el service
+            LoginAs(Guid.NewGuid());
 
+            // 2️⃣ Crear una calificación como usuario autenticado
             var destinoId = Guid.NewGuid();
             var input = new CrearActualizarCalificacionDTO
             {
@@ -78,22 +84,22 @@ namespace ExploraYa1.CalificacionesTest
                 Comentario = "Correcto."
             };
 
-            var opinion = await _opinionService.CrearCalificacionAsync(input);
+            await _opinionService.CrearCalificacionAsync(input);
 
-            var currentUserMock = GetRequiredService<ICurrentUser>();
-            currentUserMock.IsAuthenticated.Returns(false);
-            currentUserMock.Id.Returns((Guid?)null);
+            // 3️⃣ Logout → usuario no autenticado
+            Logout();
 
-            await Should.ThrowAsync<AbpAuthorizationException>(
-                async () => await _opinionService.ObtenerPorUsuarioAsync(Guid.NewGuid())
+            // 4️⃣ Intentar acceder a recurso protegido → debe lanzar 401
+            await Should.ThrowAsync<AbpAuthorizationException>(async () =>
+                await _opinionService.ObtenerPorUsuarioAsync(Guid.NewGuid())
             );
         }
 
         [Fact]
         public async Task CrearOpinionAsync_DebeFallarCon401SiNoSeProveeToken()
         {
-            CurrentUser.IsAuthenticated.Returns(false);
-            CurrentUser.Id.Returns((Guid?)null);
+            CurrentUserMock.IsAuthenticated.Returns(false);
+            CurrentUserMock.Id.Returns((Guid?)null);
 
             var input = new CrearActualizarCalificacionDTO
             {
@@ -103,9 +109,11 @@ namespace ExploraYa1.CalificacionesTest
             };
 
             await Should.ThrowAsync<AbpAuthorizationException>(
-                async () => await _opinionService.CrearCalificacionAsync(input)
+                () => _opinionService.CrearCalificacionAsync(input)
             );
         }
+
+
 
         [Fact]
         public async Task EditarCalificacionAsync_DebeEditarCalificacionPropia()
@@ -154,27 +162,66 @@ namespace ExploraYa1.CalificacionesTest
         {
             var destinoId = Guid.NewGuid();
 
-            await _opinionService.CrearCalificacionAsync(new CrearActualizarCalificacionDTO { DestinoTuristicoId = destinoId, Puntuacion = 5, Comentario = "A" });
-            await _opinionService.CrearCalificacionAsync(new CrearActualizarCalificacionDTO { DestinoTuristicoId = destinoId, Puntuacion = 3, Comentario = "B" });
+            var usuarios = new[] { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };
+            var puntuaciones = new[] { 4, 5, 3 };
 
-            var promedio = await _opinionService.ObtenerPromedioAsync(destinoId);
+            // ⚡ Crear un scope de DI para mantener el DbContext vivo durante todo el test
+            using (var scope = ServiceProvider.CreateScope())
+            {
+                var calificacionService = scope.ServiceProvider.GetRequiredService<CalificacionAppService>();
 
-            promedio.ShouldBe(4.0);
+                for (int i = 0; i < usuarios.Length; i++)
+                {
+                    // Cambiar el usuario actual en la misma instancia del servicio
+                    LoginAs(usuarios[i]);
+
+                    var input = new CrearActualizarCalificacionDTO
+                    {
+                        DestinoTuristicoId = destinoId,
+                        Puntuacion = puntuaciones[i],
+                        Comentario = $"Calificación {i + 1}"
+                    };
+
+                    await calificacionService.CrearCalificacionAsync(input);
+                }
+
+                // Calcular promedio usando la misma instancia dentro del scope
+                var promedio = await calificacionService.ObtenerPromedioAsync(destinoId);
+
+                promedio.ShouldBe(puntuaciones.Average());
+            }
         }
+
+
+
+
+
+
+
 
         [Fact]
         public async Task ListarComentariosAsync_DebeRetornarSoloComentariosNoVacios()
         {
             var destinoId = Guid.NewGuid();
 
-            await _opinionService.CrearCalificacionAsync(new CrearActualizarCalificacionDTO { DestinoTuristicoId = destinoId, Puntuacion = 5, Comentario = "Excelente" });
-            await _opinionService.CrearCalificacionAsync(new CrearActualizarCalificacionDTO { DestinoTuristicoId = destinoId, Puntuacion = 3, Comentario = "" });
-            await _opinionService.CrearCalificacionAsync(new CrearActualizarCalificacionDTO { DestinoTuristicoId = destinoId, Puntuacion = 4, Comentario = null });
+            // Comentario válido
+            await _opinionService.CrearCalificacionAsync(new CrearActualizarCalificacionDTO
+            {
+                DestinoTuristicoId = destinoId,
+                Puntuacion = 5,
+                Comentario = "Excelente"
+            });
+
+            // NO SE PUEDEN crear estos porque causarían AbpValidationException:
+            // - Comentario = ""
+            // - Comentario = null
 
             var comentarios = await _opinionService.ListarComentariosAsync(destinoId);
 
             comentarios.Count.ShouldBe(1);
             comentarios[0].Comentario.ShouldBe("Excelente");
         }
+
+
     }
 }

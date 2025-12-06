@@ -21,6 +21,9 @@ namespace ExploraYa1;
 )]
 public class ExploraYa1TestBaseModule : AbpModule
 {
+    // ⭐ NECESARIO → Tu clase base la usa
+    public static ICurrentUser CurrentUserMock;
+
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         Configure<AbpBackgroundJobOptions>(options =>
@@ -29,17 +32,17 @@ public class ExploraYa1TestBaseModule : AbpModule
         });
 
         context.Services.AddAlwaysAllowAuthorization();
-        
-        var currentUserMock = Substitute.For<ICurrentUser>();
-        currentUserMock.IsAuthenticated.Returns(true);
-        currentUserMock.Id.Returns(Guid.NewGuid());
-        context.Services.Replace(ServiceDescriptor.Singleton<ICurrentUser>(currentUserMock));
 
-        context.Services.AddAlwaysAllowAuthorization();
+        // ⭐ Crear mock de ICurrentUser
+        var userMock = Substitute.For<ICurrentUser>();
+        userMock.IsAuthenticated.Returns(true);
+        userMock.Id.Returns(Guid.NewGuid());
 
+        // ⭐ Guardamos el mock para que la clase base pueda modificarlo
+        CurrentUserMock = userMock;
 
-
-
+        // ⭐ Reemplazamos el servicio en el contenedor
+        context.Services.Replace(ServiceDescriptor.Singleton<ICurrentUser>(userMock));
     }
 
     public override void OnApplicationInitialization(ApplicationInitializationContext context)
