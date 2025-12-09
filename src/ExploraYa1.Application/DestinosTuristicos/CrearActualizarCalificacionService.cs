@@ -41,8 +41,8 @@ namespace ExploraYa1.DestinosTuristicos
             await _opinionRepository.InsertAsync(opinion, autoSave: true);
 
             return new CalificacionDto
-            {
-                
+            { 
+                Id = opinion.Id,
                 DestinoTuristicoId = opinion.DestinoTuristicoId,
                 UserId = opinion.UserId,
                 Puntuacion = opinion.Puntuacion,

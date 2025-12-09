@@ -4,23 +4,25 @@ using ExploraYa1.DestinosTuristicos;
 using ExploraYa1.Usuarios;
 using Volo.Abp.Identity;
 
-namespace ExploraYa1;
-
-public class ExploraYa1ApplicationAutoMapperProfile : Profile
+namespace ExploraYa1
 {
-    public ExploraYa1ApplicationAutoMapperProfile()
+    public class ExploraYa1ApplicationAutoMapperProfile : Profile
     {
-        /* You can configure your AutoMapper mapping configuration here.
-         * Alternatively, you can split your mapping configurations
-         * into multiple profile classes for a better organization. */
+        public ExploraYa1ApplicationAutoMapperProfile()
+        {
+            /* Configuración de AutoMapper */
 
-        CreateMap<DestinoTuristico, DestinoTuristicoDTO>();
-        CreateMap<CrearActualizarDestinoDTO, DestinoTuristico>();
+            // Destinos turísticos
+            CreateMap<DestinoTuristico, DestinoTuristicoDTO>();
+            CreateMap<CrearActualizarDestinoDTO, DestinoTuristico>();
 
-        CreateMap<CalificacionDestino, CalificacionDto>()
-            .ForMember(d => d.DestinoTuristicoId, opt => opt.MapFrom(s => s.DestinoTuristicoId));
-        CreateMap<IdentityUser, UserProfileDto>();
+            // Calificaciones
+            CreateMap<CalificacionDestino, CalificacionDto>();
+            //.ForMember(d => d.DestinoTuristicoId, opt => opt.MapFrom(s => s.DestinoTuristicoId));
+            // Lo comento porque si se deja el CreateMap<CalificacionDestino, CalificacionDto>() ya mapea automaticamente todas las propiedades que coinciden en nombre
 
-
+            // Usuarios
+            CreateMap<IdentityUser, UserProfileDto>();
+        }
     }
 }
