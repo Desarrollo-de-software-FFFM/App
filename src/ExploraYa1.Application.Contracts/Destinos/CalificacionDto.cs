@@ -5,7 +5,7 @@ namespace ExploraYa1.Destinos
 {
     public class CalificacionDto
     {
-       
+        public Guid Id { get; set; }
         public Guid DestinoTuristicoId { get; set; }
         public Guid UserId { get; set; }
         public int Puntuacion { get; set; }

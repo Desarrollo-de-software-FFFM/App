@@ -15,54 +15,47 @@ namespace ExploraYa1.DestinosTuristicos
     [Authorize]
     public class CalificacionAppService : ApplicationService, ICalificacionAppService
     {
-        private readonly ICrearActualizarCalificacion _crearOpinionService;
         private readonly IRepository<CalificacionDestino, Guid> _opinionRepository;
         private readonly ICurrentUser _currentUser;
 
         public CalificacionAppService(
-            ICrearActualizarCalificacion crearOpinionService,
             IRepository<CalificacionDestino, Guid> opinionRepository,
             ICurrentUser currentUser)
         {
-            _crearOpinionService = crearOpinionService;
             _opinionRepository = opinionRepository;
             _currentUser = currentUser;
         }
 
-
+        // ------------------- 5.1 Crear calificación -------------------
         public async Task<CalificacionDto> CrearCalificacionAsync(CrearActualizarCalificacionDTO input)
         {
-            return await _crearOpinionService.CrearCalificacionAsync(input);
+            var calificacion = new CalificacionDestino(
+                input.DestinoTuristicoId,
+                _currentUser.Id.Value,
+                input.Puntuacion,
+                input.Comentario ?? string.Empty
+            );
+
+            await _opinionRepository.InsertAsync(calificacion, autoSave: true);
+
+            return ObjectMapper.Map<CalificacionDestino, CalificacionDto>(calificacion);
         }
 
+        // ------------------- Obtener calificaciones por usuario -------------------
         public async Task<List<CalificacionDto>> ObtenerPorUsuarioAsync(Guid usuarioId)
         {
-            // 1️⃣ Verificar autenticación
             if (!_currentUser.IsAuthenticated)
-            {
                 throw new AbpAuthorizationException("Debe estar autenticado para ver sus opiniones.");
-            }
 
-            // 2️⃣ Validar que solo consulte su propia información
             if (_currentUser.Id != usuarioId)
-            {
                 throw new AbpAuthorizationException("No tiene permiso para ver las opiniones de otro usuario.");
-            }
 
-            // 3️⃣ Obtener opiniones filtradas por usuario
             var opiniones = await _opinionRepository.GetListAsync(o => o.UserId == usuarioId);
 
-            // 4️⃣ Mapearlas al DTO
-            return opiniones.Select(o => new CalificacionDto
-            {
-
-                UserId = o.UserId,
-                DestinoTuristicoId = o.DestinoTuristicoId,
-                Comentario = o.Comentario,
-                Puntuacion = o.Puntuacion
-            }).ToList();
+            return ObjectMapper.Map<List<CalificacionDestino>, List<CalificacionDto>>(opiniones);
         }
-        // Editar
+
+        // ------------------- 5.3 Editar calificación -------------------
         public async Task<CalificacionDto> EditarCalificacionAsync(Guid destinoId, CrearActualizarCalificacionDTO input)
         {
             var userId = _currentUser.Id.Value;
@@ -74,19 +67,14 @@ namespace ExploraYa1.DestinosTuristicos
                 throw new UserFriendlyException("No tienes calificación para este destino.");
 
             calificacion.Puntuacion = input.Puntuacion;
-            calificacion.Comentario = input.Comentario;
+            calificacion.Comentario = input.Comentario ?? string.Empty;
 
-            await _opinionRepository.UpdateAsync(calificacion, true);
+            await _opinionRepository.UpdateAsync(calificacion, autoSave: true);
 
-            return new CalificacionDto
-            {
-                DestinoTuristicoId = destinoId,
-                UserId = userId,
-                Puntuacion = calificacion.Puntuacion,
-                Comentario = calificacion.Comentario
-            };
+            return ObjectMapper.Map<CalificacionDestino, CalificacionDto>(calificacion);
         }
-        //5.3 Eliminar
+
+        // ------------------- 5.3 Eliminar calificación -------------------
         public async Task EliminarCalificacionAsync(Guid destinoId)
         {
             var userId = _currentUser.Id.Value;
@@ -99,30 +87,22 @@ namespace ExploraYa1.DestinosTuristicos
 
             await _opinionRepository.DeleteAsync(calificacion);
         }
-        //5.4 Promedio
+
+        // ------------------- 5.4 Obtener promedio -------------------
         public async Task<double> ObtenerPromedioAsync(Guid destinoId)
         {
             var lista = await _opinionRepository.GetListAsync(o => o.DestinoTuristicoId == destinoId);
-
             return lista.Any() ? lista.Average(o => o.Puntuacion) : 0;
         }
-        //5.5 Listar comentarios
+
+        // ------------------- 5.5 Listar comentarios -------------------
         public async Task<List<CalificacionDto>> ListarComentariosAsync(Guid destinoId)
         {
             var opiniones = await _opinionRepository.GetListAsync(
-                o => o.DestinoTuristicoId == destinoId && o.Comentario != null && o.Comentario != ""
+                o => o.DestinoTuristicoId == destinoId && !string.IsNullOrWhiteSpace(o.Comentario)
             );
 
-            return opiniones.Select(o => new CalificacionDto
-            {
-                DestinoTuristicoId = o.DestinoTuristicoId,
-                UserId = o.UserId,
-                Comentario = o.Comentario,
-                Puntuacion = o.Puntuacion
-            }).ToList();
+            return ObjectMapper.Map<List<CalificacionDestino>, List<CalificacionDto>>(opiniones);
         }
     }
-
 }
-
-
