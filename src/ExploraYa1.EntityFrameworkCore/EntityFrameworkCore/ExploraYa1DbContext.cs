@@ -232,7 +232,7 @@ public class ExploraYa1DbContext :
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseSqlServer("Server=(localdb)\\FELIPE-NAVE13;Database=ExploraYa1;Trusted_Connection=True;TrustServerCertificate=True;");
+            optionsBuilder.UseSqlServer("Server=(localdb)\\ServidorDatos2;Database=ExploraYa1;Trusted_Connection=True;TrustServerCertificate=True;");
         }
     }
     
