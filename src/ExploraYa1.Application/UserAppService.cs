@@ -31,6 +31,8 @@ namespace ExploraYa1.Usuarios
             _userProfileRepository = userProfileRepository;
         }
 
+      
+
         // ============================================
         // 1) REGISTER
         // ============================================
