@@ -42,9 +42,9 @@ namespace ExploraYa1.Destinos
 
             // Assert
             result.ShouldNotBeNull();
-            result.Cities.Count.ShouldBe(1);
-            result.Cities[0].Name.ShouldBe("TestCity");
-            result.Cities[0].Country.ShouldBe("TestCountry");
+            result.Items.Count.ShouldBe(1);
+            result.Items[0].Name.ShouldBe("TestCity");
+            result.Items[0].Country.ShouldBe("TestCountry");
         }
         [Fact]
         public async Task SearchCitiesAsync_ReturnsEmpty()
@@ -62,7 +62,7 @@ namespace ExploraYa1.Destinos
 
             // Assert
             result.ShouldNotBeNull();
-            result.Cities.ShouldBeEmpty();
+            result.Items.ShouldBeEmpty();
         }
 
         [Fact]
@@ -81,7 +81,7 @@ namespace ExploraYa1.Destinos
 
             // Assert
             result.ShouldNotBeNull();
-            result.Cities.ShouldBeEmpty();
+            result.Items.ShouldBeEmpty();
         }
 
         [Fact]
