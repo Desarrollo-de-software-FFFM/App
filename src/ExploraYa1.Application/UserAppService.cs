@@ -128,7 +128,8 @@ namespace ExploraYa1.Usuarios
         public async Task<UserProfileDto> UpdateProfileAsync(UpdateUserProfileDto input)
         {
             // 1. Validar Autorización (Solo el usuario logueado)
-            Guid? userId = CurrentUser.GetId();
+            Guid? userId = _currentUser.GetId();
+
 
             // Si el usuario no está autenticado, userId.HasValue será false.
             // Aunque [Authorize] lo previene, esta validación es útil y necesaria si el tipo es Guid?.

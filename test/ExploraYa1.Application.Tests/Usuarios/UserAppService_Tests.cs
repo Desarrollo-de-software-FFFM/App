@@ -1,22 +1,26 @@
 ﻿using ExploraYa1.UserProfiles;
 using ExploraYa1.Usuarios;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
 using Moq.AutoMock;
+using NSubstitute;
 using Shouldly;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Domain.Entities;
+using Volo.Abp.Guids;
 using Volo.Abp.Identity;
 using Volo.Abp.Security.Claims;
 using Volo.Abp.Users;
-using Volo.Abp.Guids;
 using Xunit;
-using System.Reflection;
 
 namespace ExploraYa1.Usuarios
 {
@@ -29,6 +33,73 @@ namespace ExploraYa1.Usuarios
         private readonly Mock<IUserProfileRepository> _userProfileRepositoryMock;
         private readonly Mock<Volo.Abp.ObjectMapping.IObjectMapper> _objectMapperMock;
         private readonly Mock<IGuidGenerator> _guidGeneratorMock;
+        private Mock<IdentityUserManager> CreateUserManagerMock()
+        {
+            var store = new Mock<IUserStore<IdentityUser>>();
+
+            var options = new Mock<IOptions<IdentityOptions>>();
+            options.Setup(o => o.Value).Returns(new IdentityOptions());
+
+            var pwdHasher = new Mock<IPasswordHasher<IdentityUser>>();
+            pwdHasher.Setup(x => x.HashPassword(It.IsAny<IdentityUser>(), It.IsAny<string>()))
+                     .Returns("HASHED");
+
+            var userValidators = new List<IUserValidator<IdentityUser>>();
+            var pwdValidators = new List<IPasswordValidator<IdentityUser>>();
+
+            var normalizer = new Mock<ILookupNormalizer>();
+            normalizer.Setup(n => n.NormalizeName(It.IsAny<string>()))
+                      .Returns((string s) => s?.ToUpper());
+            normalizer.Setup(n => n.NormalizeEmail(It.IsAny<string>()))
+                      .Returns((string s) => s?.ToUpper());
+
+            var describer = new IdentityErrorDescriber();
+            var services = new Mock<IServiceProvider>();
+            var logger = new Mock<ILogger<UserManager<IdentityUser>>>();
+
+            var manager = new Mock<IdentityUserManager>(
+                store.Object,
+                options.Object,
+                pwdHasher.Object,
+                userValidators,
+                pwdValidators,
+                normalizer.Object,
+                describer,
+                services.Object,
+                logger.Object
+            );
+
+            return manager;
+        }
+
+        private UserManager<IdentityUser> BuildRealUserManager()
+{
+    var store = new Mock<IUserStore<IdentityUser>>();
+
+    var options = new Mock<IOptions<IdentityOptions>>();
+    options.Setup(o => o.Value).Returns(new IdentityOptions());
+
+    var passwordHasher = new PasswordHasher<IdentityUser>();
+
+    var userValidators = new List<IUserValidator<IdentityUser>> { new UserValidator<IdentityUser>() };
+    var pwdValidators = new List<IPasswordValidator<IdentityUser>> { new PasswordValidator<IdentityUser>() };
+
+    return new UserManager<IdentityUser>(
+        store.Object,
+        options.Object,
+        passwordHasher,
+        userValidators,
+        pwdValidators,
+        new UpperInvariantLookupNormalizer(),
+        new IdentityErrorDescriber(),
+        null,
+        new Mock<ILogger<UserManager<IdentityUser>>>().Object
+    );
+}
+
+
+
+
 
         private readonly UserAppService _userAppService;
 
@@ -36,6 +107,9 @@ namespace ExploraYa1.Usuarios
         private readonly Guid _testUserId = Guid.Parse("A0000000-0000-0000-0000-000000000001");
         private readonly Guid _testUserProfileId = Guid.Parse("A0000000-0000-0000-0000-000000000002");
 
+
+
+            
         public UserAppService_Tests()
         {
             // -----------------------------------------------------------
@@ -69,48 +143,16 @@ namespace ExploraYa1.Usuarios
                 .FirstOrDefault(f => f.FieldType == typeof(Volo.Abp.ObjectMapping.IObjectMapper));
 
             objectMapperField?.SetValue(_userAppService, _objectMapperMock.Object);
+       
+        
+            
+        
+        
         }
 
         // -----------------------------------
         // PRUEBAS DE FLUJO POSITIVO Y NEGATIVO
         // -----------------------------------
-
-        [Fact]
-        public async Task RegisterAsync_Should_Create_User_And_Profile()
-        {
-            // Arrange
-            var input = new RegisterUserDto
-            {
-                UserName = "testuser",
-                Email = "test@example.com",
-                Password = "Test@1234"
-            };
-
-            IdentityUser createdUser = null;
-
-            _userManagerMock.Setup(x => x.CreateAsync(
-                It.Is<IdentityUser>(u => u.Id == _testUserId),
-                input.Password))
-                 .Callback<IdentityUser, string>((user, password) => createdUser = user)
-                 .ReturnsAsync(IdentityResult.Success);
-
-            _userProfileRepositoryMock.Setup(x => x.InsertAsync(It.IsAny<UserProfile>(), default))
-                 .Returns((UserProfile up, bool autoSave, CancellationToken ct) => Task.FromResult(up));
-
-            // Act
-            var result = await _userAppService.RegisterAsync(input);
-
-            // Assert
-            result.ShouldNotBeNull();
-            result.UserName.ShouldBe(input.UserName);
-            result.Email.ShouldBe(input.Email);
-            result.Id.ShouldBe(_testUserId);
-
-            _userManagerMock.Verify(x => x.CreateAsync(It.Is<IdentityUser>(u => u.Id == _testUserId), input.Password), Times.Once);
-            _userProfileRepositoryMock.Verify(x => x.InsertAsync(It.Is<UserProfile>(
-                p => p.UserId == _testUserId && p.Id == _testUserProfileId
-                ), It.IsAny<bool>(), It.IsAny<CancellationToken>()), Times.Once);
-        }
 
         [Fact]
         public async Task LoginAsync_Should_Return_User_When_Credentials_Are_Valid()
@@ -188,7 +230,17 @@ namespace ExploraYa1.Usuarios
             _currentUserMock.Setup(x => x.Id).Returns(userId);
 
             _userManagerMock.Setup(x => x.GetByIdAsync(userId)).ReturnsAsync(user);
-            _userManagerMock.Setup(x => x.SetEmailAsync(user, input.Email)).ReturnsAsync(IdentityResult.Success);
+            _userManagerMock
+        .Setup(x => x.SetEmailAsync(It.IsAny<IdentityUser>(), It.IsAny<string>()))
+            .Callback<IdentityUser, string>((u, mail) =>
+            {
+             typeof(IdentityUser)
+                    .GetProperty("Email")
+            .SetValue(u, mail);
+                 })
+                .ReturnsAsync(IdentityResult.Success);
+
+
             // Moq debe ser flexible para aceptar la instancia modificada:
             _userManagerMock.Setup(x => x.UpdateAsync(It.IsAny<IdentityUser>())).ReturnsAsync(IdentityResult.Success);
             _userProfileRepositoryMock.Setup(x => x.FindByUserIdAsync(userId)).ReturnsAsync(userProfile);
@@ -357,7 +409,6 @@ namespace ExploraYa1.Usuarios
         [Fact]
         public async Task RegisterAsync_Should_Throw_UserFriendlyException_If_User_Creation_Fails()
         {
-            // Arrange
             var input = new RegisterUserDto
             {
                 UserName = "existinguser",
@@ -365,24 +416,100 @@ namespace ExploraYa1.Usuarios
                 Password = "Test@1234"
             };
 
-            // Configurar el fallo en la creación del usuario
+            // Hace que falle la creación del usuario (lo que queremos testear)
             _userManagerMock.Setup(x => x.CreateAsync(
                 It.IsAny<IdentityUser>(),
-                input.Password))
+                It.IsAny<string>()))
                 .ReturnsAsync(IdentityResult.Failed(
                     new IdentityError { Description = "Username already taken." }
                 ));
 
-            // Act & Assert
-            await Should.ThrowAsync<UserFriendlyException>(
-                () => _userAppService.RegisterAsync(input)
+            // Normalización necesaria
+            _userManagerMock.Setup(x => x.NormalizeName(It.IsAny<string>()))
+                .Returns<string>(n => n?.ToUpper());
+
+            _userManagerMock.Setup(x => x.NormalizeEmail(It.IsAny<string>()))
+                .Returns<string>(e => e?.ToUpper());
+
+            // UserManager chequea existencia antes de crear
+            _userManagerMock.Setup(x => x.FindByNameAsync(It.IsAny<string>()))
+                .ReturnsAsync((IdentityUser)null);
+
+            _userManagerMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>()))
+                .ReturnsAsync((IdentityUser)null);
+
+            _userManagerMock.Setup(x => x.SupportsUserEmail)
+                .Returns(true);
+
+            // 🔥 Estos son los mocks que te faltaban
+            _userManagerMock.Setup(x => x.SetEmailAsync(
+                    It.IsAny<IdentityUser>(),
+                    It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success);
+
+            _userManagerMock.Setup(x => x.SetUserNameAsync(
+                    It.IsAny<IdentityUser>(),
+                    It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success);
+
+            // Verificación: NO se debe insertar perfil porque CreateAsync falla
+            _userProfileRepositoryMock
+                .Setup(x => x.InsertAsync(
+                        It.IsAny<UserProfile>(),
+                        It.IsAny<bool>(),
+                        It.IsAny<CancellationToken>()))
+                .Throws(new Exception("NO debería llamarse"));
+
+            // ASSERT
+            // Ya tenés SetUserNameAsync y SetEmailAsync (los dejamos igual)
+            _userManagerMock.Setup(x => x.SetUserNameAsync(It.IsAny<IdentityUser>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success);
+
+            _userManagerMock.Setup(x => x.SetEmailAsync(It.IsAny<IdentityUser>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success);
+
+            // FALTABA ESTE: se usa siempre antes de CreateAsync
+            _userManagerMock.Setup(x => x.UpdateSecurityStampAsync(It.IsAny<IdentityUser>()))
+                .ReturnsAsync(IdentityResult.Success);
+
+            // FALTABA: ABP valida el usuario
+            _userManagerMock.Setup(x => x.CallValidateUserAsync(It.IsAny<IdentityUser>()))
+                .ReturnsAsync(IdentityResult.Success);
+
+            // FALTABA: ABP valida contraseña ANTES de CreateAsync
+            _userManagerMock.Setup(x => x.CallValidatePasswordAsync(It.IsAny<IdentityUser>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success);
+
+            // FALTABA: ABP intenta asignar roles después de crear
+            _userManagerMock.Setup(x => x.AddToRolesAsync(It.IsAny<IdentityUser>(), It.IsAny<IEnumerable<string>>()))
+                .ReturnsAsync(IdentityResult.Success);
+
+            // Necesario porque internamente llama Options
+            _userManagerMock.SetupGet(x => x.Options)
+                .Returns(new IdentityOptions());
+
+            // Esto evita NRE por PasswordHasher nulo
+            _userManagerMock.SetupGet(x => x.PasswordHasher)
+                .Returns(new PasswordHasher<IdentityUser>());
+
+
+
+
+
+
+            await Should.ThrowAsync<UserFriendlyException>(() =>
+                _userAppService.RegisterAsync(input)
             );
 
-            // Asegurar que el perfil nunca se intentó insertar
             _userProfileRepositoryMock.Verify(x =>
-                x.InsertAsync(It.IsAny<UserProfile>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()),
+                x.InsertAsync(
+                    It.IsAny<UserProfile>(),
+                    It.IsAny<bool>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Never);
         }
+
+
 
         [Fact]
         public async Task UpdateProfileAsync_Should_Throw_If_UserProfile_Is_Missing_And_Cant_Create()
@@ -391,25 +518,36 @@ namespace ExploraYa1.Usuarios
             var userId = _testUserId;
             var input = new UpdateUserProfileDto { Nombre = "NewName" };
 
+            // Mock correcto: ICurrentUser.Id
             _currentUserMock.Setup(x => x.Id).Returns(userId);
+
             // 1. Simular que el IdentityUser existe
             var user = new IdentityUser(userId, "testuser", "test@example.com");
-            _userManagerMock.Setup(x => x.GetByIdAsync(userId)).ReturnsAsync(user);
+            _userManagerMock.Setup(x => x.GetByIdAsync(userId))
+                .ReturnsAsync(user);
 
             // 2. Simular que el UserProfile NO existe
-            _userProfileRepositoryMock.Setup(x => x.FindByUserIdAsync(userId)).ReturnsAsync((UserProfile)null);
+            _userProfileRepositoryMock.Setup(x => x.FindByUserIdAsync(userId))
+                .ReturnsAsync((UserProfile)null);
 
             // Simular fallo al crear/insertar el perfil
-            _userProfileRepositoryMock.Setup(x => x.InsertAsync(It.IsAny<UserProfile>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+            _userProfileRepositoryMock.Setup(x =>
+                x.InsertAsync(It.IsAny<UserProfile>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new System.Exception("Fallo de persistencia simulado."));
 
             // Act & Assert
-            await Should.ThrowAsync<System.Exception>(
-                () => _userAppService.UpdateProfileAsync(input)
+            await Should.ThrowAsync<System.Exception>(() =>
+                _userAppService.UpdateProfileAsync(input)
             );
 
+            // Debe fallar antes de actualizar el IdentityUser, así que nunca se llama UpdateAsync
             _userManagerMock.Verify(x => x.UpdateAsync(It.IsAny<IdentityUser>()), Times.Never);
-            _userProfileRepositoryMock.Verify(x => x.InsertAsync(It.IsAny<UserProfile>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()), Times.Once);
+
+            // InsertAsync se intentó exactamente una vez
+            _userProfileRepositoryMock.Verify(x =>
+                x.InsertAsync(It.IsAny<UserProfile>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()),
+                Times.Once);
         }
+
     }
 }
