@@ -1,4 +1,5 @@
-﻿using ExploraYa1.UserProfiles;
+﻿
+using ExploraYa1.UserProfiles;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Linq;
@@ -11,6 +12,8 @@ using Volo.Abp.Data;
 using Volo.Abp.Domain.Entities;
 using Volo.Abp.Identity;
 using Volo.Abp.Users;
+using Volo.Abp.ObjectMapping;
+
 
 
 namespace ExploraYa1.Usuarios
@@ -20,15 +23,18 @@ namespace ExploraYa1.Usuarios
         private readonly IdentityUserManager _userManager;
         private readonly ICurrentUser _currentUser;
         private readonly IUserProfileRepository _userProfileRepository;
+        private readonly IObjectMapper _mapper;
 
         public UserAppService(
         IdentityUserManager userManager,
         ICurrentUser currentUser,
-        IUserProfileRepository userProfileRepository)
+        IUserProfileRepository userProfileRepository,
+        IObjectMapper mapper)    
         {
             _userManager = userManager;
             _currentUser = currentUser;
             _userProfileRepository = userProfileRepository;
+            _mapper = mapper; 
         }
 
       
@@ -259,7 +265,8 @@ namespace ExploraYa1.Usuarios
             var profile = await _userProfileRepository.FindByUserIdAsync(userId);
 
             // 3. Mapear y combinar los datos en el DTO
-            var userDto = ObjectMapper.Map<IdentityUser, UserProfileDto>(user);
+            var userDto = _mapper.Map<IdentityUser, UserProfileDto>(user);
+
 
             if (profile != null)
             {
