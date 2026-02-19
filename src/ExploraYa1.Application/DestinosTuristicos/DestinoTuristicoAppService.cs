@@ -1,5 +1,11 @@
 ﻿using ExploraYa1.Destinos;
 using ExploraYa1.DestinosTuristicos;
+using ExploraYa1.Notificaciones;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System;
 using System.Threading.Tasks;
 using Volo.Abp;
@@ -29,6 +35,21 @@ namespace ExploraYa1.DestinosTuristicos
         private IRepository<Pais, Guid> paisRepo1;
         private IRepository<Region, Guid> regionRepo1;
 
+    private readonly ICitySearchService _citySearchService;
+
+    private readonly INotificacionAppService _notificacionAppService;
+    public DestinoTuristicoAppService(
+                IRepository<DestinoTuristico, Guid> repository,
+                ICitySearchService citySearchService,
+                INotificacionAppService notificacionAppService)
+                : base(repository)
+    {
+            _citySearchService = citySearchService;
+            _notificacionAppService = notificacionAppService;
+    }
+    public DestinoTuristicoAppService(IRepository<DestinoTuristico, Guid> repository, ICitySearchService citySearchService)
+            : base(repository)
+    {
         public DestinoTuristicoAppService(
             IRepository<DestinoTuristico, Guid> destinoRepository,
             IRepository<Region, Guid> regionRepository,
@@ -40,13 +61,32 @@ namespace ExploraYa1.DestinosTuristicos
             _regionRepository = regionRepository;
             _paisRepository = paisRepository;
             _citySearchService = citySearchService;
+    }
+    public async Task<CitySearchResultDto> SearchCitiesAsync(CitySearchRequestDto request)
+    {
+            return await _citySearchService.SearchCitiesAsync(request);
+    }
+
+        public async Task MarcarNotificacionLeidaAsync(Guid notificacionId)
+        {
+            await _notificacionAppService.MarcarLeidaAsync(notificacionId);
         }
 
+        // 🔹 Notificar cuando un destino es actualizado
+        public override async Task<DestinoTuristicoDTO> UpdateAsync(Guid id, CrearActualizarDestinoDTO input)
 
         public async Task<CitySearchResultDto> SearchCitiesAsync(CitySearchRequestDto request)
         {
-            return await _citySearchService.SearchCitiesAsync(request);
+            var result = await base.UpdateAsync(id, input);
+
+            await _notificacionAppService.CrearNotificacionCambioDestinoAsync(
+                id,
+                $"El destino '{input.Nombre}' fue actualizado."
+            );
+
+            return result;
         }
+
 
         public async Task<CityInformationDto> GetCityDetailsAsync(int id)
         {
