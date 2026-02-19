@@ -1,5 +1,4 @@
 using ExploraYa1.Destinos;
-using ExploraYa1.Notificaciones;
 using Microsoft.EntityFrameworkCore;
 using System;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
@@ -32,7 +31,6 @@ public class ExploraYa1DbContext :
 
     public DbSet<CalificacionDestino> Opiniones { get; set; }
 
-    public DbSet<Notificacion> Notificaciones { get; set; }
     public DbSet<DestinoTuristico> DestinosTuristicos { get; set; }
 
 
@@ -66,7 +64,7 @@ public class ExploraYa1DbContext :
     // Propiedad de instancia usada por el HasQueryFilter (permite cambiar por instancia de DbContext)
     private Guid? CurrentUserId { get; set; }
 
-    // Constructor principal usado en runtime (inyecciÃ³n de ICurrentUser)
+    // Constructor principal usado en runtime (inyección de ICurrentUser)
     public ExploraYa1DbContext(DbContextOptions<ExploraYa1DbContext> options, ICurrentUser currentUser)
         : base(options)
     {
@@ -74,7 +72,7 @@ public class ExploraYa1DbContext :
         CurrentUserId = _currentUser?.Id;
     }
 
-    // Constructor adicional para tiempo de diseÃ±o / migraciones (IDesignTimeDbContextFactory)
+    // Constructor adicional para tiempo de diseño / migraciones (IDesignTimeDbContextFactory)
     // Deja _currentUser nulo y CurrentUserId a null para evitar dependencias en el factory.
     public ExploraYa1DbContext(DbContextOptions<ExploraYa1DbContext> options)
         : base(options)
@@ -202,18 +200,6 @@ public class ExploraYa1DbContext :
             b.Property(x => x.DestinoTuristicoId).IsRequired();
             b.Property(x => x.UserId).IsRequired();
         });
-
-        builder.Entity<Notificacion>(b =>
-        {
-            b.ToTable("AppNotificaciones");
-
-            b.ConfigureByConvention();
-
-            b.Property(x => x.Titulo).IsRequired().HasMaxLength(200);
-            b.Property(x => x.Mensaje).IsRequired().HasMaxLength(2000);
-            b.Property(x => x.Leida).IsRequired();
-        });
-
 
     
 
