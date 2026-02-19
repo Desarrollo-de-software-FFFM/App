@@ -45,16 +45,7 @@ namespace ExploraYa1.DestinosTuristicos
 
         public async Task<CitySearchResultDto> SearchCitiesAsync(CitySearchRequestDto request)
         {
-            // 1. Obtenemos los resultados del servicio externo
-            var result = await _citySearchService.SearchCitiesAsync(request);
-
-            // 2. Convertimos (mapeamos) la respuesta al formato estándar de ABP
-            // Usamos result.Cities.Count como total (o 0 si es nulo)
-            // y devolvemos la lista de ciudades.
-            return new PagedResultDto<CityDto>(
-                result.Cities?.Count ?? 0,
-                result.Cities ?? new List<CityDto>()
-            );
+            return await _citySearchService.SearchCitiesAsync(request);
         }
 
         public async Task<CityInformationDto> GetCityDetailsAsync(int id)

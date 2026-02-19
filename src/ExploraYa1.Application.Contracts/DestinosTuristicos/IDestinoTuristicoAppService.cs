@@ -13,6 +13,6 @@ namespace ExploraYa1.DestinosTuristicos
         CrearActualizarDestinoDTO>
     {
         // 👇 ESTA LÍNEA DEBE COINCIDIR EXACTAMENTE CON TU SERVICIO
-        Task<PagedResultDto<CityDto>> SearchCitiesAsync(CitySearchRequestDto request);
+        Task <CitySearchResultDto> SearchCitiesAsync(CitySearchRequestDto request);
     }
 }
