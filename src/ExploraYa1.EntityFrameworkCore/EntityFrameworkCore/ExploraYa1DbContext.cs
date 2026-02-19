@@ -26,13 +26,11 @@ public class ExploraYa1DbContext :
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
 
+    public DbSet<DestinoTuristico> Destinos { get; set; }
     public DbSet<Pais> Paises { get; set; }
     public DbSet<Region> Regiones { get; set; }
 
     public DbSet<CalificacionDestino> Opiniones { get; set; }
-
-    public DbSet<DestinoTuristico> DestinosTuristicos { get; set; }
-
 
     #region Entities from the modules
 
@@ -201,7 +199,8 @@ public class ExploraYa1DbContext :
             b.Property(x => x.UserId).IsRequired();
         });
 
-    
+
+
 
     }
 
