@@ -1,23 +1,18 @@
-﻿using ExploraYa1.Destinos;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
+using ExploraYa1.Destinos; // Importante para reconocer CityDto y CitySearchRequestDto
 
 namespace ExploraYa1.DestinosTuristicos
 {
-    public interface IDestinoTuristicoAppService :
-    
-        ICrudAppService<
+    public interface IDestinoTuristicoAppService : ICrudAppService<
         DestinoTuristicoDTO,
         Guid,
         PagedAndSortedResultRequestDto,
         CrearActualizarDestinoDTO>
     {
-        // Agregar el método que falta
-        Task<CitySearchResultDto> SearchCitiesAsync(CitySearchRequestDto request);
-    }  
+        // 👇 ESTA LÍNEA DEBE COINCIDIR EXACTAMENTE CON TU SERVICIO
+        Task<PagedResultDto<CityDto>> SearchCitiesAsync(CitySearchRequestDto request);
+    }
 }
