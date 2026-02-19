@@ -7,7 +7,6 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
-using static Volo.Abp.Identity.Settings.IdentitySettingNames;
 
 namespace ExploraYa1.DestinosTuristicos
 {
@@ -29,18 +28,34 @@ namespace ExploraYa1.DestinosTuristicos
 
         public async Task<CitySearchResultDto> SearchCitiesAsync(CitySearchRequestDto request)
         {
-            if (string.IsNullOrEmpty(request.PartialName))
-            {
-                return new CitySearchResultDto { Cities = new List<CityDto>() };
-            }
-
             try
             {
-                var url = $"https://wft-geo-db.p.rapidapi.com/v1/geo/cities?namePrefix={Uri.EscapeDataString(request.PartialName)}&limit=5";
+                // Construcción dinámica de filtros
+                var query = new StringBuilder("https://wft-geo-db.p.rapidapi.com/v1/geo/cities?");
+
+                // Filtro por nombre parcial (opcional)
+                if (!string.IsNullOrWhiteSpace(request.PartialName))
+                    query.Append($"namePrefix={Uri.EscapeDataString(request.PartialName)}&");
+
+                // Filtro por país
+                if (!string.IsNullOrWhiteSpace(request.Country))
+                    query.Append($"countryIds={Uri.EscapeDataString(request.Country)}&");
+
+                // Filtro por región (GeoDB usa "region")
+                if (!string.IsNullOrWhiteSpace(request.Region))
+                    query.Append($"region={Uri.EscapeDataString(request.Region)}&");
+
+                // Filtro por población mínima
+                if (request.MinimumPopulation.HasValue)
+                    query.Append($"minPopulation={request.MinimumPopulation.Value}&");
+
+                // Límite para evitar respuestas gigantes
+                query.Append("limit=10");
+
+                var url = query.ToString();
 
                 var response = await _httpClient.GetAsync(url);
 
-                // Si la respuesta es nula, simula un error de red
                 if (response == null)
                     throw new HttpRequestException("No se pudo obtener respuesta del servidor.");
 
@@ -52,18 +67,67 @@ namespace ExploraYa1.DestinosTuristicos
 
                 var cities = json.Data.Select(c => new CityDto
                 {
+                    Id = c.Id ?? 0,
                     Name = c.City ?? string.Empty,
                     Country = c.Country ?? string.Empty,
+                    Region = c.Region,
+                    Population = c.Population ?? 0,
                     Latitude = c.Latitude,
                     Longitude = c.Longitude
                 }).ToList();
 
                 return new CitySearchResultDto { Cities = cities };
             }
-            catch (Exception ex)
+            catch
             {
-                // Lanza la excepción original para que el test la capture correctamente
                 throw;
+            }
+
+            try
+            {
+                // Construcción dinámica de filtros
+                var query = new StringBuilder("https://wft-geo-db.p.rapidapi.com/v1/geo/cities?");
+                query.Append($"namePrefix={Uri.EscapeDataString(request.PartialName)}");
+                query.Append("&limit=5");
+
+                if (!string.IsNullOrWhiteSpace(request.Country))
+                    query.Append($"&countryIds={Uri.EscapeDataString(request.Country)}");
+
+                if (!string.IsNullOrWhiteSpace(request.Region))
+                    query.Append($"&regionCode={Uri.EscapeDataString(request.Region)}");
+
+                if (request.MinimumPopulation.HasValue)
+                    query.Append($"&minPopulation={request.MinimumPopulation.Value}");
+
+                var url = query.ToString();
+
+                var response = await _httpClient.GetAsync(url);
+
+                if (response == null)
+                    throw new HttpRequestException("No se pudo obtener respuesta del servidor.");
+
+                response.EnsureSuccessStatusCode();
+
+                var json = await response.Content.ReadFromJsonAsync<GeoDbResponse>();
+                if (json?.Data == null)
+                    return new CitySearchResultDto { Cities = new List<CityDto>() };
+
+                var cities = json.Data.Select(c => new CityDto
+                {
+                    Id = c.Id ?? 0,
+                    Name = c.City ?? string.Empty,
+                    Country = c.Country ?? string.Empty,
+                    Region = c.Region,
+                    Population = c.Population,
+                    Latitude = c.Latitude,
+                    Longitude = c.Longitude
+                }).ToList();
+
+                return new CitySearchResultDto { Cities = cities };
+            }
+            catch
+            {
+                throw; // re-lanza para que el test vea la excepción original
             }
         }
 
@@ -74,13 +138,62 @@ namespace ExploraYa1.DestinosTuristicos
 
         private class GeoDbCity
         {
+            public int? Id { get; set; }          // Nuevo: id de la ciudad
             public string? City { get; set; }
             public string? Country { get; set; }
-            
-           
+            public string? Region { get; set; }      // Nuevo
+            public int? Population { get; set; }     // Nuevo
             public double Latitude { get; set; }
-            
             public double Longitude { get; set; }
         }
+
+        public async Task<CityInformationDto> GetCityDetailsAsync(int cityId)
+        {
+            var url = $"https://wft-geo-db.p.rapidapi.com/v1/geo/cities/{cityId}";
+
+            var response = await _httpClient.GetAsync(url);
+
+            if (response == null)
+                throw new HttpRequestException("No se pudo obtener respuesta del servidor GeoDB.");
+
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadFromJsonAsync<GeoDbDetailResponse>();
+
+            if (json?.Data == null)
+                throw new Exception("No se encontró información de la ciudad.");
+
+            var c = json.Data;
+
+            return new CityInformationDto
+            {
+                Id = c.Id,
+                Name = c.City ?? "",
+                Country = c.Country ?? "",
+                Region = c.Region ?? "",
+                Population = c.Population ?? 0,
+                Latitude = c.Latitude,
+                Longitude = c.Longitude,
+                Timezone = c.Timezone ?? ""
+            };
+        }
+
+        private class GeoDbDetailResponse
+        {
+            public GeoDbDetailCity Data { get; set; } = new();
+        }
+
+        private class GeoDbDetailCity
+        {
+            public int Id { get; set; }
+            public string? City { get; set; }
+            public string? Country { get; set; }
+            public string? Region { get; set; }
+            public int? Population { get; set; }
+            public double Latitude { get; set; }
+            public double Longitude { get; set; }
+            public string? Timezone { get; set; }
+        }
+
     }
 }
