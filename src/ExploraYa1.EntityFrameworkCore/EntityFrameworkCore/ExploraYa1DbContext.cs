@@ -27,13 +27,14 @@ public class ExploraYa1DbContext :
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
 
-    public DbSet<DestinoTuristico> Destinos { get; set; }
     public DbSet<Pais> Paises { get; set; }
     public DbSet<Region> Regiones { get; set; }
 
     public DbSet<CalificacionDestino> Opiniones { get; set; }
 
     public DbSet<UserProfile> UserProfiles { get; set; }
+       public DbSet<DestinoTuristico> DestinosTuristicos { get; set; }
+
 
     #region Entities from the modules
 
@@ -60,12 +61,12 @@ public class ExploraYa1DbContext :
 
     #endregion
 
-    private readonly ICurrentUser? _currentUser;
+     private readonly ICurrentUser? _currentUser;
 
     // Propiedad de instancia usada por el HasQueryFilter (permite cambiar por instancia de DbContext)
     private Guid? CurrentUserId { get; set; }
 
-    // Constructor principal usado en runtime (inyección de ICurrentUser)
+    // Constructor principal usado en runtime (inyecciÃ³n de ICurrentUser)
     public ExploraYa1DbContext(DbContextOptions<ExploraYa1DbContext> options, ICurrentUser currentUser)
         : base(options)
     {
@@ -73,7 +74,7 @@ public class ExploraYa1DbContext :
         CurrentUserId = _currentUser?.Id;
     }
 
-    // Constructor adicional para tiempo de diseño / migraciones (IDesignTimeDbContextFactory)
+    // Constructor adicional para tiempo de diseÃ±o / migraciones (IDesignTimeDbContextFactory)
     // Deja _currentUser nulo y CurrentUserId a null para evitar dependencias en el factory.
     public ExploraYa1DbContext(DbContextOptions<ExploraYa1DbContext> options)
         : base(options)
@@ -202,28 +203,7 @@ public class ExploraYa1DbContext :
             b.Property(x => x.UserId).IsRequired();
         });
 
-        {
-            base.OnModelCreating(builder);
-
-            // 2. Mapea la entidad
-            builder.Entity<UserProfile>(b =>
-            {
-                b.ToTable(ExploraYa1Consts.DbTablePrefix + "UserProfiles",
-                          ExploraYa1Consts.DbSchema);
-
-                b.ConfigureByConvention(); // Configuración estándar de ABP
-
-                // Añade un índice único para UserId para asegurar 1:1 con IdentityUser
-                b.HasIndex(x => x.UserId).IsUnique();
-            });
-
-            // ... otros mapeos ...
-        }
-
-
-
-
-
+    
 
     }
 
