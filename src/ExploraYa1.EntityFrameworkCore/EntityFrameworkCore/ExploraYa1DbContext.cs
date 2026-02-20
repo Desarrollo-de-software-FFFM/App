@@ -1,5 +1,6 @@
 using ExploraYa1.Destinos;
 using ExploraYa1.Notificaciones;
+using ExploraYa1.UserProfiles;
 using Microsoft.EntityFrameworkCore;
 using System;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
@@ -35,6 +36,7 @@ public class ExploraYa1DbContext :
 
     public DbSet<Notificacion> Notificaciones { get; set; }
 
+    public DbSet<UserProfile> UserProfiles { get; set; }
 
     #region Entities from the modules
 
