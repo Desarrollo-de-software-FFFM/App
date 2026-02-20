@@ -1,4 +1,5 @@
 using ExploraYa1.Destinos;
+using ExploraYa1.UserProfiles;
 using Microsoft.EntityFrameworkCore;
 using System;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
@@ -31,6 +32,7 @@ public class ExploraYa1DbContext :
 
     public DbSet<CalificacionDestino> Opiniones { get; set; }
 
+    public DbSet<UserProfile> UserProfiles { get; set; }
        public DbSet<DestinoTuristico> DestinosTuristicos { get; set; }
 
 
@@ -64,7 +66,7 @@ public class ExploraYa1DbContext :
     // Propiedad de instancia usada por el HasQueryFilter (permite cambiar por instancia de DbContext)
     private Guid? CurrentUserId { get; set; }
 
-    // Constructor principal usado en runtime (inyección de ICurrentUser)
+    // Constructor principal usado en runtime (inyecciÃ³n de ICurrentUser)
     public ExploraYa1DbContext(DbContextOptions<ExploraYa1DbContext> options, ICurrentUser currentUser)
         : base(options)
     {
@@ -72,7 +74,7 @@ public class ExploraYa1DbContext :
         CurrentUserId = _currentUser?.Id;
     }
 
-    // Constructor adicional para tiempo de diseño / migraciones (IDesignTimeDbContextFactory)
+    // Constructor adicional para tiempo de diseÃ±o / migraciones (IDesignTimeDbContextFactory)
     // Deja _currentUser nulo y CurrentUserId a null para evitar dependencias en el factory.
     public ExploraYa1DbContext(DbContextOptions<ExploraYa1DbContext> options)
         : base(options)

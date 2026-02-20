@@ -1,6 +1,8 @@
 using AutoMapper;
 using ExploraYa1.Destinos;
 using ExploraYa1.DestinosTuristicos;
+using ExploraYa1.Usuarios;
+using Volo.Abp.Identity;
 
 namespace ExploraYa1;
 
@@ -17,7 +19,7 @@ public class ExploraYa1ApplicationAutoMapperProfile : Profile
 
         CreateMap<CalificacionDestino, CalificacionDto>()
             .ForMember(d => d.DestinoTuristicoId, opt => opt.MapFrom(s => s.DestinoTuristicoId));
-
+        CreateMap<IdentityUser, UserProfileDto>();
 
 
     }
