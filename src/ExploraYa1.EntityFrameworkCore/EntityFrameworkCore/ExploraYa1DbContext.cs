@@ -202,8 +202,17 @@ public class ExploraYa1DbContext :
             b.Property(x => x.DestinoTuristicoId).IsRequired();
             b.Property(x => x.UserId).IsRequired();
         });
+        
+        builder.Entity<UserProfile>(b =>
+        {
+            b.ToTable(ExploraYa1Consts.DbTablePrefix + "UserProfiles",
+                      ExploraYa1Consts.DbSchema);
 
-    
+            b.ConfigureByConvention();
+
+            b.HasIndex(x => x.UserId).IsUnique();
+        });
+
 
     }
 
