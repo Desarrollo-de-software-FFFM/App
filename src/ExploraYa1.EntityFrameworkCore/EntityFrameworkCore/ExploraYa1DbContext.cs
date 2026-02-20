@@ -59,7 +59,7 @@ public class ExploraYa1DbContext :
 
     #endregion
 
-    private readonly ICurrentUser? _currentUser;
+     private readonly ICurrentUser? _currentUser;
 
     // Propiedad de instancia usada por el HasQueryFilter (permite cambiar por instancia de DbContext)
     private Guid? CurrentUserId { get; set; }
