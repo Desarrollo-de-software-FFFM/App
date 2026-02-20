@@ -31,7 +31,7 @@ public class ExploraYa1DbContext :
 
     public DbSet<CalificacionDestino> Opiniones { get; set; }
 
-    public DbSet<DestinoTuristico> DestinosTuristicos { get; set; }
+       public DbSet<DestinoTuristico> DestinosTuristicos { get; set; }
 
 
     #region Entities from the modules
