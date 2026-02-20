@@ -61,7 +61,7 @@ public class ExploraYa1DbContext :
 
     #endregion
 
-     private readonly ICurrentUser? _currentUser;
+    private readonly ICurrentUser? _currentUser;
 
     // Propiedad de instancia usada por el HasQueryFilter (permite cambiar por instancia de DbContext)
     private Guid? CurrentUserId { get; set; }
@@ -173,7 +173,7 @@ public class ExploraYa1DbContext :
             //.OnDelete(DeleteBehavior.Restrict);
 
             b.HasOne(r => r.Pais)
-     .WithMany(p => p.Regiones)   
+     .WithMany(p => p.Regiones)
      .HasForeignKey(r => r.PaisId)
      .OnDelete(DeleteBehavior.Restrict)
      .IsRequired();
@@ -192,7 +192,7 @@ public class ExploraYa1DbContext :
 
 
         });
-       
+
         builder.Entity<CalificacionDestino>(b =>
         {
             b.ToTable(ExploraYa1Consts.DbTablePrefix + "Calificaciones", ExploraYa1Consts.DbSchema);
@@ -226,5 +226,5 @@ public class ExploraYa1DbContext :
             optionsBuilder.UseSqlServer("Server=FELIPE-NAVE12;Database=ExploraYa1;Trusted_Connection=True;TrustServerCertificate=True;");
         }
     }
-    
+
 }

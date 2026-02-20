@@ -16,14 +16,14 @@ namespace ExploraYa1.Notificaciones
         {
             Id = id; // aquí sí podés asignarlo
         }
-        
-       [Required]
+
+        [Required]
         public Guid UserId { get; set; }
 
-      // [Required]
+        // [Required]
         public string Titulo { get; set; }
 
-       // [Required]
+        // [Required]
         public string Mensaje { get; set; }
 
         public bool Leida { get; set; } = false;

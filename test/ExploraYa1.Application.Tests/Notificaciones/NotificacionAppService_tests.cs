@@ -50,7 +50,7 @@ namespace ExploraYa1.Notificaciones
 
             var notif = new Notificacion(Guid.NewGuid())
             {
-               
+
                 Leida = false
             };
 
@@ -77,7 +77,7 @@ namespace ExploraYa1.Notificaciones
 
             var notif = new Notificacion(Guid.NewGuid())
             {
-                
+
                 Leida = true
             };
 
