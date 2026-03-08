@@ -1,6 +1,7 @@
 using AutoMapper;
 using ExploraYa1.Destinos;
 using ExploraYa1.DestinosTuristicos;
+using ExploraYa1.Experiencias; // <--- Asegúrate de tener este using
 using ExploraYa1.Notificaciones;
 using ExploraYa1.Usuarios;
 using Volo.Abp.Identity;
@@ -15,6 +16,7 @@ public class ExploraYa1ApplicationAutoMapperProfile : Profile
          * Alternatively, you can split your mapping configurations
          * into multiple profile classes for a better organization. */
 
+  
         CreateMap<DestinoTuristico, DestinoTuristicoDTO>();
         CreateMap<CrearActualizarDestinoDTO, DestinoTuristico>();
 
@@ -27,6 +29,8 @@ public class ExploraYa1ApplicationAutoMapperProfile : Profile
         CreateMap<Notificacion, NotificacionDTO>();
 
 
+        CreateMap<Experiencia, ExperienciaDto>();
 
+        CreateMap<CrearActualizarExperienciaDto, Experiencia>();
     }
 }
