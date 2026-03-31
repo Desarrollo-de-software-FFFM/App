@@ -8,6 +8,11 @@ export const APP_ROUTES: Routes = [
     loadComponent: () => import('./home/home.component').then(c => c.HomeComponent),
   },
   {
+    path: 'favoritos',
+    loadComponent: () => import('./favoritos/favoritos.component').then(c => c.FavoritosComponent),
+    canActivate: [authGuard],
+  },
+  {
     path: 'account',
     loadChildren: () => import('@abp/ng.account').then(c => c.createRoutes()),
   },

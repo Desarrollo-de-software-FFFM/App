@@ -12,6 +12,7 @@ namespace ExploraYa1.Destinos
 
         public Favorito(Guid destinoTuristicoId, Guid userId)
         {
+            Id = Guid.NewGuid();
             DestinoTuristicoId = destinoTuristicoId;
             UserId = userId;
         }

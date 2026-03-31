@@ -9,6 +9,6 @@ namespace ExploraYa1.Destinos
     {
         Task<FavoritoDto> AgregarFavoritoAsync(Guid destinoTuristicoId);
         Task EliminarFavoritoAsync(Guid destinoTuristicoId);
-        Task<List<FavoritoDto>> ObtenerPorUsuarioAsync(Guid usuarioId);
+        Task<List<FavoritoDto>> ObtenerMisFavoritosAsync();
     }
 }
