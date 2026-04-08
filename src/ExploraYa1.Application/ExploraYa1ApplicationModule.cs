@@ -1,4 +1,5 @@
-﻿using Volo.Abp.PermissionManagement;
+﻿using System;
+using Volo.Abp.PermissionManagement;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.Account;
 using Volo.Abp.Identity;
@@ -8,7 +9,10 @@ using Volo.Abp.Modularity;
 using System.Net.Http;
 using ExploraYa1.Destinos;
 using ExploraYa1.DestinosTuristicos;
+using ExploraYa1.Monitoreo;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Volo.Abp.Domain.Repositories;
 
 namespace ExploraYa1;
 
@@ -31,7 +35,13 @@ public class ExploraYa1ApplicationModule : AbpModule
         });
 
         // Registra el servicio HttpClient para GeoDbCitySearchService
-         object value = context.Services.AddHttpClient<ICitySearchService, GeoDbCitySearchService>();
-           context.Services.AddTransient<ICrearActualizarCalificacion, CrearCalificacionService>();
+        context.Services.AddHttpClient<GeoDbCitySearchService>();
+        context.Services.AddTransient<ICitySearchService>(sp =>
+            new ApiExternaLogDecorator(
+                sp.GetRequiredService<GeoDbCitySearchService>(),
+                sp.GetRequiredService<IRepository<ApiExternaLog, Guid>>(),
+                sp.GetRequiredService<ILogger<ApiExternaLogDecorator>>()
+            ));
+        context.Services.AddTransient<ICrearActualizarCalificacion, CrearCalificacionService>();
     }
 }
