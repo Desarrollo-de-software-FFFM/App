@@ -10,10 +10,7 @@ public class ExploraYa1PermissionDefinitionProvider : PermissionDefinitionProvid
     {
         var myGroup = context.AddGroup(ExploraYa1Permissions.GroupName);
 
-        var monitoreoGroup = context.AddGroup(
-            ExploraYa1Permissions.Monitoreo.Default,
-            L("Permission:Monitoreo"));
-        monitoreoGroup.AddPermission(
+        myGroup.AddPermission(
             ExploraYa1Permissions.Monitoreo.Default,
             L("Permission:Monitoreo"));
     }
