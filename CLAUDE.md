@@ -66,6 +66,7 @@ The solution follows ABP Framework's layered DDD architecture:
 - `Favorito` — user-saved destinations (links UserId ↔ DestinoTuristicoId); unique index on `(UserId, DestinoTuristicoId)`
 - `CalificacionDestino` — user ratings for destinations
 - `Region` / `Pais` — geographic hierarchy (country → region → destination)
+- `ApiExternaLog` — write-once log of every external HTTP call (inherits `Entity<Guid>`; no audit columns)
 
 **ABP patterns in use:**
 - `CrudAppService<TEntity, TDto, TKey>` as base for standard CRUD services
@@ -74,6 +75,7 @@ The solution follows ABP Framework's layered DDD architecture:
 - ABP modules: each layer has a `*Module.cs` that registers dependencies and imports other modules
 - `ICurrentUser.GetId()` to resolve the logged-in user — never accept a raw `userId` from HTTP callers
 - `[Authorize]` on service classes to require authentication at the ABP layer
+- **Do NOT write explicit controllers** for `IApplicationService` implementations — ABP's dynamic C# API auto-generates REST endpoints (e.g. `MonitoreoAppService.GetMetricasAsync` → `GET /api/app/monitoreo/metricas`). A hand-written controller at the same route causes a Swagger 500 (`SwaggerGeneratorException: Conflicting method/path combination`)
 
 ## Testing
 
@@ -102,6 +104,15 @@ repoMock.Setup(r => r.FindAsync(
 ```
 
 Similarly, `GetListAsync(predicate, includeDetails, cancellationToken)` IS a direct interface method and is mockable.
+
+`GetQueryableAsync()` is also a direct interface method on `IQueryableRepository<T>` and IS mockable:
+
+```csharp
+repoMock.Setup(r => r.GetQueryableAsync())
+        .ReturnsAsync(list.AsQueryable());
+```
+
+Use this pattern when the service uses LINQ GroupBy / aggregation (e.g., `MonitoreoAppService`).
 
 ### Guid IDs in domain entities
 ABP EF Core repositories auto-generate Guid IDs on `InsertAsync`. Plain Moq mocks do **not**.
@@ -138,3 +149,27 @@ Use `jasmine.SpyObj` and provide the spy via `TestBed.configureTestingModule pro
 - `GET /api/app/favorito/obtener-mis-favoritos` — list current user's favorites
 
 **After cloning / DB reset:** run `dotnet run --project src/ExploraYa1.DbMigrator` to apply the `AppFavoritos` table migration.
+
+## Monitoreo feature (branch feature/28-admymonitoreofranco)
+
+| Layer | File |
+|---|---|
+| Domain entity | `src/ExploraYa1.Domain/Monitoreo/ApiExternaLog.cs` |
+| Permission seeder | `src/ExploraYa1.Domain/Monitoreo/MonitoreoDataSeedContributor.cs` |
+| DTO | `src/ExploraYa1.Application.Contracts/Monitoreo/MetricasApiExternaDto.cs` |
+| Interface | `src/ExploraYa1.Application.Contracts/Monitoreo/IMonitoreoAppService.cs` |
+| Permissions | `src/ExploraYa1.Application.Contracts/Permissions/ExploraYa1Permissions.cs` |
+| Service | `src/ExploraYa1.Application/Monitoreo/MonitoreoAppService.cs` |
+| Decorator | `src/ExploraYa1.Application/Monitoreo/ApiExternaLogDecorator.cs` |
+| EF config + migration | `ExploraYa1DbContext.cs` + `20260408154931_AddApiExternaLogsTable.cs` |
+| Controller | `src/ExploraYa1.HttpApi/Controllers/MonitoreoController.cs` |
+| Tests | `test/ExploraYa1.Application.Tests/Monitoreo/` |
+
+**API endpoint:**
+- `GET /api/app/monitoreo/metricas?desde={datetime}&hasta={datetime}` — returns aggregated metrics per external API (requires `ExploraYa1.Monitoreo` permission / admin role)
+
+**How logging works:** `ApiExternaLogDecorator` wraps `ICitySearchService`. Every call to the GeoDB API inserts a row in `AppApiExternaLogs` via `finally` block — even on failure. DB write errors are silently swallowed (logged via `ILogger`).
+
+**Permissions:** `ExploraYa1Permissions.Monitoreo.Default = "ExploraYa1.Monitoreo"`. Granted to the `admin` role by `MonitoreoDataSeedContributor` (uses string literal — Domain can't reference Application.Contracts).
+
+**After cloning / DB reset:** run `dotnet run --project src/ExploraYa1.DbMigrator` to apply `AppApiExternaLogs` migration and seed the admin permission.
