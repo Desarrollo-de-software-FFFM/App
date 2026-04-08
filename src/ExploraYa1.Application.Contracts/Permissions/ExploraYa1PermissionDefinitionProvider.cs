@@ -1,7 +1,6 @@
 using ExploraYa1.Localization;
 using Volo.Abp.Authorization.Permissions;
 using Volo.Abp.Localization;
-using Volo.Abp.MultiTenancy;
 
 namespace ExploraYa1.Permissions;
 
@@ -11,8 +10,12 @@ public class ExploraYa1PermissionDefinitionProvider : PermissionDefinitionProvid
     {
         var myGroup = context.AddGroup(ExploraYa1Permissions.GroupName);
 
-        //Define your own permissions here. Example:
-        //myGroup.AddPermission(ExploraYa1Permissions.MyPermission1, L("Permission:MyPermission1"));
+        var monitoreoGroup = context.AddGroup(
+            ExploraYa1Permissions.Monitoreo.Default,
+            L("Permission:Monitoreo"));
+        monitoreoGroup.AddPermission(
+            ExploraYa1Permissions.Monitoreo.Default,
+            L("Permission:Monitoreo"));
     }
 
     private static LocalizableString L(string name)
