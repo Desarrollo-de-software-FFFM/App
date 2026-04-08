@@ -5,7 +5,25 @@
       "Bash(dotnet ef:*)",
       "Bash(dotnet tool:*)",
       "Bash(ng test:*)",
-      "Bash(npx ng:*)"
+      "Bash(npx ng:*)",
+      "Bash(git:*)",
+      "Bash(dotnet build:*)",
+      "Bash(xargs grep:*)",
+      "Bash(dotnet script:*)",
+      "Bash(dotnet-script --version)",
+      "Bash(powershell.exe:*)",
+      "Bash(grep -r \"\\\\[Authorize\" /c/Users/Franco/source/repos/App/src/ExploraYa1.Application/DestinosTuristicos/*.cs)",
+      "Bash(dotnet run:*)",
+      "Bash(curl -sk https://localhost:44391/swagger/v1/swagger.json -o /tmp/swagger_out.txt -w \"\\\\nHTTP_STATUS:%{http_code}\\\\n\")",
+      "Read(//tmp/**)",
+      "Bash(echo \"PID: $!\" sleep 25 echo \"=== API stdout/stderr ===\" cat /tmp/api_out.txt)",
+      "Bash(curl -sk https://localhost:44391/swagger/v1/swagger.json -o /tmp/swagger_body.txt -w \"HTTP_STATUS:%{http_code}\\\\n\")",
+      "Bash(sort echo:*)",
+      "Bash(echo \"PID: $!\" sleep 25 echo \"=== Any errors at startup? ===\" grep -E \"\\(ERR|Exception|Swagger|DuplicatePermission\\)\" /tmp/api2_out.txt)",
+      "Bash(curl -sk https://localhost:44391/swagger/v1/swagger.json -o /tmp/swagger2.txt -w \"HTTP_STATUS:%{http_code}\\\\n\")",
+      "Bash(taskkill //F //IM dotnet.exe)",
+      "Bash(echo \"PID: $!\" sleep 25 echo \"=== Startup errors ===\" grep -E \"\\(ERR|Exception|Swagger\\)\" /tmp/api3_out.txt)",
+      "Bash(curl -sk https://localhost:44391/swagger/v1/swagger.json -o /tmp/swagger3.txt -w \"HTTP_STATUS:%{http_code}\\\\n\")"
     ]
   }
 }
