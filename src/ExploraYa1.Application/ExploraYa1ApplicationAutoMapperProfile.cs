@@ -35,7 +35,7 @@ namespace ExploraYa1
         
 
         CreateMap<Favorito, FavoritoDto>();
-    }
+    
         CreateMap<Notificacion, NotificacionDTO>();
 
 
