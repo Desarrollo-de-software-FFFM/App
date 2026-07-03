@@ -24,6 +24,11 @@ public class ApiExternaLogDecorator : ICitySearchService
         _logger        = logger;
     }
 
+    public Task<CityInformationDto> GetCityDetailsAsync(int cityId)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<CitySearchResultDto> SearchCitiesAsync(CitySearchRequestDto request)
     {
         var sw = Stopwatch.StartNew();

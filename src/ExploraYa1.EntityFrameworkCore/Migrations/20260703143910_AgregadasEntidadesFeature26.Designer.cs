@@ -4,6 +4,7 @@ using ExploraYa1.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Volo.Abp.EntityFrameworkCore;
 
@@ -12,9 +13,11 @@ using Volo.Abp.EntityFrameworkCore;
 namespace ExploraYa1.Migrations
 {
     [DbContext(typeof(ExploraYa1DbContext))]
-    partial class ExploraYa1DbContextModelSnapshot : ModelSnapshot
+    [Migration("20260703143910_AgregadasEntidadesFeature26")]
+    partial class AgregadasEntidadesFeature26
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -341,7 +344,7 @@ namespace ExploraYa1.Migrations
                     b.Property<Guid?>("DestinoId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("Fecha")
+                    b.Property<DateTime?>("Fecha")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("Leida")
