@@ -1,5 +1,8 @@
 using ExploraYa1.Destinos;
 using ExploraYa1.Monitoreo;
+using ExploraYa1.Notificaciones;
+using ExploraYa1.UserProfiles;
+using ExploraYa1.Experiencias;
 using Microsoft.EntityFrameworkCore;
 using System;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
@@ -37,6 +40,11 @@ public class ExploraYa1DbContext :
 
     public DbSet<ApiExternaLog> ApiExternaLogs { get; set; }
 
+    public DbSet<Notificacion> Notificaciones { get; set; }
+
+    public DbSet<UserProfile> UserProfiles { get; set; }
+
+    public DbSet<Experiencia> Experiencias { get; set; }
     #region Entities from the modules
 
     /* Notice: We only implemented IIdentityProDbContext 
@@ -174,7 +182,7 @@ public class ExploraYa1DbContext :
             //.OnDelete(DeleteBehavior.Restrict);
 
             b.HasOne(r => r.Pais)
-     .WithMany(p => p.Regiones)   
+     .WithMany(p => p.Regiones)
      .HasForeignKey(r => r.PaisId)
      .OnDelete(DeleteBehavior.Restrict)
      .IsRequired();
@@ -193,7 +201,7 @@ public class ExploraYa1DbContext :
 
 
         });
-       
+
         builder.Entity<CalificacionDestino>(b =>
         {
             b.ToTable(ExploraYa1Consts.DbTablePrefix + "Calificaciones", ExploraYa1Consts.DbSchema);
@@ -224,7 +232,40 @@ public class ExploraYa1DbContext :
             b.HasIndex(x => x.NombreApi);
         });
 
+        builder.Entity<Notificacion>(b =>
+        {
+            b.ToTable("AppNotificaciones");
 
+            b.ConfigureByConvention();
+
+            b.Property(x => x.Titulo).IsRequired().HasMaxLength(200);
+            b.Property(x => x.Mensaje).IsRequired().HasMaxLength(2000);
+            b.Property(x => x.Leida).IsRequired();
+        });
+
+
+        builder.Entity<Experiencia>(b =>
+        {
+            
+            b.ToTable(ExploraYa1Consts.DbTablePrefix + "Experiencias", ExploraYa1Consts.DbSchema);
+
+            
+            b.ConfigureByConvention();
+
+            
+            b.Property(x => x.Comentario)
+                .IsRequired()
+                .HasMaxLength(1000); 
+
+            b.Property(x => x.Valoracion)
+                .IsRequired();
+
+           
+            b.HasOne<DestinoTuristico>()
+                .WithMany() 
+                .HasForeignKey(x => x.DestinoId)
+                .OnDelete(DeleteBehavior.Cascade); 
+        });
 
 
     }
@@ -237,5 +278,5 @@ public class ExploraYa1DbContext :
             optionsBuilder.UseSqlServer("Server=FELIPE-NAVE12;Database=ExploraYa1;Trusted_Connection=True;TrustServerCertificate=True;");
         }
     }
-    
+
 }

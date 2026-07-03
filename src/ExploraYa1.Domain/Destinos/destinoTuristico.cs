@@ -34,7 +34,7 @@ namespace ExploraYa1.Destinos
         public int CalificacionGeneral { get; set; }
 
          public Guid RegionId { get; set; }
-         public Region Region { get; set; }
+         public Region? Region { get; set; }
 
         //public Guid IdRegion { get; set; }
     }
