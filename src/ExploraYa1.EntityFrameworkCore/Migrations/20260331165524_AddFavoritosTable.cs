@@ -6,20 +6,18 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ExploraYa1.Migrations
 {
     /// <inheritdoc />
-    public partial class asdasdasd : Migration
+    public partial class AddFavoritosTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "AppCalificaciones",
+                name: "AppFavoritos",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DestinoTuristicoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Puntuacion = table.Column<int>(type: "int", nullable: false),
-                    Comentario = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
                     ExtraProperties = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
                     CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -29,15 +27,21 @@ namespace ExploraYa1.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AppCalificaciones", x => x.Id);
+                    table.PrimaryKey("PK_AppFavoritos", x => x.Id);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppFavoritos_UserId_DestinoTuristicoId",
+                table: "AppFavoritos",
+                columns: new[] { "UserId", "DestinoTuristicoId" },
+                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AppCalificaciones");
+                name: "AppFavoritos");
         }
     }
 }

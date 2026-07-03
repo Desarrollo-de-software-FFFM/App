@@ -35,6 +35,8 @@ public class ExploraYa1DbContext :
 
     public DbSet<CalificacionDestino> Opiniones { get; set; }
 
+    public DbSet<Favorito> Favoritos { get; set; }
+
     public DbSet<Notificacion> Notificaciones { get; set; }
 
     public DbSet<UserProfile> UserProfiles { get; set; }
@@ -70,7 +72,7 @@ public class ExploraYa1DbContext :
     // Propiedad de instancia usada por el HasQueryFilter (permite cambiar por instancia de DbContext)
     private Guid? CurrentUserId { get; set; }
 
-    // Constructor principal usado en runtime (inyección de ICurrentUser)
+    // Constructor principal usado en runtime (inyecciï¿½n de ICurrentUser)
     public ExploraYa1DbContext(DbContextOptions<ExploraYa1DbContext> options, ICurrentUser currentUser)
         : base(options)
     {
@@ -78,7 +80,7 @@ public class ExploraYa1DbContext :
         CurrentUserId = _currentUser?.Id;
     }
 
-    // Constructor adicional para tiempo de diseño / migraciones (IDesignTimeDbContextFactory)
+    // Constructor adicional para tiempo de diseï¿½o / migraciones (IDesignTimeDbContextFactory)
     // Deja _currentUser nulo y CurrentUserId a null para evitar dependencias en el factory.
     public ExploraYa1DbContext(DbContextOptions<ExploraYa1DbContext> options)
         : base(options)
@@ -205,6 +207,15 @@ public class ExploraYa1DbContext :
             b.Property(x => x.Comentario).IsRequired().HasMaxLength(2000);
             b.Property(x => x.DestinoTuristicoId).IsRequired();
             b.Property(x => x.UserId).IsRequired();
+        });
+
+        builder.Entity<Favorito>(b =>
+        {
+            b.ToTable(ExploraYa1Consts.DbTablePrefix + "Favoritos", ExploraYa1Consts.DbSchema);
+            b.ConfigureByConvention();
+            b.Property(x => x.DestinoTuristicoId).IsRequired();
+            b.Property(x => x.UserId).IsRequired();
+            b.HasIndex(x => new { x.UserId, x.DestinoTuristicoId }).IsUnique();
         });
 
         builder.Entity<Notificacion>(b =>

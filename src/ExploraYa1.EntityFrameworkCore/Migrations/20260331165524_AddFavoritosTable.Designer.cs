@@ -13,8 +13,8 @@ using Volo.Abp.EntityFrameworkCore;
 namespace ExploraYa1.Migrations
 {
     [DbContext(typeof(ExploraYa1DbContext))]
-    [Migration("20251107223335_asdasdasd")]
-    partial class asdasdasd
+    [Migration("20260331165524_AddFavoritosTable")]
+    partial class AddFavoritosTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -142,6 +142,53 @@ namespace ExploraYa1.Migrations
                     b.HasIndex("RegionId");
 
                     b.ToTable("AppDestinos", (string)null);
+                });
+
+            modelBuilder.Entity("ExploraYa1.Destinos.Favorito", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)")
+                        .HasColumnName("ConcurrencyStamp");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreationTime");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("CreatorId");
+
+                    b.Property<Guid>("DestinoTuristicoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ExtraProperties")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("ExtraProperties");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("LastModificationTime");
+
+                    b.Property<Guid?>("LastModifierId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("LastModifierId");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId", "DestinoTuristicoId")
+                        .IsUnique();
+
+                    b.ToTable("AppFavoritos", (string)null);
                 });
 
             modelBuilder.Entity("ExploraYa1.Destinos.Pais", b =>

@@ -17,5 +17,13 @@ function configureRoutes() {
         order: 1,
         layout: eLayoutType.application,
       },
+      {
+        path: '/favoritos',
+        name: '::Menu:Favoritos',
+        iconClass: 'fas fa-heart',
+        order: 2,
+        layout: eLayoutType.application,
+        requiredPolicy: 'ExploraYa1',
+      },
   ]);
 }

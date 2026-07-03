@@ -34,6 +34,8 @@ namespace ExploraYa1
             CreateMap<IdentityUser, UserProfileDto>();
         
 
+        CreateMap<Favorito, FavoritoDto>();
+    }
         CreateMap<Notificacion, NotificacionDTO>();
 
 
