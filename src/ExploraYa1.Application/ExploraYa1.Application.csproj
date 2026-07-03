@@ -11,7 +11,6 @@
   <ItemGroup>
     <ProjectReference Include="..\ExploraYa1.Domain\ExploraYa1.Domain.csproj" />
     <ProjectReference Include="..\ExploraYa1.Application.Contracts\ExploraYa1.Application.Contracts.csproj" />
-    <ProjectReference Include="..\ExploraYa1.EntityFrameworkCore\ExploraYa1.EntityFrameworkCore.csproj" />
   </ItemGroup>
 
   <ItemGroup>
