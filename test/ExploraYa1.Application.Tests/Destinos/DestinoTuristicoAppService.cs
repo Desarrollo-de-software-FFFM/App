@@ -34,67 +34,58 @@ namespace ExploraYa1.Destinos
             _regionRepository = GetRequiredService<IRepository<Region, Guid>>();
             _paisRepository = GetRequiredService<IRepository<Pais, Guid>>();
             _citySearchService = GetRequiredService<ICitySearchService>();
-            _destinosAppService = new DestinoTuristicoAppService(_destinoRepository, _citySearchService);
+            _destinosAppService = GetRequiredService<IDestinoTuristicoAppService>();
         }
 
-        public async Task CreateAsync_ShouldReturnCreatedDestinosDto()
+        [Fact]
+        public async Task Should_Create_Destino_Successfully()
         {
+            // Arrange: crear país
+            var pais = await _paisRepository.InsertAsync(
+                new Pais { Nombre = "Argentina" },
+                autoSave: true
+            );
 
-            var paisRepo = GetRequiredService<IRepository<Pais, Guid>>();
-            var pais = await paisRepo.InsertAsync(new Pais
+            // Arrange: crear región
+            var region = await _regionRepository.InsertAsync(
+                new Region
+                {
+                    Nombre = "Región test",
+                    Descripcion = "Descripción prueba",
+                    PaisId = pais.Id
+                },
+                autoSave: true
+            );
+
+            // DTO a crear
+            var input = new CrearActualizarDestinoDTO
             {
-                Nombre = "Argentina",
-
-            }, autoSave: true);
-
-            var regionRepo = GetRequiredService<IRepository<Region, Guid>>();
-            var region1 = await regionRepo.InsertAsync(new Region
-            {
-                Nombre = "Región de test",
-                Descripcion = "Para prueba",
-                PaisId = pais.Id // o un país que hayas creado
-            }, autoSave: true);
-
-
-            var allRegiones = await regionRepo.GetListAsync();
-            var allPaises = await paisRepo.GetListAsync();
-
-            allPaises.Count.ShouldBe(1);
-            allRegiones.Count.ShouldBe(1);
-
-            // Arrange
-            var crearDestinoDTO = new CrearActualizarDestinoDTO
-            {
-                Nombre = "ParqueNacional",
+                Nombre = "Parque Nacional",
+                Poblacion = 500,
                 Latitud = 34,
                 Longuitud = 40,
-                Poblacion = 500,
+                ImagenUrl = "test.png",
                 CalificacionGeneral = 4,
-                ImagenUrl = "asdasdasd",
-                RegionId = region1.Id
-
-
-
-                // Asegúrate de usar un GUID válido
-
+                RegionId = region.Id
             };
 
             // Act
-            var result = await _destinosAppService.CreateAsync(crearDestinoDTO);
-
-
+            var result = await _destinosAppService.CreateAsync(input);
 
             // Assert
             result.ShouldNotBeNull();
             result.Id.ShouldNotBe(Guid.Empty);
-            result.Nombre.ShouldBe(crearDestinoDTO.Nombre);
-            result.Poblacion.ShouldBe(crearDestinoDTO.Poblacion);
-            result.CalificacionGeneral.ShouldBe(crearDestinoDTO.CalificacionGeneral);
-            result.ImagenUrl.ShouldBe(crearDestinoDTO.ImagenUrl);
-            result.Latitud.ShouldBe(crearDestinoDTO.Latitud);
-            result.Longuitud.ShouldBe(crearDestinoDTO.Longuitud);
-            result.RegionId.ShouldBe(crearDestinoDTO.RegionId);
-        }
-        
+            result.Nombre.ShouldBe("Parque Nacional");
+            result.RegionId.ShouldBe(region.Id);
 
-    } }
+            // Verificar persistencia real
+            var saved = await _destinoRepository.GetAsync(result.Id);
+            saved.ShouldNotBeNull();
+            saved.Nombre.ShouldBe(input.Nombre);
+        }
+    }
+}
+
+
+
+

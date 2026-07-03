@@ -9,6 +9,9 @@ namespace ExploraYa1.Destinos
     public interface ICitySearchService
     {
         Task<CitySearchResultDto> SearchCitiesAsync(CitySearchRequestDto request);
+
+        Task<CityInformationDto> GetCityDetailsAsync(int cityId);
+
     }
 
 }
