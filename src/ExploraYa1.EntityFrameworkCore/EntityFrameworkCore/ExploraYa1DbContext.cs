@@ -1,4 +1,5 @@
 using ExploraYa1.Destinos;
+using ExploraYa1.Monitoreo;
 using ExploraYa1.Notificaciones;
 using ExploraYa1.UserProfiles;
 using ExploraYa1.Experiencias;
@@ -36,6 +37,8 @@ public class ExploraYa1DbContext :
     public DbSet<CalificacionDestino> Opiniones { get; set; }
 
     public DbSet<Favorito> Favoritos { get; set; }
+
+    public DbSet<ApiExternaLog> ApiExternaLogs { get; set; }
 
     public DbSet<Notificacion> Notificaciones { get; set; }
 
@@ -216,6 +219,17 @@ public class ExploraYa1DbContext :
             b.Property(x => x.DestinoTuristicoId).IsRequired();
             b.Property(x => x.UserId).IsRequired();
             b.HasIndex(x => new { x.UserId, x.DestinoTuristicoId }).IsUnique();
+        });
+
+        builder.Entity<ApiExternaLog>(b =>
+        {
+            b.ToTable(ExploraYa1Consts.DbTablePrefix + "ApiExternaLogs", ExploraYa1Consts.DbSchema);
+            b.HasKey(x => x.Id);
+            b.Property(x => x.NombreApi).IsRequired().HasMaxLength(64);
+            b.Property(x => x.Endpoint).IsRequired().HasMaxLength(256);
+            b.Property(x => x.MensajeError).HasMaxLength(1024);
+            b.HasIndex(x => x.FechaHora);
+            b.HasIndex(x => x.NombreApi);
         });
 
         builder.Entity<Notificacion>(b =>
