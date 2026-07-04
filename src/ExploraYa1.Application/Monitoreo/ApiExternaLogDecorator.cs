@@ -60,6 +60,42 @@ public class ApiExternaLogDecorator : ICitySearchService
         }
     }
 
+    public async Task<CityInformationDto> GetCityDetailsAsync(int cityId)
+    {
+        var sw = Stopwatch.StartNew();
+        bool exitosa = true;
+        int statusCode = 200;
+        string? mensajeError = null;
+
+        try
+        {
+            var result = await _inner.GetCityDetailsAsync(cityId);
+            sw.Stop();
+            return result;
+        }
+        catch (HttpRequestException httpEx)
+        {
+            sw.Stop();
+            exitosa      = false;
+            statusCode   = (int)(httpEx.StatusCode ?? System.Net.HttpStatusCode.ServiceUnavailable);
+            mensajeError = httpEx.Message;
+            throw;
+        }
+        catch (Exception ex)
+        {
+            sw.Stop();
+            exitosa      = false;
+            statusCode   = 0;
+            mensajeError = ex.Message;
+            throw;
+        }
+        finally
+        {
+            await WriteLogAsync("Geo", $"/v1/geo/cities/{cityId}", exitosa, statusCode,
+                sw.Elapsed.TotalMilliseconds, mensajeError);
+        }
+    }
+
     private async Task WriteLogAsync(string nombreApi, string endpoint, bool exitosa,
         int codigoHttp, double tiempoMs, string? mensajeError)
     {

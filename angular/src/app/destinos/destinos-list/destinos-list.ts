@@ -62,36 +62,45 @@ export class DestinationsListComponent implements OnInit {
 
   ngOnInit(): void {
     // Cargar los destinos al inicializar el componente
-    this.loadDestinations();
+    //this.loadDestinations();
   }
 
   /**
    * Carga los destinos desde la API
    */
   private loadDestinations(): void {
-    this.loading = true;
-
-    this.destinationService
-      .searchCities(this.searchParams)
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-        })
-      )
-      .subscribe({
-        next: (result: PagedResultDto<CityDto>) => {
-          // Asignar los resultados al array de destinos
-          this.destinations = result.items || [];
-          this.totalCount = result.totalCount || 0;
-        },
-        error: (error) => {
-          // Manejar errores de la API
-          console.error('Error al cargar destinos:', error);
-          this.destinations = [];
-          this.totalCount = 0;
-        },
-      });
+  // 1. 🛡️ GUARDIA: Si no hay texto en el campo de búsqueda, no llamamos a la API.
+  // (Asegurate de cambiar 'partialName' por el nombre exacto que tenga tu DTO)
+  if (!this.searchParams.partialName || this.searchParams.partialName.trim() === '') {
+    this.destinations = [];
+    this.totalCount = 0;
+    this.loading = false;
+    return; // Cortamos la ejecución acá
   }
+
+  this.loading = true;
+
+  this.destinationService
+    .searchCities(this.searchParams)
+    .pipe(
+      finalize(() => {
+        this.loading = false;
+      })
+    )
+    .subscribe({
+      next: (result: PagedResultDto<CityDto>) => {
+        // Asignar los resultados al array de destinos
+        this.destinations = result.items || [];
+        this.totalCount = result.totalCount || 0;
+      },
+      error: (error) => {
+        // Manejar errores de la API
+        console.error('Error al cargar destinos:', error);
+        this.destinations = [];
+        this.totalCount = 0;
+      },
+    });
+}
 
   /**
    * Maneja el evento de búsqueda

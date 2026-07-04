@@ -5,6 +5,10 @@ namespace ExploraYa1.Destinos
 {
     public class CitySearchResultDto
     {
-        public List<CityDto> Cities { get; set; } = new();
+        // ABP siempre busca "Items"
+        public List<CityDto> Items { get; set; }
+
+        // Opcional, pero recomendado: ABP suele pedir el TotalCount para armar la paginación abajo
+        public long TotalCount { get; set; }
     }
 }

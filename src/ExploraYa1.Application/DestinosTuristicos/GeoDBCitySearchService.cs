@@ -76,7 +76,7 @@ namespace ExploraYa1.DestinosTuristicos
                 var json = await response.Content.ReadFromJsonAsync<GeoDbResponse>();
 
                 if (json?.Data == null)
-                    return new CitySearchResultDto { Cities = new List<CityDto>() };
+                    return new CitySearchResultDto { Items = new List<CityDto>() };
 
                 var cities = json.Data.Select(c => new CityDto
                 {
@@ -89,7 +89,7 @@ namespace ExploraYa1.DestinosTuristicos
                     Longitude = c.Longitude
                 }).ToList();
 
-                return new CitySearchResultDto { Cities = cities };
+                return new CitySearchResultDto { Items = cities };
             }
             catch
             {
