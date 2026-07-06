@@ -91,7 +91,8 @@ export class DestinationsListComponent implements OnInit {
       next: (result: PagedResultDto<CityDto>) => {
         // Asignar los resultados al array de destinos
         this.destinations = result.items || [];
-        this.totalCount = result.totalCount || 0;
+        //this.totalCount = result.totalCount || 0;
+        this.totalCount = 50;
       },
       error: (error) => {
         // Manejar errores de la API

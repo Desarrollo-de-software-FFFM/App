@@ -43,7 +43,7 @@ namespace ExploraYa1.Destinos
             var citySearchMock = Substitute.For<ICitySearchService>();
             citySearchMock
                 .SearchCitiesAsync(Arg.Any<CitySearchRequestDto>())
-                .Returns(new CitySearchResultDto { Cities = expectedCities });
+                .Returns(new CitySearchResultDto { Items = expectedCities });
 
             var service = BuildService(citySearchMock);
 
@@ -52,8 +52,8 @@ namespace ExploraYa1.Destinos
 
             // Assert
             result.ShouldNotBeNull();
-            result.Cities.Count.ShouldBe(1);
-            result.Cities[0].Name.ShouldBe("TestCity");
+            result.Items.Count.ShouldBe(1);
+            result.Items[0].Name.ShouldBe("TestCity");
         }
 
         [Fact]
@@ -65,7 +65,7 @@ namespace ExploraYa1.Destinos
             var citySearchMock = Substitute.For<ICitySearchService>();
             citySearchMock
                 .SearchCitiesAsync(Arg.Any<CitySearchRequestDto>())
-                .Returns(new CitySearchResultDto { Cities = new List<CityDto>() });
+                .Returns(new CitySearchResultDto { Items = new List<CityDto>() });
 
             var service = BuildService(citySearchMock);
 
@@ -73,7 +73,7 @@ namespace ExploraYa1.Destinos
             var result = await service.SearchCitiesAsync(request);
 
             // Assert
-            result.Cities.ShouldBeEmpty();
+            result.Items.ShouldBeEmpty();
         }
 
         [Fact]
@@ -85,7 +85,7 @@ namespace ExploraYa1.Destinos
             var citySearchMock = Substitute.For<ICitySearchService>();
             citySearchMock
                 .SearchCitiesAsync(Arg.Any<CitySearchRequestDto>())
-                .Returns(new CitySearchResultDto { Cities = new List<CityDto>() });
+                .Returns(new CitySearchResultDto { Items = new List<CityDto>() });
 
             var service = BuildService(citySearchMock);
 
@@ -93,7 +93,7 @@ namespace ExploraYa1.Destinos
             var result = await service.SearchCitiesAsync(request);
 
             // Assert
-            result.Cities.ShouldBeEmpty();
+            result.Items.ShouldBeEmpty();
         }
 
         [Fact]
@@ -131,14 +131,14 @@ namespace ExploraYa1.Destinos
                     var filtered = string.IsNullOrWhiteSpace(req.Country)
                         ? cities
                         : cities.FindAll(c => c.Country == req.Country);
-                    return Task.FromResult(new CitySearchResultDto { Cities = filtered });
+                    return Task.FromResult(new CitySearchResultDto { Items = filtered });
                 });
 
             var service = BuildService(citySearchMock);
             var result = await service.SearchCitiesAsync(new CitySearchRequestDto { Country = "ES" });
 
-            result.Cities.Count.ShouldBe(2);
-            result.Cities.All(c => c.Country == "ES").ShouldBeTrue();
+            result.Items.Count.ShouldBe(2);
+            result.Items.All(c => c.Country == "ES").ShouldBeTrue();
         }
 
         [Fact]
@@ -160,14 +160,14 @@ namespace ExploraYa1.Destinos
                     var filtered = string.IsNullOrWhiteSpace(req.Region)
                         ? cities
                         : cities.FindAll(c => c.Region == req.Region);
-                    return Task.FromResult(new CitySearchResultDto { Cities = filtered });
+                    return Task.FromResult(new CitySearchResultDto { Items = filtered });
                 });
 
             var service = BuildService(citySearchMock);
             var result = await service.SearchCitiesAsync(new CitySearchRequestDto { Region = "Madrid" });
 
-            result.Cities.Count.ShouldBe(2);
-            result.Cities.All(c => c.Region == "Madrid").ShouldBeTrue();
+            result.Items.Count.ShouldBe(2);
+            result.Items.All(c => c.Region == "Madrid").ShouldBeTrue();
         }
 
         [Fact]
@@ -189,14 +189,14 @@ namespace ExploraYa1.Destinos
                     var filtered = req.MinimumPopulation.HasValue
                         ? cities.FindAll(c => c.Population >= req.MinimumPopulation.Value)
                         : cities;
-                    return Task.FromResult(new CitySearchResultDto { Cities = filtered });
+                    return Task.FromResult(new CitySearchResultDto { Items = filtered });
                 });
 
             var service = BuildService(citySearchMock);
             var result = await service.SearchCitiesAsync(new CitySearchRequestDto { MinimumPopulation = 1000000 });
 
-            result.Cities.Count.ShouldBe(2);
-            result.Cities.All(c => c.Population >= 1000000).ShouldBeTrue();
+            result.Items.Count.ShouldBe(2);
+            result.Items.All(c => c.Population >= 1000000).ShouldBeTrue();
         }
 
         [Fact]
@@ -219,14 +219,14 @@ namespace ExploraYa1.Destinos
                         (string.IsNullOrWhiteSpace(req.PartialName) || c.Name.Contains(req.PartialName)) &&
                         (string.IsNullOrWhiteSpace(req.Country) || c.Country == req.Country)
                     );
-                    return Task.FromResult(new CitySearchResultDto { Cities = filtered });
+                    return Task.FromResult(new CitySearchResultDto { Items = filtered });
                 });
 
             var service = BuildService(citySearchMock);
             var result = await service.SearchCitiesAsync(new CitySearchRequestDto { PartialName = "Mad", Country = "ES" });
 
-            result.Cities.Count.ShouldBe(1);
-            result.Cities.All(c => c.Name.Contains("Mad") && c.Country == "ES").ShouldBeTrue();
+            result.Items.Count.ShouldBe(1);
+            result.Items.All(c => c.Name.Contains("Mad") && c.Country == "ES").ShouldBeTrue();
         }
         [Fact]
         public async Task GetCityDetailsAsync_ShouldReturnCityInformation()

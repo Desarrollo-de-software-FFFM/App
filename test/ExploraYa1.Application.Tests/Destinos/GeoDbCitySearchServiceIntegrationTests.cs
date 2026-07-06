@@ -35,9 +35,9 @@ namespace ExploraYa1.Destinos
             var result = await service.SearchCitiesAsync(request);
 
             result.ShouldNotBeNull();
-            result.Cities.ShouldNotBeEmpty();
-            result.Cities[0].Name.ShouldNotBeNullOrEmpty();
-            result.Cities[0].Country.ShouldNotBeNullOrEmpty();
+            result.Items.ShouldNotBeEmpty();
+            result.Items[0].Name.ShouldNotBeNullOrEmpty();
+            result.Items[0].Country.ShouldNotBeNullOrEmpty();
         }
 
         [Fact]
@@ -49,8 +49,8 @@ namespace ExploraYa1.Destinos
             var result = await service.SearchCitiesAsync(request);
 
             result.ShouldNotBeNull();
-            result.Cities.ShouldNotBeNull();
-            result.Cities.Count.ShouldBeLessThanOrEqualTo(10);
+            result.Items.ShouldNotBeNull();
+            result.Items.Count.ShouldBeLessThanOrEqualTo(10);
         }
         
         [Fact]
@@ -66,11 +66,11 @@ namespace ExploraYa1.Destinos
             }
             catch (HttpRequestException)
             {
-                result = new CitySearchResultDto { Cities = new List<CityDto>() };
+                result = new CitySearchResultDto { Items = new List<CityDto>() };
             }
 
             result.ShouldNotBeNull();
-            result.Cities.ShouldBeEmpty();
+            result.Items.ShouldBeEmpty();
         }
         private class FailingHandler : HttpMessageHandler
         {
@@ -100,12 +100,12 @@ namespace ExploraYa1.Destinos
             catch (HttpRequestException)
             {
                 // Si el servicio no maneja la excepción, la capturamos para evitar fallo en la prueba
-                result = new CitySearchResultDto { Cities = new List<CityDto>() };
+                result = new CitySearchResultDto { Items = new List<CityDto>() };
             }
 
             // Assert
             Assert.NotNull(result);
-            Assert.Empty(result.Cities);
+            Assert.Empty(result.Items);
         }
         public class FakeGeoDbCity
         {
