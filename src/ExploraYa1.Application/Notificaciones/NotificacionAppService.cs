@@ -35,12 +35,14 @@ namespace ExploraYa1.Notificaciones
             // Mapeo manual sin AutoMapper
             return notis.Select(n => new NotificacionDTO
             {
-                Id = n.Id,
+                    Id = n.Id,
                 UserId = n.UserId,
                 DestinoId = n.DestinoId,
                 Titulo = n.Titulo,
                 Mensaje = n.Mensaje,
-                Leida = n.Leida
+                Leida = n.Leida,
+                Fecha = n.Fecha
+
             }).ToList();
         }
 

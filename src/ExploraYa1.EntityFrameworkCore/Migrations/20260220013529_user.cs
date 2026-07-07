@@ -15,9 +15,7 @@ namespace ExploraYa1.Migrations
                 name: "PK_AppUserProfiles",
                 table: "AppUserProfiles");
 
-            migrationBuilder.DropIndex(
-                name: "IX_AppUserProfiles_UserId",
-                table: "AppUserProfiles");
+ 
 
             migrationBuilder.RenameTable(
                 name: "AppUserProfiles",

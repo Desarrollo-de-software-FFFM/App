@@ -241,6 +241,7 @@ public class ExploraYa1DbContext :
             b.Property(x => x.Titulo).IsRequired().HasMaxLength(200);
             b.Property(x => x.Mensaje).IsRequired().HasMaxLength(2000);
             b.Property(x => x.Leida).IsRequired();
+            b.Property(x => x.Fecha).IsRequired();
         });
 
 
