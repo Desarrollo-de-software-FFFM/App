@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router, RouterModule } from '@angular/router';
 import { UserService } from '../../proxy/usuarios/user.service';
 import { CommonModule } from '@angular/common';
+import { OAuthService } from 'angular-oauth2-oidc';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +21,8 @@ export class Login {
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private oauthService: OAuthService
   ) {
     this.loginForm = this.fb.group({
       userNameOrEmail: ['', Validators.required],
@@ -27,7 +30,7 @@ export class Login {
     });
   }
 
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     if (this.loginForm.invalid) {
       return;
     }
@@ -35,17 +38,24 @@ export class Login {
     this.isLoading = true;
     this.errorMessage = '';
 
-    this.userService.login(this.loginForm.value).subscribe({
-      next: (userProfile) => {
-        // Guardamos el perfil para simular la sesión
-        localStorage.setItem('currentUser', JSON.stringify(userProfile));
-        this.isLoading = false;
-        this.router.navigate(['/']); // Redirigir al home
-      },
-      error: (err) => {
-        this.isLoading = false;
-        this.errorMessage = err.error?.error?.message || 'Error al iniciar sesión. Verifica tus credenciales.';
-      }
-    });
+    try {
+      // 1. Obtener el Token JWT via Password Flow (se guarda automáticamente)
+      await this.oauthService.fetchTokenUsingPasswordFlow(
+        this.loginForm.value.userNameOrEmail,
+        this.loginForm.value.password
+      );
+
+      // 2. Traer el perfil del usuario actual (el token se enviará en los headers gracias al interceptor de ABP)
+      const userProfile = await firstValueFrom(this.userService.getProfile());
+
+      // 3. Guardar el perfil localmente para pintar la UI del Navbar / Home
+      localStorage.setItem('currentUser', JSON.stringify(userProfile));
+
+      this.isLoading = false;
+      this.router.navigate(['/']); // Redirigir al home
+    } catch (err: any) {
+      this.isLoading = false;
+      this.errorMessage = err?.error?.error_description || 'Error al iniciar sesión. Verifica tus credenciales.';
+    }
   }
 }
