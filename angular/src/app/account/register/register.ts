@@ -40,7 +40,7 @@ export class Register {
       next: () => {
         this.isLoading = false;
         // Redirigir al login después de un registro exitoso
-        this.router.navigate(['/account/login']);
+        this.router.navigate(['/auth/login']);
       },
       error: (err) => {
         this.isLoading = false;

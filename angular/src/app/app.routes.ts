@@ -13,12 +13,12 @@ export const APP_ROUTES: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'account/login',
-    loadComponent: () => import('./account/login/login').then(c => c.Login),
+    path: 'auth/login',
+    loadComponent: () => import('./auth/login/login').then(c => c.Login),
   },
   {
-    path: 'account/register',
-    loadComponent: () => import('./account/register/register').then(c => c.Register),
+    path: 'auth/register',
+    loadComponent: () => import('./auth/register/register').then(c => c.Register),
   },
   {
     path: 'account',
