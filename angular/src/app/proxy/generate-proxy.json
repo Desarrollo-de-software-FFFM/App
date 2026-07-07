@@ -918,6 +918,82 @@
                     "type": "System.Collections.Generic.List<ExploraYa1.Destinos.CalificacionDto>",
                     "typeSimple": "[ExploraYa1.Destinos.CalificacionDto]"
                   }
+                },
+                {
+                  "name": "EditarCalificacionAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "destinoId",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    },
+                    {
+                      "name": "input",
+                      "typeAsString": "ExploraYa1.Destinos.CrearActualizarCalificacionDTO, ExploraYa1.Application.Contracts",
+                      "type": "ExploraYa1.Destinos.CrearActualizarCalificacionDTO",
+                      "typeSimple": "ExploraYa1.Destinos.CrearActualizarCalificacionDTO",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "ExploraYa1.Destinos.CalificacionDto",
+                    "typeSimple": "ExploraYa1.Destinos.CalificacionDto"
+                  }
+                },
+                {
+                  "name": "EliminarCalificacionAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "destinoId",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Void",
+                    "typeSimple": "System.Void"
+                  }
+                },
+                {
+                  "name": "ObtenerPromedioAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "destinoId",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Double",
+                    "typeSimple": "number"
+                  }
+                },
+                {
+                  "name": "ListarComentariosAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "destinoId",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.List<ExploraYa1.Destinos.CalificacionDto>",
+                    "typeSimple": "[ExploraYa1.Destinos.CalificacionDto]"
+                  }
                 }
               ]
             }
@@ -996,6 +1072,174 @@
               },
               "allowAnonymous": false,
               "implementFrom": "ExploraYa1.Destinos.ICalificacionAppService"
+            },
+            "EditarCalificacionAsyncByDestinoIdAndInput": {
+              "uniqueName": "EditarCalificacionAsyncByDestinoIdAndInput",
+              "name": "EditarCalificacionAsync",
+              "httpMethod": "POST",
+              "url": "api/app/calificacion/editar-calificacion/{destinoId}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "destinoId",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                },
+                {
+                  "name": "input",
+                  "typeAsString": "ExploraYa1.Destinos.CrearActualizarCalificacionDTO, ExploraYa1.Application.Contracts",
+                  "type": "ExploraYa1.Destinos.CrearActualizarCalificacionDTO",
+                  "typeSimple": "ExploraYa1.Destinos.CrearActualizarCalificacionDTO",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "destinoId",
+                  "name": "destinoId",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "input",
+                  "jsonName": null,
+                  "type": "ExploraYa1.Destinos.CrearActualizarCalificacionDTO",
+                  "typeSimple": "ExploraYa1.Destinos.CrearActualizarCalificacionDTO",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "ExploraYa1.Destinos.CalificacionDto",
+                "typeSimple": "ExploraYa1.Destinos.CalificacionDto"
+              },
+              "allowAnonymous": false,
+              "implementFrom": "ExploraYa1.Destinos.ICalificacionAppService"
+            },
+            "EliminarCalificacionAsyncByDestinoId": {
+              "uniqueName": "EliminarCalificacionAsyncByDestinoId",
+              "name": "EliminarCalificacionAsync",
+              "httpMethod": "POST",
+              "url": "api/app/calificacion/eliminar-calificacion/{destinoId}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "destinoId",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "destinoId",
+                  "name": "destinoId",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Void",
+                "typeSimple": "System.Void"
+              },
+              "allowAnonymous": false,
+              "implementFrom": "ExploraYa1.Destinos.ICalificacionAppService"
+            },
+            "ObtenerPromedioAsyncByDestinoId": {
+              "uniqueName": "ObtenerPromedioAsyncByDestinoId",
+              "name": "ObtenerPromedioAsync",
+              "httpMethod": "POST",
+              "url": "api/app/calificacion/obtener-promedio/{destinoId}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "destinoId",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "destinoId",
+                  "name": "destinoId",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Double",
+                "typeSimple": "number"
+              },
+              "allowAnonymous": false,
+              "implementFrom": "ExploraYa1.Destinos.ICalificacionAppService"
+            },
+            "ListarComentariosAsyncByDestinoId": {
+              "uniqueName": "ListarComentariosAsyncByDestinoId",
+              "name": "ListarComentariosAsync",
+              "httpMethod": "POST",
+              "url": "api/app/calificacion/listar-comentarios/{destinoId}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "destinoId",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "destinoId",
+                  "name": "destinoId",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Collections.Generic.List<ExploraYa1.Destinos.CalificacionDto>",
+                "typeSimple": "[ExploraYa1.Destinos.CalificacionDto]"
+              },
+              "allowAnonymous": false,
+              "implementFrom": "ExploraYa1.Destinos.ICalificacionAppService"
             }
           }
         },
@@ -1024,8 +1268,8 @@
                     }
                   ],
                   "returnValue": {
-                    "type": "Volo.Abp.Application.Dtos.PagedResultDto<ExploraYa1.Destinos.CityDto>",
-                    "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<ExploraYa1.Destinos.CityDto>"
+                    "type": "ExploraYa1.Destinos.CitySearchResultDto",
+                    "typeSimple": "ExploraYa1.Destinos.CitySearchResultDto"
                   }
                 },
                 {
@@ -1156,11 +1400,85 @@
                 }
               ],
               "returnValue": {
-                "type": "Volo.Abp.Application.Dtos.PagedResultDto<ExploraYa1.Destinos.CityDto>",
-                "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<ExploraYa1.Destinos.CityDto>"
+                "type": "ExploraYa1.Destinos.CitySearchResultDto",
+                "typeSimple": "ExploraYa1.Destinos.CitySearchResultDto"
               },
               "allowAnonymous": null,
               "implementFrom": "ExploraYa1.DestinosTuristicos.IDestinoTuristicoAppService"
+            },
+            "GetCityDetailsAsyncById": {
+              "uniqueName": "GetCityDetailsAsyncById",
+              "name": "GetCityDetailsAsync",
+              "httpMethod": "GET",
+              "url": "api/app/destino-turistico/{id}/city-details",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "id",
+                  "typeAsString": "System.Int32, System.Private.CoreLib",
+                  "type": "System.Int32",
+                  "typeSimple": "number",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "id",
+                  "name": "id",
+                  "jsonName": null,
+                  "type": "System.Int32",
+                  "typeSimple": "number",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "ExploraYa1.Destinos.CityInformationDto",
+                "typeSimple": "ExploraYa1.Destinos.CityInformationDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "ExploraYa1.DestinosTuristicos.DestinoTuristicoAppService"
+            },
+            "CrearDesdeGeoDbAsyncByCityId": {
+              "uniqueName": "CrearDesdeGeoDbAsyncByCityId",
+              "name": "CrearDesdeGeoDbAsync",
+              "httpMethod": "POST",
+              "url": "api/app/destino-turistico/crear-desde-geo-db/{cityId}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "cityId",
+                  "typeAsString": "System.Int32, System.Private.CoreLib",
+                  "type": "System.Int32",
+                  "typeSimple": "number",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "cityId",
+                  "name": "cityId",
+                  "jsonName": null,
+                  "type": "System.Int32",
+                  "typeSimple": "number",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "ExploraYa1.DestinosTuristicos.DestinoTuristicoDTO",
+                "typeSimple": "ExploraYa1.DestinosTuristicos.DestinoTuristicoDTO"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "ExploraYa1.DestinosTuristicos.DestinoTuristicoAppService"
             },
             "CreateAsyncByInput": {
               "uniqueName": "CreateAsyncByInput",
@@ -1390,6 +1708,1125 @@
               },
               "allowAnonymous": null,
               "implementFrom": "Volo.Abp.Application.Services.IReadOnlyAppService<ExploraYa1.DestinosTuristicos.DestinoTuristicoDTO,ExploraYa1.DestinosTuristicos.DestinoTuristicoDTO,System.Guid,Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto>"
+            }
+          }
+        },
+        "ExploraYa1.DestinosTuristicos.FavoritoAppService": {
+          "controllerName": "Favorito",
+          "controllerGroupName": "Favorito",
+          "isRemoteService": true,
+          "isIntegrationService": false,
+          "apiVersion": null,
+          "type": "ExploraYa1.DestinosTuristicos.FavoritoAppService",
+          "interfaces": [
+            {
+              "type": "ExploraYa1.Destinos.IFavoritoAppService",
+              "name": "IFavoritoAppService",
+              "methods": [
+                {
+                  "name": "AgregarFavoritoAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "destinoTuristicoId",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "ExploraYa1.Destinos.FavoritoDto",
+                    "typeSimple": "ExploraYa1.Destinos.FavoritoDto"
+                  }
+                },
+                {
+                  "name": "EliminarFavoritoAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "destinoTuristicoId",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Void",
+                    "typeSimple": "System.Void"
+                  }
+                },
+                {
+                  "name": "ObtenerMisFavoritosAsync",
+                  "parametersOnMethod": [],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.List<ExploraYa1.Destinos.FavoritoDto>",
+                    "typeSimple": "[ExploraYa1.Destinos.FavoritoDto]"
+                  }
+                }
+              ]
+            }
+          ],
+          "actions": {
+            "AgregarFavoritoAsyncByDestinoTuristicoId": {
+              "uniqueName": "AgregarFavoritoAsyncByDestinoTuristicoId",
+              "name": "AgregarFavoritoAsync",
+              "httpMethod": "POST",
+              "url": "api/app/favorito/agregar-favorito/{destinoTuristicoId}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "destinoTuristicoId",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "destinoTuristicoId",
+                  "name": "destinoTuristicoId",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "ExploraYa1.Destinos.FavoritoDto",
+                "typeSimple": "ExploraYa1.Destinos.FavoritoDto"
+              },
+              "allowAnonymous": false,
+              "implementFrom": "ExploraYa1.Destinos.IFavoritoAppService"
+            },
+            "EliminarFavoritoAsyncByDestinoTuristicoId": {
+              "uniqueName": "EliminarFavoritoAsyncByDestinoTuristicoId",
+              "name": "EliminarFavoritoAsync",
+              "httpMethod": "POST",
+              "url": "api/app/favorito/eliminar-favorito/{destinoTuristicoId}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "destinoTuristicoId",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "destinoTuristicoId",
+                  "name": "destinoTuristicoId",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Void",
+                "typeSimple": "System.Void"
+              },
+              "allowAnonymous": false,
+              "implementFrom": "ExploraYa1.Destinos.IFavoritoAppService"
+            },
+            "ObtenerMisFavoritosAsync": {
+              "uniqueName": "ObtenerMisFavoritosAsync",
+              "name": "ObtenerMisFavoritosAsync",
+              "httpMethod": "POST",
+              "url": "api/app/favorito/obtener-mis-favoritos",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "System.Collections.Generic.List<ExploraYa1.Destinos.FavoritoDto>",
+                "typeSimple": "[ExploraYa1.Destinos.FavoritoDto]"
+              },
+              "allowAnonymous": false,
+              "implementFrom": "ExploraYa1.Destinos.IFavoritoAppService"
+            }
+          }
+        },
+        "ExploraYa1.Experiencias.ExperienciaAppService": {
+          "controllerName": "Experiencia",
+          "controllerGroupName": "Experiencia",
+          "isRemoteService": true,
+          "isIntegrationService": false,
+          "apiVersion": null,
+          "type": "ExploraYa1.Experiencias.ExperienciaAppService",
+          "interfaces": [
+            {
+              "type": "ExploraYa1.Experiencias.IExperienciaAppService",
+              "name": "IExperienciaAppService",
+              "methods": [
+                {
+                  "name": "CreateAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "input",
+                      "typeAsString": "ExploraYa1.Experiencias.CrearActualizarExperienciaDto, ExploraYa1.Application.Contracts",
+                      "type": "ExploraYa1.Experiencias.CrearActualizarExperienciaDto",
+                      "typeSimple": "ExploraYa1.Experiencias.CrearActualizarExperienciaDto",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "ExploraYa1.Experiencias.ExperienciaDto",
+                    "typeSimple": "ExploraYa1.Experiencias.ExperienciaDto"
+                  }
+                },
+                {
+                  "name": "UpdateAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "id",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    },
+                    {
+                      "name": "input",
+                      "typeAsString": "ExploraYa1.Experiencias.CrearActualizarExperienciaDto, ExploraYa1.Application.Contracts",
+                      "type": "ExploraYa1.Experiencias.CrearActualizarExperienciaDto",
+                      "typeSimple": "ExploraYa1.Experiencias.CrearActualizarExperienciaDto",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "ExploraYa1.Experiencias.ExperienciaDto",
+                    "typeSimple": "ExploraYa1.Experiencias.ExperienciaDto"
+                  }
+                },
+                {
+                  "name": "DeleteAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "id",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Void",
+                    "typeSimple": "System.Void"
+                  }
+                },
+                {
+                  "name": "GetListAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "input",
+                      "typeAsString": "ExploraYa1.Experiencias.GetExperienciasInput, ExploraYa1.Application.Contracts",
+                      "type": "ExploraYa1.Experiencias.GetExperienciasInput",
+                      "typeSimple": "ExploraYa1.Experiencias.GetExperienciasInput",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "Volo.Abp.Application.Dtos.PagedResultDto<ExploraYa1.Experiencias.ExperienciaDto>",
+                    "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<ExploraYa1.Experiencias.ExperienciaDto>"
+                  }
+                }
+              ]
+            }
+          ],
+          "actions": {
+            "CreateAsyncByInput": {
+              "uniqueName": "CreateAsyncByInput",
+              "name": "CreateAsync",
+              "httpMethod": "POST",
+              "url": "api/app/experiencia",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "input",
+                  "typeAsString": "ExploraYa1.Experiencias.CrearActualizarExperienciaDto, ExploraYa1.Application.Contracts",
+                  "type": "ExploraYa1.Experiencias.CrearActualizarExperienciaDto",
+                  "typeSimple": "ExploraYa1.Experiencias.CrearActualizarExperienciaDto",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "input",
+                  "name": "input",
+                  "jsonName": null,
+                  "type": "ExploraYa1.Experiencias.CrearActualizarExperienciaDto",
+                  "typeSimple": "ExploraYa1.Experiencias.CrearActualizarExperienciaDto",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "ExploraYa1.Experiencias.ExperienciaDto",
+                "typeSimple": "ExploraYa1.Experiencias.ExperienciaDto"
+              },
+              "allowAnonymous": false,
+              "implementFrom": "ExploraYa1.Experiencias.IExperienciaAppService"
+            },
+            "UpdateAsyncByIdAndInput": {
+              "uniqueName": "UpdateAsyncByIdAndInput",
+              "name": "UpdateAsync",
+              "httpMethod": "PUT",
+              "url": "api/app/experiencia/{id}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "id",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                },
+                {
+                  "name": "input",
+                  "typeAsString": "ExploraYa1.Experiencias.CrearActualizarExperienciaDto, ExploraYa1.Application.Contracts",
+                  "type": "ExploraYa1.Experiencias.CrearActualizarExperienciaDto",
+                  "typeSimple": "ExploraYa1.Experiencias.CrearActualizarExperienciaDto",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "id",
+                  "name": "id",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "input",
+                  "jsonName": null,
+                  "type": "ExploraYa1.Experiencias.CrearActualizarExperienciaDto",
+                  "typeSimple": "ExploraYa1.Experiencias.CrearActualizarExperienciaDto",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "ExploraYa1.Experiencias.ExperienciaDto",
+                "typeSimple": "ExploraYa1.Experiencias.ExperienciaDto"
+              },
+              "allowAnonymous": false,
+              "implementFrom": "ExploraYa1.Experiencias.IExperienciaAppService"
+            },
+            "DeleteAsyncById": {
+              "uniqueName": "DeleteAsyncById",
+              "name": "DeleteAsync",
+              "httpMethod": "DELETE",
+              "url": "api/app/experiencia/{id}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "id",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "id",
+                  "name": "id",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Void",
+                "typeSimple": "System.Void"
+              },
+              "allowAnonymous": false,
+              "implementFrom": "ExploraYa1.Experiencias.IExperienciaAppService"
+            },
+            "GetListAsyncByInput": {
+              "uniqueName": "GetListAsyncByInput",
+              "name": "GetListAsync",
+              "httpMethod": "GET",
+              "url": "api/app/experiencia",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "input",
+                  "typeAsString": "ExploraYa1.Experiencias.GetExperienciasInput, ExploraYa1.Application.Contracts",
+                  "type": "ExploraYa1.Experiencias.GetExperienciasInput",
+                  "typeSimple": "ExploraYa1.Experiencias.GetExperienciasInput",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "input",
+                  "name": "DestinoId",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "Valoracion",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "PalabrasClave",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "Sorting",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "SkipCount",
+                  "jsonName": null,
+                  "type": "System.Int32",
+                  "typeSimple": "number",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "MaxResultCount",
+                  "jsonName": null,
+                  "type": "System.Int32",
+                  "typeSimple": "number",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                }
+              ],
+              "returnValue": {
+                "type": "Volo.Abp.Application.Dtos.PagedResultDto<ExploraYa1.Experiencias.ExperienciaDto>",
+                "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<ExploraYa1.Experiencias.ExperienciaDto>"
+              },
+              "allowAnonymous": false,
+              "implementFrom": "ExploraYa1.Experiencias.IExperienciaAppService"
+            }
+          }
+        },
+        "ExploraYa1.Monitoreo.MonitoreoAppService": {
+          "controllerName": "Monitoreo",
+          "controllerGroupName": "Monitoreo",
+          "isRemoteService": true,
+          "isIntegrationService": false,
+          "apiVersion": null,
+          "type": "ExploraYa1.Monitoreo.MonitoreoAppService",
+          "interfaces": [
+            {
+              "type": "ExploraYa1.Monitoreo.IMonitoreoAppService",
+              "name": "IMonitoreoAppService",
+              "methods": [
+                {
+                  "name": "GetMetricasAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "desde",
+                      "typeAsString": "System.Nullable`1[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib",
+                      "type": "System.DateTime?",
+                      "typeSimple": "string?",
+                      "isOptional": true,
+                      "defaultValue": null
+                    },
+                    {
+                      "name": "hasta",
+                      "typeAsString": "System.Nullable`1[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib",
+                      "type": "System.DateTime?",
+                      "typeSimple": "string?",
+                      "isOptional": true,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.List<ExploraYa1.Monitoreo.MetricasApiExternaDto>",
+                    "typeSimple": "[ExploraYa1.Monitoreo.MetricasApiExternaDto]"
+                  }
+                }
+              ]
+            }
+          ],
+          "actions": {
+            "GetMetricasAsyncByDesdeAndHasta": {
+              "uniqueName": "GetMetricasAsyncByDesdeAndHasta",
+              "name": "GetMetricasAsync",
+              "httpMethod": "GET",
+              "url": "api/app/monitoreo/metricas",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "desde",
+                  "typeAsString": "System.Nullable`1[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib",
+                  "type": "System.DateTime?",
+                  "typeSimple": "string?",
+                  "isOptional": true,
+                  "defaultValue": null
+                },
+                {
+                  "name": "hasta",
+                  "typeAsString": "System.Nullable`1[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib",
+                  "type": "System.DateTime?",
+                  "typeSimple": "string?",
+                  "isOptional": true,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "desde",
+                  "name": "desde",
+                  "jsonName": null,
+                  "type": "System.DateTime?",
+                  "typeSimple": "string?",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": ""
+                },
+                {
+                  "nameOnMethod": "hasta",
+                  "name": "hasta",
+                  "jsonName": null,
+                  "type": "System.DateTime?",
+                  "typeSimple": "string?",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Collections.Generic.List<ExploraYa1.Monitoreo.MetricasApiExternaDto>",
+                "typeSimple": "[ExploraYa1.Monitoreo.MetricasApiExternaDto]"
+              },
+              "allowAnonymous": false,
+              "implementFrom": "ExploraYa1.Monitoreo.IMonitoreoAppService"
+            }
+          }
+        },
+        "ExploraYa1.Notificaciones.NotificacionAppService": {
+          "controllerName": "Notificacion",
+          "controllerGroupName": "Notificacion",
+          "isRemoteService": true,
+          "isIntegrationService": false,
+          "apiVersion": null,
+          "type": "ExploraYa1.Notificaciones.NotificacionAppService",
+          "interfaces": [
+            {
+              "type": "ExploraYa1.Notificaciones.INotificacionAppService",
+              "name": "INotificacionAppService",
+              "methods": [
+                {
+                  "name": "GetMisNotificacionesAsync",
+                  "parametersOnMethod": [],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.List<ExploraYa1.Notificaciones.NotificacionDTO>",
+                    "typeSimple": "[ExploraYa1.Notificaciones.NotificacionDTO]"
+                  }
+                },
+                {
+                  "name": "MarcarLeidaAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "id",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Void",
+                    "typeSimple": "System.Void"
+                  }
+                },
+                {
+                  "name": "MarcarNoLeidaAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "id",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Void",
+                    "typeSimple": "System.Void"
+                  }
+                },
+                {
+                  "name": "CrearNotificacionCambioDestinoAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "destinoId",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    },
+                    {
+                      "name": "detalle",
+                      "typeAsString": "System.String, System.Private.CoreLib",
+                      "type": "System.String",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Void",
+                    "typeSimple": "System.Void"
+                  }
+                }
+              ]
+            }
+          ],
+          "actions": {
+            "GetMisNotificacionesAsync": {
+              "uniqueName": "GetMisNotificacionesAsync",
+              "name": "GetMisNotificacionesAsync",
+              "httpMethod": "GET",
+              "url": "api/app/notificacion/mis-notificaciones",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "System.Collections.Generic.List<ExploraYa1.Notificaciones.NotificacionDTO>",
+                "typeSimple": "[ExploraYa1.Notificaciones.NotificacionDTO]"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "ExploraYa1.Notificaciones.INotificacionAppService"
+            },
+            "MarcarLeidaAsyncById": {
+              "uniqueName": "MarcarLeidaAsyncById",
+              "name": "MarcarLeidaAsync",
+              "httpMethod": "POST",
+              "url": "api/app/notificacion/{id}/marcar-leida",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "id",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "id",
+                  "name": "id",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Void",
+                "typeSimple": "System.Void"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "ExploraYa1.Notificaciones.INotificacionAppService"
+            },
+            "MarcarNoLeidaAsyncById": {
+              "uniqueName": "MarcarNoLeidaAsyncById",
+              "name": "MarcarNoLeidaAsync",
+              "httpMethod": "POST",
+              "url": "api/app/notificacion/{id}/marcar-no-leida",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "id",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "id",
+                  "name": "id",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Void",
+                "typeSimple": "System.Void"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "ExploraYa1.Notificaciones.INotificacionAppService"
+            },
+            "CrearNotificacionCambioDestinoAsyncByDestinoIdAndDetalle": {
+              "uniqueName": "CrearNotificacionCambioDestinoAsyncByDestinoIdAndDetalle",
+              "name": "CrearNotificacionCambioDestinoAsync",
+              "httpMethod": "POST",
+              "url": "api/app/notificacion/crear-notificacion-cambio-destino/{destinoId}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "destinoId",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                },
+                {
+                  "name": "detalle",
+                  "typeAsString": "System.String, System.Private.CoreLib",
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "destinoId",
+                  "name": "destinoId",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                },
+                {
+                  "nameOnMethod": "detalle",
+                  "name": "detalle",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Void",
+                "typeSimple": "System.Void"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "ExploraYa1.Notificaciones.INotificacionAppService"
+            }
+          }
+        },
+        "ExploraYa1.Usuarios.UserAppService": {
+          "controllerName": "User",
+          "controllerGroupName": "User",
+          "isRemoteService": true,
+          "isIntegrationService": false,
+          "apiVersion": null,
+          "type": "ExploraYa1.Usuarios.UserAppService",
+          "interfaces": [
+            {
+              "type": "ExploraYa1.IUserAppService",
+              "name": "IUserAppService",
+              "methods": [
+                {
+                  "name": "RegisterAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "input",
+                      "typeAsString": "ExploraYa1.Usuarios.RegisterUserDto, ExploraYa1.Application.Contracts",
+                      "type": "ExploraYa1.Usuarios.RegisterUserDto",
+                      "typeSimple": "ExploraYa1.Usuarios.RegisterUserDto",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "ExploraYa1.Usuarios.UserProfileDto",
+                    "typeSimple": "ExploraYa1.Usuarios.UserProfileDto"
+                  }
+                },
+                {
+                  "name": "LoginAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "input",
+                      "typeAsString": "ExploraYa1.Usuarios.LoginUserDto, ExploraYa1.Application.Contracts",
+                      "type": "ExploraYa1.Usuarios.LoginUserDto",
+                      "typeSimple": "ExploraYa1.Usuarios.LoginUserDto",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "ExploraYa1.Usuarios.UserProfileDto",
+                    "typeSimple": "ExploraYa1.Usuarios.UserProfileDto"
+                  }
+                },
+                {
+                  "name": "GetProfileAsync",
+                  "parametersOnMethod": [],
+                  "returnValue": {
+                    "type": "ExploraYa1.Usuarios.UserProfileDto",
+                    "typeSimple": "ExploraYa1.Usuarios.UserProfileDto"
+                  }
+                },
+                {
+                  "name": "ChangePasswordAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "input",
+                      "typeAsString": "ExploraYa1.Usuarios.ChangePasswordDto, ExploraYa1.Application.Contracts",
+                      "type": "ExploraYa1.Usuarios.ChangePasswordDto",
+                      "typeSimple": "ExploraYa1.Usuarios.ChangePasswordDto",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Void",
+                    "typeSimple": "System.Void"
+                  }
+                },
+                {
+                  "name": "DeleteMyAccountAsync",
+                  "parametersOnMethod": [],
+                  "returnValue": {
+                    "type": "System.Void",
+                    "typeSimple": "System.Void"
+                  }
+                },
+                {
+                  "name": "GetPublicProfileAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "userId",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "ExploraYa1.Usuarios.UserProfileDto",
+                    "typeSimple": "ExploraYa1.Usuarios.UserProfileDto"
+                  }
+                }
+              ]
+            }
+          ],
+          "actions": {
+            "RegisterAsyncByInput": {
+              "uniqueName": "RegisterAsyncByInput",
+              "name": "RegisterAsync",
+              "httpMethod": "POST",
+              "url": "api/app/user/register",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "input",
+                  "typeAsString": "ExploraYa1.Usuarios.RegisterUserDto, ExploraYa1.Application.Contracts",
+                  "type": "ExploraYa1.Usuarios.RegisterUserDto",
+                  "typeSimple": "ExploraYa1.Usuarios.RegisterUserDto",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "input",
+                  "name": "input",
+                  "jsonName": null,
+                  "type": "ExploraYa1.Usuarios.RegisterUserDto",
+                  "typeSimple": "ExploraYa1.Usuarios.RegisterUserDto",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "ExploraYa1.Usuarios.UserProfileDto",
+                "typeSimple": "ExploraYa1.Usuarios.UserProfileDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "ExploraYa1.IUserAppService"
+            },
+            "LoginAsyncByInput": {
+              "uniqueName": "LoginAsyncByInput",
+              "name": "LoginAsync",
+              "httpMethod": "POST",
+              "url": "api/app/user/login",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "input",
+                  "typeAsString": "ExploraYa1.Usuarios.LoginUserDto, ExploraYa1.Application.Contracts",
+                  "type": "ExploraYa1.Usuarios.LoginUserDto",
+                  "typeSimple": "ExploraYa1.Usuarios.LoginUserDto",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "input",
+                  "name": "input",
+                  "jsonName": null,
+                  "type": "ExploraYa1.Usuarios.LoginUserDto",
+                  "typeSimple": "ExploraYa1.Usuarios.LoginUserDto",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "ExploraYa1.Usuarios.UserProfileDto",
+                "typeSimple": "ExploraYa1.Usuarios.UserProfileDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "ExploraYa1.IUserAppService"
+            },
+            "GetProfileAsync": {
+              "uniqueName": "GetProfileAsync",
+              "name": "GetProfileAsync",
+              "httpMethod": "GET",
+              "url": "api/app/user/profile",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "ExploraYa1.Usuarios.UserProfileDto",
+                "typeSimple": "ExploraYa1.Usuarios.UserProfileDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "ExploraYa1.IUserAppService"
+            },
+            "UpdateProfileAsyncByInput": {
+              "uniqueName": "UpdateProfileAsyncByInput",
+              "name": "UpdateProfileAsync",
+              "httpMethod": "PUT",
+              "url": "api/app/user/profile",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "input",
+                  "typeAsString": "ExploraYa1.Usuarios.UpdateUserProfileDto, ExploraYa1.Application.Contracts",
+                  "type": "ExploraYa1.Usuarios.UpdateUserProfileDto",
+                  "typeSimple": "ExploraYa1.Usuarios.UpdateUserProfileDto",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "input",
+                  "name": "input",
+                  "jsonName": null,
+                  "type": "ExploraYa1.Usuarios.UpdateUserProfileDto",
+                  "typeSimple": "ExploraYa1.Usuarios.UpdateUserProfileDto",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "ExploraYa1.Usuarios.UserProfileDto",
+                "typeSimple": "ExploraYa1.Usuarios.UserProfileDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "ExploraYa1.Usuarios.UserAppService"
+            },
+            "ChangePasswordAsyncByInput": {
+              "uniqueName": "ChangePasswordAsyncByInput",
+              "name": "ChangePasswordAsync",
+              "httpMethod": "POST",
+              "url": "api/app/user/change-password",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "input",
+                  "typeAsString": "ExploraYa1.Usuarios.ChangePasswordDto, ExploraYa1.Application.Contracts",
+                  "type": "ExploraYa1.Usuarios.ChangePasswordDto",
+                  "typeSimple": "ExploraYa1.Usuarios.ChangePasswordDto",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "input",
+                  "name": "input",
+                  "jsonName": null,
+                  "type": "ExploraYa1.Usuarios.ChangePasswordDto",
+                  "typeSimple": "ExploraYa1.Usuarios.ChangePasswordDto",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Void",
+                "typeSimple": "System.Void"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "ExploraYa1.IUserAppService"
+            },
+            "DeleteMyAccountAsync": {
+              "uniqueName": "DeleteMyAccountAsync",
+              "name": "DeleteMyAccountAsync",
+              "httpMethod": "DELETE",
+              "url": "api/app/user/my-account",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "System.Void",
+                "typeSimple": "System.Void"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "ExploraYa1.IUserAppService"
+            },
+            "GetPublicProfileAsyncByUserId": {
+              "uniqueName": "GetPublicProfileAsyncByUserId",
+              "name": "GetPublicProfileAsync",
+              "httpMethod": "GET",
+              "url": "api/app/user/public-profile/{userId}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "userId",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "userId",
+                  "name": "userId",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "ExploraYa1.Usuarios.UserProfileDto",
+                "typeSimple": "ExploraYa1.Usuarios.UserProfileDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "ExploraYa1.IUserAppService"
             }
           }
         }
@@ -3608,6 +5045,18 @@
       "genericArguments": null,
       "properties": [
         {
+          "name": "Id",
+          "jsonName": null,
+          "type": "System.Guid",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
           "name": "DestinoTuristicoId",
           "jsonName": null,
           "type": "System.Guid",
@@ -3677,6 +5126,18 @@
       "genericArguments": null,
       "properties": [
         {
+          "name": "Id",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
           "name": "Name",
           "jsonName": null,
           "type": "System.String",
@@ -3693,6 +5154,30 @@
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Region",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Population",
+          "jsonName": null,
+          "type": "System.Int32?",
+          "typeSimple": "number?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -3726,6 +5211,111 @@
         }
       ]
     },
+    "ExploraYa1.Destinos.CityInformationDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "Id",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Name",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Country",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Region",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Population",
+          "jsonName": null,
+          "type": "System.Int32?",
+          "typeSimple": "number?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Latitude",
+          "jsonName": null,
+          "type": "System.Double",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Longitude",
+          "jsonName": null,
+          "type": "System.Double",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Timezone",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
     "ExploraYa1.Destinos.CitySearchRequestDto": {
       "baseType": "Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto",
       "isEnum": false,
@@ -3750,6 +5340,63 @@
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Region",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "MinimumPopulation",
+          "jsonName": null,
+          "type": "System.Int32?",
+          "typeSimple": "number?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "ExploraYa1.Destinos.CitySearchResultDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "Items",
+          "jsonName": null,
+          "type": "[ExploraYa1.Destinos.CityDto]",
+          "typeSimple": "[ExploraYa1.Destinos.CityDto]",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "TotalCount",
+          "jsonName": null,
+          "type": "System.Int64",
+          "typeSimple": "number",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -3796,6 +5443,63 @@
           "type": "System.String",
           "typeSimple": "string",
           "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "ExploraYa1.Destinos.FavoritoDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "Id",
+          "jsonName": null,
+          "type": "System.Guid",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "DestinoTuristicoId",
+          "jsonName": null,
+          "type": "System.Guid",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "UserId",
+          "jsonName": null,
+          "type": "System.Guid",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CreationTime",
+          "jsonName": null,
+          "type": "System.DateTime",
+          "typeSimple": "string",
+          "isRequired": false,
           "minLength": null,
           "maxLength": null,
           "minimum": null,
@@ -3981,6 +5685,675 @@
           "jsonName": null,
           "type": "System.Guid",
           "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "ExploraYa1.Experiencias.CrearActualizarExperienciaDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "DestinoId",
+          "jsonName": null,
+          "type": "System.Guid",
+          "typeSimple": "string",
+          "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Comentario",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": true,
+          "minLength": 0,
+          "maxLength": 1000,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Valoracion",
+          "jsonName": null,
+          "type": "ExploraYa1.Experiencias.TipoValoracion",
+          "typeSimple": "enum",
+          "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "ExploraYa1.Experiencias.ExperienciaDto": {
+      "baseType": "Volo.Abp.Application.Dtos.AuditedEntityDto<System.Guid>",
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "DestinoId",
+          "jsonName": null,
+          "type": "System.Guid",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Comentario",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Valoracion",
+          "jsonName": null,
+          "type": "ExploraYa1.Experiencias.TipoValoracion",
+          "typeSimple": "enum",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "ExploraYa1.Experiencias.GetExperienciasInput": {
+      "baseType": "Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto",
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "DestinoId",
+          "jsonName": null,
+          "type": "System.Guid",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Valoracion",
+          "jsonName": null,
+          "type": "ExploraYa1.Experiencias.TipoValoracion?",
+          "typeSimple": "enum?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "PalabrasClave",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "ExploraYa1.Experiencias.TipoValoracion": {
+      "baseType": "System.Enum",
+      "isEnum": true,
+      "enumNames": [
+        "Positiva",
+        "Neutral",
+        "Negativa"
+      ],
+      "enumValues": [
+        1,
+        2,
+        3
+      ],
+      "genericArguments": null,
+      "properties": null
+    },
+    "ExploraYa1.Monitoreo.MetricasApiExternaDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "NombreApi",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "TotalLlamadas",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "LlamadasExitosas",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "LlamadasFallidas",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "TiempoPromedioMs",
+          "jsonName": null,
+          "type": "System.Double",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "TiempoMaximoMs",
+          "jsonName": null,
+          "type": "System.Double",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "TiempoMinimoMs",
+          "jsonName": null,
+          "type": "System.Double",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "DesdeFecha",
+          "jsonName": null,
+          "type": "System.DateTime?",
+          "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "HastaFecha",
+          "jsonName": null,
+          "type": "System.DateTime?",
+          "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "ExploraYa1.Notificaciones.NotificacionDTO": {
+      "baseType": "Volo.Abp.Application.Dtos.AuditedEntityDto<System.Guid>",
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "UserId",
+          "jsonName": null,
+          "type": "System.Guid",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Titulo",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Mensaje",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Leida",
+          "jsonName": null,
+          "type": "System.Boolean",
+          "typeSimple": "boolean",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "DestinoId",
+          "jsonName": null,
+          "type": "System.Guid?",
+          "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Fecha",
+          "jsonName": null,
+          "type": "System.DateTime",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "ExploraYa1.Usuarios.ChangePasswordDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "CurrentPassword",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "NewPassword",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "ExploraYa1.Usuarios.LoginUserDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "UserNameOrEmail",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Password",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "ExploraYa1.Usuarios.RegisterUserDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "UserName",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Email",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Password",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "ExploraYa1.Usuarios.UpdateUserProfileDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "Nombre",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": true,
+          "minLength": 0,
+          "maxLength": 64,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Apellido",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": true,
+          "minLength": 0,
+          "maxLength": 64,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "UserName",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": 0,
+          "maxLength": 256,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Email",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": 0,
+          "maxLength": 256,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Telefono",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": 0,
+          "maxLength": 16,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "FotoUrl",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": 0,
+          "maxLength": 256,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "ExploraYa1.Usuarios.UserProfileDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "Id",
+          "jsonName": null,
+          "type": "System.Guid",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "UserName",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Email",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Nombre",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Apellido",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Telefono",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "FotoUrl",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "System.Nullable<T0>": {
+      "baseType": "System.ValueType",
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": [
+        "T"
+      ],
+      "properties": [
+        {
+          "name": "HasValue",
+          "jsonName": null,
+          "type": "System.Boolean",
+          "typeSimple": "boolean",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Value",
+          "jsonName": null,
+          "type": "T",
+          "typeSimple": "T",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,

@@ -13,6 +13,14 @@ export const APP_ROUTES: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'account/login',
+    loadComponent: () => import('./account/login/login').then(c => c.Login),
+  },
+  {
+    path: 'account/register',
+    loadComponent: () => import('./account/register/register').then(c => c.Register),
+  },
+  {
     path: 'account',
     loadChildren: () => import('@abp/ng.account').then(c => c.createRoutes()),
   },

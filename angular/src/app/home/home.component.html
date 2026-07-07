@@ -16,31 +16,25 @@
           </a>
           }
 
-          <h4>Getting Started</h4>
-          <p class="lead text-muted mb-2">
-            Learn how to create and run a new web application using the application startup
-            template.
+          <h4 class="mt-4">ExploraYa - Tu Portal de Viajes</h4>
+          <p class="lead text-muted mb-4">
+            Descubre nuevos lugares, lee opiniones de otros viajeros y planifica tu próxima aventura.
           </p>
-          <a
-            href="https://abp.io/docs/latest/getting-started"
-            class="btn btn-brand mb-4"
-            target="_blank"
-          >
-            Getting Started
-          </a>
 
-          <h4>Web Application Development Tutorial</h4>
-          <p class="lead text-muted mb-2">
-            Learn how to build an ABP based web application named Acme.BookStore.
-          </p>
-          <a
-            href="https://abp.io/docs/latest/tutorials/book-store/part-01?UI=NG&DB=EF"
-            class="btn btn-brand mb-4"
-            target="_blank"
-          >
-            Explore Tutorial
-          </a>
-        </div>
+          <div class="d-flex flex-wrap gap-3 mb-4">
+            @if(!hasLoggedIn) {
+              <a routerLink="/account/login" class="btn btn-brand px-4 shadow-sm" role="button">
+                <i class="fas fa-sign-in-alt me-2"></i> Iniciar Sesión
+              </a>
+              <a routerLink="/account/register" class="btn btn-outline-primary px-4 shadow-sm" role="button">
+                <i class="fas fa-user-plus me-2"></i> Registrarse
+              </a>
+            } @else {
+              <a routerLink="/profile" class="btn btn-brand px-4 shadow-sm" role="button">
+                <i class="fas fa-user-circle me-2"></i> Mi Perfil
+              </a>
+            }
+          </div>
         <img class="card-bg-image" src="assets/images/getting-started/bg-01.png" />
       </div>
     </div>

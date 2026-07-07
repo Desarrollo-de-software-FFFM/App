@@ -2,13 +2,21 @@ import type { CrearActualizarDestinoDTO, DestinoTuristicoDTO } from './models';
 import { RestService, Rest } from '@abp/ng.core';
 import type { PagedAndSortedResultRequestDto, PagedResultDto } from '@abp/ng.core';
 import { Injectable } from '@angular/core';
-import type { CityDto, CitySearchRequestDto } from '../destinos/models';
+import type { CityInformationDto, CitySearchRequestDto, CitySearchResultDto } from '../destinos/models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DestinoTuristicoService {
   apiName = 'Default';
+  
+
+  crearDesdeGeoDb = (cityId: number, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, DestinoTuristicoDTO>({
+      method: 'POST',
+      url: `/api/app/destino-turistico/crear-desde-geo-db/${cityId}`,
+    },
+    { apiName: this.apiName,...config });
   
 
   create = (input: CrearActualizarDestinoDTO, config?: Partial<Rest.Config>) =>
@@ -36,6 +44,14 @@ export class DestinoTuristicoService {
     { apiName: this.apiName,...config });
   
 
+  getCityDetails = (id: number, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, CityInformationDto>({
+      method: 'GET',
+      url: `/api/app/destino-turistico/${id}/city-details`,
+    },
+    { apiName: this.apiName,...config });
+  
+
   getList = (input: PagedAndSortedResultRequestDto, config?: Partial<Rest.Config>) =>
     this.restService.request<any, PagedResultDto<DestinoTuristicoDTO>>({
       method: 'GET',
@@ -46,7 +62,7 @@ export class DestinoTuristicoService {
   
 
   searchCities = (request: CitySearchRequestDto, config?: Partial<Rest.Config>) =>
-    this.restService.request<any, PagedResultDto<CityDto>>({
+    this.restService.request<any, CitySearchResultDto>({
       method: 'POST',
       url: '/api/app/destino-turistico/search-cities',
       body: request,
