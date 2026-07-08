@@ -21,11 +21,6 @@ export const APP_ROUTES: Routes = [
     loadComponent: () => import('./account/register/register').then(c => c.Register),
   },
   {
-    path: 'profile',
-    loadComponent: () => import('./profile/private-profile/private-profile').then(c => c.PrivateProfile),
-    canActivate: [authGuard],
-  },
-  {
     path: 'profile/:id',
     loadComponent: () => import('./profile/public-profile/public-profile').then(c => c.PublicProfile),
   },

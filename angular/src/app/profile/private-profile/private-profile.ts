@@ -77,7 +77,13 @@ export class PrivateProfile implements OnInit {
     this.profileMessage = '';
     this.profileError = '';
 
-    this.userService.updateProfile(this.profileForm.value).subscribe({
+    const payload = {
+      ...this.profileForm.value,
+      userName: this.userProfile?.userName,
+      email: this.userProfile?.email
+    };
+
+    this.userService.updateProfile(payload).subscribe({
       next: (updatedProfile) => {
         this.isProfileLoading = false;
         this.userProfile = updatedProfile;
