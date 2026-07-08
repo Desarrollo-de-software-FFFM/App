@@ -1,1 +1,91 @@
-<p>private-profile works!</p>
+<div class="profile-container">
+  <div class="profile-card fade-in">
+    
+    <div class="header-section">
+      <div class="avatar-wrapper">
+        <img *ngIf="userProfile?.fotoUrl" [src]="userProfile?.fotoUrl" alt="Foto de perfil" class="avatar-img" />
+        <div *ngIf="!userProfile?.fotoUrl" class="avatar-placeholder">
+          {{ userProfile?.nombre?.charAt(0) || 'U' }}
+        </div>
+      </div>
+      <h2>Mi Perfil Privado</h2>
+      <p class="subtitle">{{ userProfile?.email }}</p>
+    </div>
+
+    <!-- UPDATE PROFILE SECTION -->
+    <div class="section-container">
+      <h3>Datos Personales</h3>
+      <div *ngIf="profileMessage" class="alert alert-success">{{ profileMessage }}</div>
+      <div *ngIf="profileError" class="alert alert-danger">{{ profileError }}</div>
+
+      <form [formGroup]="profileForm" (ngSubmit)="onProfileSubmit()" class="custom-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input id="nombre" type="text" formControlName="nombre" class="form-control" />
+          </div>
+          <div class="form-group">
+            <label for="apellido">Apellido</label>
+            <input id="apellido" type="text" formControlName="apellido" class="form-control" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="telefono">Teléfono</label>
+          <input id="telefono" type="text" formControlName="telefono" class="form-control" />
+        </div>
+
+        <div class="form-group">
+          <label for="fotoUrl">URL de la Foto</label>
+          <input id="fotoUrl" type="url" formControlName="fotoUrl" class="form-control" placeholder="https://..." />
+        </div>
+
+        <button type="submit" class="btn-primary" [disabled]="profileForm.invalid || isProfileLoading">
+          <span *ngIf="isProfileLoading" class="spinner"></span>
+          {{ isProfileLoading ? 'Guardando...' : 'Guardar Cambios' }}
+        </button>
+      </form>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- CHANGE PASSWORD SECTION -->
+    <div class="section-container">
+      <h3>Cambiar Contraseña</h3>
+      <div *ngIf="passwordMessage" class="alert alert-success">{{ passwordMessage }}</div>
+      <div *ngIf="passwordError" class="alert alert-danger">{{ passwordError }}</div>
+
+      <form [formGroup]="passwordForm" (ngSubmit)="onPasswordSubmit()" class="custom-form">
+        <div class="form-group">
+          <label for="currentPassword">Contraseña Actual</label>
+          <input id="currentPassword" type="password" formControlName="currentPassword" class="form-control" />
+        </div>
+
+        <div class="form-group">
+          <label for="newPassword">Nueva Contraseña</label>
+          <input id="newPassword" type="password" formControlName="newPassword" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn-secondary" [disabled]="passwordForm.invalid || isPasswordLoading">
+          <span *ngIf="isPasswordLoading" class="spinner"></span>
+          {{ isPasswordLoading ? 'Actualizando...' : 'Actualizar Contraseña' }}
+        </button>
+      </form>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- DELETE ACCOUNT SECTION -->
+    <div class="section-container danger-zone">
+      <div class="danger-header">
+        <h3>Zona de Peligro</h3>
+        <p>Una vez que elimines tu cuenta, no hay vuelta atrás. Por favor, asegúrate de estar seguro.</p>
+      </div>
+      <button class="btn-danger" (click)="onDeleteAccount()" [disabled]="isDeleteLoading">
+        <span *ngIf="isDeleteLoading" class="spinner"></span>
+        {{ isDeleteLoading ? 'Eliminando...' : 'Eliminar mi cuenta' }}
+      </button>
+    </div>
+
+  </div>
+</div>
