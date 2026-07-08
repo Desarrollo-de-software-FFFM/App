@@ -1,1 +1,58 @@
-<p>public-profile works!</p>
+<div class="public-profile-container">
+  
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Cargando perfil...</p>
+  </div>
+
+  <div *ngIf="errorMessage && !isLoading" class="error-state">
+    <div class="alert alert-danger">{{ errorMessage }}</div>
+    <button class="btn-primary mt-3" (click)="loadPublicProfile('retry')">Reintentar</button>
+  </div>
+
+  <div *ngIf="userProfile && !isLoading" class="profile-card fade-in">
+    <!-- BANNER DE FONDO -->
+    <div class="banner">
+      <!-- Se puede usar la foto url borrosa o un degradado lindo -->
+    </div>
+
+    <!-- CONTENIDO DEL PERFIL -->
+    <div class="profile-content">
+      <div class="avatar-wrapper">
+        <img *ngIf="userProfile.fotoUrl" [src]="userProfile.fotoUrl" alt="Foto de perfil" class="avatar-img" />
+        <div *ngIf="!userProfile.fotoUrl" class="avatar-placeholder">
+          {{ userProfile.nombre?.charAt(0) || userProfile.userName?.charAt(0) || 'U' }}
+        </div>
+      </div>
+
+      <div class="user-info">
+        <h2 class="user-name">{{ userProfile.nombre }} {{ userProfile.apellido }}</h2>
+        <p class="user-username">{{ '@' }}{{ userProfile.userName }}</p>
+      </div>
+
+      <!-- SECCION DE ESTADISTICAS O EXPERIENCIAS (Placeholder Fase 4) -->
+      <div class="stats-section">
+        <div class="stat-box">
+          <span class="stat-number">0</span>
+          <span class="stat-label">Experiencias</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">0</span>
+          <span class="stat-label">Destinos</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">0</span>
+          <span class="stat-label">Reseñas</span>
+        </div>
+      </div>
+      
+      <div class="about-section">
+        <h3>Sobre mí</h3>
+        <p class="about-text">
+          Hola, soy {{ userProfile.nombre }}. Actualmente no tengo ninguna biografía disponible, pero me encanta explorar el mundo con ExploraYa.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</div>

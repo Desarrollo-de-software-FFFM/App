@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { UserService } from '../../proxy/usuarios/user.service';
 import { UserProfileDto } from '../../proxy/usuarios/models';
 import { OAuthService } from 'angular-oauth2-oidc';
+import { ConfigStateService } from '@abp/ng.core';
 
 @Component({
   selector: 'app-private-profile',
@@ -33,7 +34,8 @@ export class PrivateProfile implements OnInit {
     private fb: FormBuilder,
     private userService: UserService,
     private router: Router,
-    private oauthService: OAuthService
+    private oauthService: OAuthService,
+    private configState: ConfigStateService
   ) {
     this.profileForm = this.fb.group({
       nombre: ['', Validators.required],
@@ -90,6 +92,9 @@ export class PrivateProfile implements OnInit {
         this.profileMessage = 'Perfil actualizado correctamente.';
         localStorage.setItem('currentUser', JSON.stringify(updatedProfile));
         
+        // Refrescar el navbar the ABP
+        this.configState.refreshAppState().subscribe();
+
         setTimeout(() => this.profileMessage = '', 3000);
       },
       error: (err) => {

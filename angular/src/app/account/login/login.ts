@@ -5,6 +5,7 @@ import { UserService } from '../../proxy/usuarios/user.service';
 import { CommonModule } from '@angular/common';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { firstValueFrom } from 'rxjs';
+import { ConfigStateService } from '@abp/ng.core';
 
 @Component({
   selector: 'app-login',
@@ -22,7 +23,8 @@ export class Login {
     private fb: FormBuilder,
     private userService: UserService,
     private router: Router,
-    private oauthService: OAuthService
+    private oauthService: OAuthService,
+    private configState: ConfigStateService
   ) {
     this.loginForm = this.fb.group({
       userNameOrEmail: ['', Validators.required],
@@ -50,6 +52,9 @@ export class Login {
 
       // 3. Guardar el perfil localmente para pintar la UI del Navbar / Home
       localStorage.setItem('currentUser', JSON.stringify(userProfile));
+
+      // 4. Refrescar el estado de ABP para que la barra de navegacion se actualice
+      await firstValueFrom(this.configState.refreshAppState());
 
       this.isLoading = false;
       this.router.navigate(['/']); // Redirigir al home

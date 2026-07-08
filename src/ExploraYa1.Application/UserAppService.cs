@@ -1,4 +1,4 @@
-﻿
+
 using ExploraYa1.UserProfiles;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -187,6 +187,10 @@ namespace ExploraYa1.Usuarios
             // ✅ SÍ SE PERMITE: Actualizar Email si cambió
             if (!string.IsNullOrWhiteSpace(input.Email) && identityUser.Email != input.Email)
                 await _userManager.SetEmailAsync(identityUser, input.Email);
+
+            // Sincronizar el Teléfono con el campo nativo PhoneNumber de IdentityUser
+            if (identityUser.PhoneNumber != input.Telefono)
+                await _userManager.SetPhoneNumberAsync(identityUser, input.Telefono);
 
             var identityResult = await _userManager.UpdateAsync(identityUser);
             if (!identityResult.Succeeded)
