@@ -1,5 +1,6 @@
-﻿using ExploraYa1.Destinos;
+using ExploraYa1.Destinos;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +14,12 @@ namespace ExploraYa1.DestinosTuristicos
     public class GeoDbCitySearchService : ICitySearchService
     {
         private readonly HttpClient _httpClient;
+        private readonly Microsoft.Extensions.Caching.Memory.IMemoryCache _cache;
 
-        public GeoDbCitySearchService(HttpClient httpClient)
+        public GeoDbCitySearchService(HttpClient httpClient, Microsoft.Extensions.Caching.Memory.IMemoryCache cache)
         {
             _httpClient = httpClient;
+            _cache = cache;
 
             const string rapidApiKey = "41c717a457mshcfe32e8d4cdaf10p198265jsn4230693ac3f1";
             const string rapidApiHost = "wft-geo-db.p.rapidapi.com";
@@ -48,8 +51,9 @@ namespace ExploraYa1.DestinosTuristicos
                 if (request.MinimumPopulation.HasValue)
                     parametros.Add($"minPopulation={request.MinimumPopulation.Value}");
 
-                // Límite fijo de seguridad
+                // Límite fijo de seguridad y paginación
                 parametros.Add("limit=10");
+                parametros.Add($"offset={request.SkipCount}");
 
                 // 3. Unimos todo de forma segura (automáticamente pone los "&" en el medio)
                 var urlFinal = $"{urlBase}?{string.Join("&", parametros)}";
@@ -60,6 +64,12 @@ namespace ExploraYa1.DestinosTuristicos
                 tempClient.DefaultRequestHeaders.Add("X-RapidAPI-Host", "wft-geo-db.p.rapidapi.com");
 
                 var response = await tempClient.GetAsync(urlFinal);
+
+                if (response != null && response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+                {
+                    await Task.Delay(1100);
+                    response = await tempClient.GetAsync(urlFinal);
+                }
 
                 // LA MAGIA: Si falla, extraemos el secreto que nos manda GeoDB
                 if (!response.IsSuccessStatusCode)
@@ -76,7 +86,7 @@ namespace ExploraYa1.DestinosTuristicos
                 var json = await response.Content.ReadFromJsonAsync<GeoDbResponse>();
 
                 if (json?.Data == null)
-                    return new CitySearchResultDto { Items = new List<CityDto>() };
+                    return new CitySearchResultDto { Items = new List<CityDto>(), TotalCount = 0 };
 
                 var cities = json.Data.Select(c => new CityDto
                 {
@@ -89,7 +99,9 @@ namespace ExploraYa1.DestinosTuristicos
                     Longitude = c.Longitude
                 }).ToList();
 
-                return new CitySearchResultDto { Items = cities };
+                var totalCount = json.Metadata?.TotalCount ?? 0;
+
+                return new CitySearchResultDto { Items = cities, TotalCount = totalCount };
             }
             catch
             {
@@ -100,6 +112,13 @@ namespace ExploraYa1.DestinosTuristicos
         private class GeoDbResponse
         {
             public List<GeoDbCity> Data { get; set; } = new();
+            public GeoDbMetadata Metadata { get; set; }
+        }
+
+        private class GeoDbMetadata
+        {
+            public int CurrentOffset { get; set; }
+            public long TotalCount { get; set; }
         }
 
         private class GeoDbCity
@@ -115,33 +134,45 @@ namespace ExploraYa1.DestinosTuristicos
 
         public async Task<CityInformationDto> GetCityDetailsAsync(int cityId)
         {
-            var url = $"https://wft-geo-db.p.rapidapi.com/v1/geo/cities/{cityId}";
-
-            var response = await _httpClient.GetAsync(url);
-
-            if (response == null)
-                throw new HttpRequestException("No se pudo obtener respuesta del servidor GeoDB.");
-
-            response.EnsureSuccessStatusCode();
-
-            var json = await response.Content.ReadFromJsonAsync<GeoDbDetailResponse>();
-
-            if (json?.Data == null)
-                throw new Exception("No se encontró información de la ciudad.");
-
-            var c = json.Data;
-
-            return new CityInformationDto
+            return await _cache.GetOrCreateAsync($"CityDetails_{cityId}", async entry =>
             {
-                Id = c.Id,
-                Name = c.City ?? "",
-                Country = c.Country ?? "",
-                Region = c.Region ?? "",
-                Population = c.Population ?? 0,
-                Latitude = c.Latitude,
-                Longitude = c.Longitude,
-                Timezone = c.Timezone ?? ""
-            };
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(24);
+
+                var url = $"https://wft-geo-db.p.rapidapi.com/v1/geo/cities/{cityId}";
+
+                var response = await _httpClient.GetAsync(url);
+                
+                // Si llegamos al límite de 1 petición por segundo (429), esperamos un poco y reintentamos.
+                if (response != null && response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+                {
+                    await Task.Delay(1100);
+                    response = await _httpClient.GetAsync(url);
+                }
+
+                if (response == null)
+                    throw new HttpRequestException("No se pudo obtener respuesta del servidor GeoDB.");
+
+                response.EnsureSuccessStatusCode();
+
+                var json = await response.Content.ReadFromJsonAsync<GeoDbDetailResponse>();
+
+                if (json?.Data == null)
+                    throw new Exception("No se encontró información de la ciudad.");
+
+                var c = json.Data;
+
+                return new CityInformationDto
+                {
+                    Id = c.Id,
+                    Name = c.City ?? "",
+                    Country = c.Country ?? "",
+                    Region = c.Region ?? "",
+                    Population = c.Population ?? 0,
+                    Latitude = c.Latitude,
+                    Longitude = c.Longitude,
+                    Timezone = c.Timezone ?? ""
+                };
+            });
         }
 
         private class GeoDbDetailResponse

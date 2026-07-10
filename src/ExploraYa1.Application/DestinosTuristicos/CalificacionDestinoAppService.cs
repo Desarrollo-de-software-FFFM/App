@@ -1,4 +1,4 @@
-﻿using ExploraYa1.Destinos;
+using ExploraYa1.Destinos;
 using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
@@ -111,11 +111,30 @@ namespace ExploraYa1.DestinosTuristicos
             var opiniones = await _opinionRepository.GetListAsync(
                 o => o.DestinoTuristicoId == destinoId && !string.IsNullOrWhiteSpace(o.Comentario)
             );
+            
+            // To get UserNames, we fetch users for these IDs
+            var userIds = opiniones.Select(o => o.UserId).Distinct().ToList();
+            var users = new Dictionary<Guid, string>();
+            
+            try
+            {
+                var userRepository = LazyServiceProvider.LazyGetRequiredService<IRepository<Volo.Abp.Identity.IdentityUser, Guid>>();
+                var identityUsers = await userRepository.GetListAsync(u => userIds.Contains(u.Id));
+                foreach(var u in identityUsers)
+                {
+                    users[u.Id] = u.UserName;
+                }
+            }
+            catch
+            {
+                // Ignore if IdentityUser repository is not accessible directly
+            }
 
             return opiniones.Select(o => new CalificacionDto
             {
                 Id = o.Id,
                 UserId = o.UserId,
+                UserName = users.ContainsKey(o.UserId) ? users[o.UserId] : "Usuario",
                 DestinoTuristicoId = o.DestinoTuristicoId,
                 Comentario = o.Comentario,
                 Puntuacion = o.Puntuacion,

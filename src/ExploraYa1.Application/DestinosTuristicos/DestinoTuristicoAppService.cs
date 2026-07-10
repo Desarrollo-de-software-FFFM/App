@@ -1,4 +1,4 @@
-﻿using ExploraYa1.Destinos;
+using ExploraYa1.Destinos;
 using ExploraYa1.DestinosTuristicos;
 using System;
 using System.Threading.Tasks;
@@ -54,21 +54,33 @@ namespace ExploraYa1.DestinosTuristicos
             return await _citySearchService.GetCityDetailsAsync(id);
         }
 
-        public async Task<DestinoTuristicoDTO> CrearDesdeGeoDbAsync(int cityId)
+        public async Task<DestinoTuristicoDTO> SyncDestinoLocalAsync(CityInformationDto city)
         {
-            var city = await _citySearchService.GetCityDetailsAsync(cityId);
+            if (city == null || string.IsNullOrWhiteSpace(city.Name))
+                throw new UserFriendlyException("Los datos de la ciudad son inválidos.");
 
-            if (city == null)
-                throw new UserFriendlyException("No se encontró la ciudad en GeoDB.");
+            // 1. Verificar si ya existe este destino en nuestra base de datos (por nombre y latitud/longitud aproximada)
+            // Esto evita crear duplicados cuando múltiples usuarios califican la misma ciudad.
+            var minLat = (float)city.Latitude - 0.01f;
+            var maxLat = (float)city.Latitude + 0.01f;
+            
+            var existingDestino = await _destinoRepository.FirstOrDefaultAsync(d => 
+                d.Nombre == city.Name && 
+                d.Latitud >= minLat && d.Latitud <= maxLat);
+
+            if (existingDestino != null)
+            {
+                return ObjectMapper.Map<DestinoTuristico, DestinoTuristicoDTO>(existingDestino);
+            }
 
             var pais = await _paisRepository.FirstOrDefaultAsync(p => p.Nombre == city.Country)
-                ?? await _paisRepository.InsertAsync(new Pais { Nombre = city.Country }, autoSave: true);
+                ?? await _paisRepository.InsertAsync(new Pais { Nombre = city.Country ?? "Desconocido" }, autoSave: true);
 
             var region = await _regionRepository.FirstOrDefaultAsync(r =>
                 r.Nombre == city.Region && r.PaisId == pais.Id)
                 ?? await _regionRepository.InsertAsync(new Region
                 {
-                    Nombre = city.Region,
+                    Nombre = city.Region ?? "Desconocida",
                     Descripcion = $"Región importada desde GeoDB ({city.Region})",
                     PaisId = pais.Id
                 }, autoSave: true);
@@ -84,7 +96,7 @@ namespace ExploraYa1.DestinosTuristicos
                 RegionId = region.Id
             };
 
-            await _destinoRepository.InsertAsync(destino);
+            await _destinoRepository.InsertAsync(destino, autoSave: true);
 
             return ObjectMapper.Map<DestinoTuristico, DestinoTuristicoDTO>(destino);
         }

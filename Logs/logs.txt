@@ -58,3 +58,12 @@ CREATE DATABASE [ExploraYa1];
 2025-11-29 12:11:24.135 -03:00 [INF] Started database migrations...
 2025-11-29 12:11:26.599 -03:00 [INF] Successfully completed host database migrations.
 2025-11-29 12:11:26.599 -03:00 [INF] You can safely end this process...
+2026-07-10 11:45:14.389 -03:00 [INF] Started database migrations...
+2026-07-10 11:45:15.864 -03:00 [ERR] Failed executing DbCommand (45ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @var sysname;
+SELECT @var = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[AppNotificaciones]') AND [c].[name] = N'Fecha');
+IF @var IS NOT NULL EXEC(N'ALTER TABLE [AppNotificaciones] DROP CONSTRAINT [' + @var + '];');
+ALTER TABLE [AppNotificaciones] ALTER COLUMN [Fecha] datetime2 NULL;

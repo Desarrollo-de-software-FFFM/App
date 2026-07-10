@@ -15,4 +15,12 @@ export const DESTINATIONS_ROUTES: Routes = [
         c => c.DestinationsListComponent
       ),
   },
+  {
+    path: ':id',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./destinos-detail/destinos-detail').then(
+        c => c.DestinosDetailComponent
+      ),
+  },
 ];

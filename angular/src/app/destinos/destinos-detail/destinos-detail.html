@@ -1,0 +1,188 @@
+<div class="detail-container">
+  <!-- Estado de Carga -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Cargando información del destino...</p>
+  </div>
+
+  <!-- Estado de Error -->
+  <div *ngIf="errorMessage && !loading" class="error-state">
+    <div class="alert alert-danger">{{ errorMessage }}</div>
+    <button class="btn btn-secondary mt-3" (click)="goBack()">Volver</button>
+  </div>
+
+  <!-- Contenido Principal -->
+  <div *ngIf="cityDetails && !loading" class="detail-card fade-in">
+    <!-- Header / Banner con botón Volver -->
+    <div class="banner">
+      <button class="btn-back" (click)="goBack()">
+        <i class="fas fa-arrow-left"></i>
+      </button>
+    </div>
+
+    <!-- Información de la Ciudad -->
+    <div class="content-body">
+      <!-- Nombre y Región -->
+      <div class="header-info">
+        <h1 class="title">{{ cityDetails.name }}</h1>
+        <div class="badges">
+          <span class="badge country">
+            <i class="fas fa-globe-americas"></i> {{ cityDetails.country }}
+          </span>
+          <span class="badge region" *ngIf="cityDetails.region">
+            <i class="fas fa-map"></i> {{ cityDetails.region }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Sección de Información Extendida (Wikipedia) -->
+      <div class="wiki-section fade-in" *ngIf="cityDescription || cityImage">
+        <div class="wiki-content">
+          <div class="wiki-text" *ngIf="cityDescription">
+            <h3>Sobre {{ cityDetails.name }}</h3>
+            <p>{{ cityDescription }}</p>
+            <small class="text-muted"><i class="fab fa-wikipedia-w"></i> Fuente: Wikipedia</small>
+          </div>
+          <div class="wiki-image" *ngIf="cityImage">
+            <img [src]="cityImage" alt="{{ cityDetails.name }}">
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjetas de Estadísticas -->
+      <div class="stats-grid mt-4">
+        <div class="stat-card">
+          <i class="fas fa-users icon"></i>
+          <span class="label">Población</span>
+          <span class="value">{{ cityDetails.population | number }}</span>
+        </div>
+        <div class="stat-card">
+          <i class="fas fa-clock icon"></i>
+          <span class="label">Zona Horaria</span>
+          <span class="value">{{ cityDetails.timezone || 'N/A' }}</span>
+        </div>
+        <div class="stat-card">
+          <i class="fas fa-map-pin icon"></i>
+          <span class="label">Coordenadas</span>
+          <span class="value coords">{{ cityDetails.latitude | number:'1.2-2' }}, {{ cityDetails.longitude | number:'1.2-2' }}</span>
+        </div>
+      </div>
+
+      <!-- Sección de Mapa (Google Maps Embed Placeholder) -->
+      <div class="map-section">
+        <h3>Ubicación en el Mapa</h3>
+        <div class="map-container">
+          <iframe 
+            width="100%" 
+            height="300" 
+            style="border:0;" 
+            loading="lazy" 
+            allowfullscreen 
+            *ngIf="mapUrl"
+            [src]="mapUrl">
+          </iframe>
+        </div>
+        <button class="btn btn-primary mt-3" (click)="openInMaps()">
+          <i class="fas fa-external-link-alt me-2"></i> Abrir en Google Maps
+        </button>
+      </div>
+
+      <!-- Error de sincronización -->
+      <div class="alert alert-warning mt-5 fade-in" *ngIf="syncError">
+        <i class="fas fa-exclamation-triangle me-2"></i> {{ syncError }}
+      </div>
+
+      <!-- Sección de Calificaciones y Reseñas -->
+      <div class="reviews-section fade-in mt-5" *ngIf="localDestinoId">
+        <div class="reviews-header">
+          <h3>Opiniones de Viajeros</h3>
+          <div class="rating-badge" *ngIf="promedio > 0">
+            <i class="fas fa-star text-warning"></i>
+            <span>{{ promedio | number:'1.1-1' }} / 5</span>
+          </div>
+        </div>
+
+        <!-- Formulario para dejar reseña -->
+        <div class="review-form-card mt-4">
+          <h4>Deja tu reseña</h4>
+          <div class="mb-3">
+            <label class="form-label">Puntuación</label>
+            <div class="star-rating">
+              <i class="fa-star cursor-pointer" 
+                 *ngFor="let star of [1,2,3,4,5]" 
+                 [ngClass]="star <= nuevaPuntuacion ? 'fas text-warning' : 'far text-secondary'"
+                 (click)="nuevaPuntuacion = star">
+              </i>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Tu comentario</label>
+            <textarea class="form-control" rows="3" [(ngModel)]="nuevoComentario" placeholder="¿Qué te pareció este destino?"></textarea>
+          </div>
+          <button class="btn btn-primary" [disabled]="!nuevoComentario.trim() || enviandoResena" (click)="enviarResena()">
+            <span *ngIf="!enviandoResena">Enviar Reseña</span>
+            <span *ngIf="enviandoResena"><i class="fas fa-spinner fa-spin"></i> Enviando...</span>
+          </button>
+        </div>
+
+        <!-- Lista de Reseñas -->
+        <div class="reviews-list mt-4">
+          <div class="alert alert-info" *ngIf="calificaciones.length === 0">
+            Todavía no hay reseñas para este destino. ¡Sé el primero en opinar!
+          </div>
+          
+          <div class="review-item" *ngFor="let review of calificaciones">
+            <div *ngIf="editingReviewId !== review.id">
+              <div class="review-meta d-flex justify-content-between align-items-center">
+                <div>
+                  <div class="stars d-inline-block me-2">
+                    <i class="fa-star" 
+                       *ngFor="let star of [1,2,3,4,5]" 
+                       [ngClass]="star <= review.puntuacion ? 'fas text-warning' : 'far text-muted'">
+                    </i>
+                  </div>
+                  <strong>{{ review.userName }}</strong>
+                  <small class="text-muted ms-2">{{ review.creationTime | date:'mediumDate' }}</small>
+                </div>
+                
+                <div class="review-actions" *ngIf="currentUserId === review.userId">
+                  <button class="btn btn-sm btn-outline-secondary me-2" (click)="iniciarEdicion(review)">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn btn-sm btn-outline-danger" (click)="eliminarResena()">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+              <p class="review-comment mt-2">{{ review.comentario }}</p>
+            </div>
+            
+            <div *ngIf="editingReviewId === review.id" class="edit-review-form">
+              <h5>Editar reseña</h5>
+              <div class="mb-2">
+                <div class="star-rating">
+                  <i class="fa-star cursor-pointer" 
+                     *ngFor="let star of [1,2,3,4,5]" 
+                     [ngClass]="star <= editPuntuacion ? 'fas text-warning' : 'far text-secondary'"
+                     (click)="editPuntuacion = star">
+                  </i>
+                </div>
+              </div>
+              <div class="mb-2">
+                <textarea class="form-control" rows="2" [(ngModel)]="editComentario"></textarea>
+              </div>
+              <div class="d-flex justify-content-end">
+                <button class="btn btn-sm btn-secondary me-2" (click)="cancelarEdicion()">Cancelar</button>
+                <button class="btn btn-sm btn-primary" [disabled]="!editComentario.trim() || enviandoEdicion" (click)="guardarEdicion()">
+                  <span *ngIf="!enviandoEdicion">Guardar</span>
+                  <span *ngIf="enviandoEdicion"><i class="fas fa-spinner fa-spin"></i></span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>

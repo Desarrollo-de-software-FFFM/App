@@ -4,6 +4,7 @@ export interface CalificacionDto {
   id?: string;
   destinoTuristicoId?: string;
   userId?: string;
+  userName?: string;
   puntuacion: number;
   comentario?: string;
   creationTime?: string;

@@ -63,7 +63,7 @@
         <!-- Grid de destinos -->
         <div class="destinations-grid" *ngIf="!loading && destinations.length > 0">
           <!-- Card de cada destino -->
-          <div class="destination-card" *ngFor="let destination of destinations">
+          <div class="destination-card" *ngFor="let destination of destinations" (click)="goToDetail(destination.id)">
             <!-- Imagen del destino -->
             <div class="destination-image">
               <img

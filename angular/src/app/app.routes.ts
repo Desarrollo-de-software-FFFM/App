@@ -25,6 +25,10 @@ export const APP_ROUTES: Routes = [
     loadComponent: () => import('./profile/public-profile/public-profile').then(c => c.PublicProfile),
   },
   {
+    path: 'destinos',
+    loadChildren: () => import('./destinos/destinos.routes').then(m => m.DESTINATIONS_ROUTES),
+  },
+  {
     path: 'account',
     loadChildren: () => import('@abp/ng.account').then(c => c.createRoutes()),
   },

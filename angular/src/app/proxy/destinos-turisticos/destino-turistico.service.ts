@@ -11,10 +11,11 @@ export class DestinoTuristicoService {
   apiName = 'Default';
   
 
-  crearDesdeGeoDb = (cityId: number, config?: Partial<Rest.Config>) =>
+  syncDestinoLocal = (city: CityInformationDto, config?: Partial<Rest.Config>) =>
     this.restService.request<any, DestinoTuristicoDTO>({
       method: 'POST',
-      url: `/api/app/destino-turistico/crear-desde-geo-db/${cityId}`,
+      url: `/api/app/destino-turistico/sync-destino-local`,
+      body: city,
     },
     { apiName: this.apiName,...config });
   

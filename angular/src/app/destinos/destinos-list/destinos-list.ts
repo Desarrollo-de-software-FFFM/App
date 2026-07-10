@@ -8,18 +8,19 @@ import { CityDto, CitySearchRequestDto } from '../../proxy/destinos/models';
 import { finalize } from 'rxjs/operators';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from 'src/environments/environment';
-
+import { RouterModule, Router } from '@angular/router';
 
 @Component({
   selector: 'app-destinations-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, CoreModule, NgbPaginationModule],
+  imports: [CommonModule, FormsModule, CoreModule, NgbPaginationModule, RouterModule],
   templateUrl: './destinos-list.html',
   styleUrls: ['./destinos-list.scss'],
 })
 export class DestinationsListComponent implements OnInit {
   // Inyección de dependencias usando la nueva sintaxis de inject()
   private readonly destinationService = inject(DestinoTuristicoService);
+  private readonly router = inject(Router);
 
   /**
    * Lista de destinos obtenidos de la API
@@ -91,8 +92,7 @@ export class DestinationsListComponent implements OnInit {
       next: (result: PagedResultDto<CityDto>) => {
         // Asignar los resultados al array de destinos
         this.destinations = result.items || [];
-        //this.totalCount = result.totalCount || 0;
-        this.totalCount = 50;
+        this.totalCount = result.totalCount || 0;
       },
       error: (error) => {
         // Manejar errores de la API
@@ -167,6 +167,15 @@ export class DestinationsListComponent implements OnInit {
   openInMaps(destination: CityDto): void {
     const url = `https://www.google.com/maps/search/?api=1&query=${destination.latitude},${destination.longitude}`;
     window.open(url, '_blank');
+  }
+
+  /**
+   * Navega al detalle del destino
+   */
+  goToDetail(id: number): void {
+    // Necesitamos inyectar el router arriba, pero podemos usar window.location o el router.
+    // Como ya importamos inject(), vamos a injectar Router.
+    this.router.navigate(['/destinos', id]);
   }
 
   /**

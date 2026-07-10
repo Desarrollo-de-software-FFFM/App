@@ -25,5 +25,19 @@ function configureRoutes() {
         layout: eLayoutType.application,
         requiredPolicy: 'ExploraYa1',
       },
+      {
+        path: '/destinos',
+        name: '::Menu:Destinos',
+        iconClass: 'fas fa-map-marked-alt',
+        order: 3,
+        layout: eLayoutType.application,
+      },
+      {
+        path: '/experiencias',
+        name: '::Menu:Experiencias',
+        iconClass: 'fas fa-camera-retro',
+        order: 4,
+        layout: eLayoutType.application,
+      },
   ]);
 }

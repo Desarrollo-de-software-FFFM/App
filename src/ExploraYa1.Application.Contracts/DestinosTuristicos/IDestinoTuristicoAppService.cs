@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
@@ -14,5 +14,7 @@ namespace ExploraYa1.DestinosTuristicos
     {
         // 👇 ESTA LÍNEA DEBE COINCIDIR EXACTAMENTE CON TU SERVICIO
         Task <CitySearchResultDto> SearchCitiesAsync(CitySearchRequestDto request);
+        
+        Task<DestinoTuristicoDTO> SyncDestinoLocalAsync(ExploraYa1.Destinos.CityInformationDto city);
     }
 }
