@@ -45,8 +45,7 @@ namespace ExploraYa1.DestinosTuristicos
                 if (!string.IsNullOrWhiteSpace(request.Country))
                     parametros.Add($"countryIds={Uri.EscapeDataString(request.Country)}");
 
-                if (!string.IsNullOrWhiteSpace(request.Region))
-                    parametros.Add($"regionCode={Uri.EscapeDataString(request.Region)}"); // Usamos regionCode como en tu segundo try
+                // Se quita el regionCode porque la API espera el código ISO, en su lugar lo filtramos en memoria.
 
                 if (request.MinimumPopulation.HasValue)
                     parametros.Add($"minPopulation={request.MinimumPopulation.Value}");
@@ -99,7 +98,20 @@ namespace ExploraYa1.DestinosTuristicos
                     Longitude = c.Longitude
                 }).ToList();
 
+                // Filtrar en memoria por región ya que la API principal de ciudades no soporta el parámetro RegionName
+                if (!string.IsNullOrWhiteSpace(request.Region))
+                {
+                    cities = cities.Where(c => c.Region != null && 
+                        System.Globalization.CultureInfo.InvariantCulture.CompareInfo.IndexOf(c.Region, request.Region, System.Globalization.CompareOptions.IgnoreCase | System.Globalization.CompareOptions.IgnoreNonSpace) >= 0)
+                        .ToList();
+                }
+
                 var totalCount = json.Metadata?.TotalCount ?? 0;
+                // Ajustar el count total si filtramos en memoria (aproximado)
+                if (!string.IsNullOrWhiteSpace(request.Region))
+                {
+                    totalCount = cities.Count;
+                }
 
                 return new CitySearchResultDto { Items = cities, TotalCount = totalCount };
             }

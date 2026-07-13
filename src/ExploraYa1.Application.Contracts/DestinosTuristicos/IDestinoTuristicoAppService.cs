@@ -16,5 +16,7 @@ namespace ExploraYa1.DestinosTuristicos
         Task <CitySearchResultDto> SearchCitiesAsync(CitySearchRequestDto request);
         
         Task<DestinoTuristicoDTO> SyncDestinoLocalAsync(ExploraYa1.Destinos.CityInformationDto city);
+
+        Task<System.Collections.Generic.List<DestinoTuristicoDTO>> GetDestinosPopularesAsync(int count);
     }
 }

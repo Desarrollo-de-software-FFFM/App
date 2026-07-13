@@ -24,17 +24,20 @@ namespace ExploraYa1.Usuarios
         private readonly ICurrentUser _currentUser;
         private readonly IUserProfileRepository _userProfileRepository;
         private readonly IObjectMapper _mapper;
+        private readonly IIdentityUserRepository _identityUserRepository;
 
         public UserAppService(
         IdentityUserManager userManager,
         ICurrentUser currentUser,
         IUserProfileRepository userProfileRepository,
-        IObjectMapper mapper)    
+        IObjectMapper mapper,
+        IIdentityUserRepository identityUserRepository)    
         {
             _userManager = userManager;
             _currentUser = currentUser;
             _userProfileRepository = userProfileRepository;
             _mapper = mapper; 
+            _identityUserRepository = identityUserRepository;
         }
 
       
@@ -289,6 +292,53 @@ namespace ExploraYa1.Usuarios
             }
 
             return userDto;
+        }
+
+        // ============================================
+        // 8) BUSCAR USUARIOS PÚBLICOS
+        // ============================================
+        public async Task<System.Collections.Generic.List<UserProfileDto>> SearchUsersAsync(string query)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+                return new System.Collections.Generic.List<UserProfileDto>();
+
+            // Convertimos la búsqueda a minúsculas
+            var q = query.ToLower();
+
+            // Obtenemos los usuarios y los filtramos en memoria por simplicidad
+            // En producción con miles de usuarios, se usaría un repositorio o base de datos.
+            var allIdentityUsers = await _identityUserRepository.GetListAsync();
+
+            var matchingUsers = allIdentityUsers.Where(u => 
+                (u.UserName != null && u.UserName.ToLower().Contains(q)) ||
+                (u.Name != null && u.Name.ToLower().Contains(q)) ||
+                (u.Surname != null && u.Surname.ToLower().Contains(q))
+            ).Take(20).ToList();
+
+            var result = new System.Collections.Generic.List<UserProfileDto>();
+
+            foreach (var user in matchingUsers)
+            {
+                var profile = await _userProfileRepository.FindByUserIdAsync(user.Id);
+                var dto = _mapper.Map<IdentityUser, UserProfileDto>(user);
+
+                if (profile != null)
+                {
+                    dto.Nombre = profile.Nombre;
+                    dto.Apellido = profile.Apellido;
+                    dto.Telefono = profile.Telefono;
+                    dto.FotoUrl = profile.FotoUrl;
+                }
+                else
+                {
+                    dto.Nombre = user.Name;
+                    dto.Apellido = user.Surname;
+                }
+
+                result.Add(dto);
+            }
+
+            return result;
         }
     }
 }

@@ -7,10 +7,11 @@ namespace ExploraYa1.Destinos
     {
         public Guid Id { get; set; }
         public Guid DestinoTuristicoId { get; set; }
+        public string DestinoNombre { get; set; } = string.Empty;
         public Guid UserId { get; set; }
-        public string? UserName { get; set; }
+        public string UserName { get; set; } = string.Empty;
         public int Puntuacion { get; set; }
-        public string? Comentario { get; set; }
+        public string Comentario { get; set; }
         public DateTime CreationTime { get; set; }
     }
 }

@@ -25,6 +25,10 @@ export const APP_ROUTES: Routes = [
     loadComponent: () => import('./profile/public-profile/public-profile').then(c => c.PublicProfile),
   },
   {
+    path: 'viajeros',
+    loadComponent: () => import('./profile/user-search/user-search').then(c => c.UserSearchComponent),
+  },
+  {
     path: 'destinos',
     loadChildren: () => import('./destinos/destinos.routes').then(m => m.DESTINATIONS_ROUTES),
   },

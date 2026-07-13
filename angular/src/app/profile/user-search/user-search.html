@@ -1,0 +1,65 @@
+<div class="container py-5">
+  <div class="row mb-5">
+    <div class="col-12 text-center">
+      <h1 class="display-4 fw-bold text-primary mb-3">Encuentra a otros Viajeros</h1>
+      <p class="lead text-muted mb-4">Busca a tus amigos, familiares o viajeros inspiradores para ver sus reseñas.</p>
+      
+      <div class="search-container mx-auto" style="max-width: 600px;">
+        <div class="input-group input-group-lg shadow-sm rounded-pill overflow-hidden border">
+          <span class="input-group-text bg-white border-0 text-muted ps-4">
+            <i class="fas fa-search"></i>
+          </span>
+          <input 
+            type="text" 
+            class="form-control border-0 bg-white shadow-none ps-2" 
+            placeholder="Buscar por nombre, apellido o usuario..." 
+            [(ngModel)]="searchQuery"
+            (ngModelChange)="onSearchChange()"
+            autofocus
+          >
+          <button class="btn btn-primary px-4 fw-bold" *ngIf="searchQuery" (click)="searchQuery = ''; onSearchChange()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-3 text-muted fw-bold">Buscando viajeros...</p>
+  </div>
+
+  <div *ngIf="!loading && hasSearched && users.length === 0" class="text-center py-5">
+    <div class="empty-state">
+      <i class="fas fa-users-slash display-1 text-muted opacity-50 mb-4"></i>
+      <h3>No encontramos a nadie</h3>
+      <p class="text-muted">No hay resultados para "{{ searchQuery }}". Intenta con otro nombre.</p>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && users.length > 0" class="row g-4">
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let user of users">
+      <a [routerLink]="['/profile', user.id]" class="text-decoration-none">
+        <div class="card h-100 border-0 shadow-sm user-card transition-all text-center p-4">
+          
+          <div class="avatar-circle mx-auto mb-3 shadow-sm" *ngIf="!user.fotoUrl">
+            {{ getAvatarInitials(user) }}
+          </div>
+          <img *ngIf="user.fotoUrl" [src]="user.fotoUrl" class="avatar-img mx-auto mb-3 shadow-sm rounded-circle" alt="Foto de {{ user.nombre }}">
+          
+          <h5 class="card-title fw-bold text-dark mb-1 text-truncate" [title]="user.nombre + ' ' + (user.apellido || '')">
+            {{ user.nombre }} {{ user.apellido }}
+          </h5>
+          <p class="text-muted small mb-0 text-truncate" *ngIf="user.userName">&#64;{{ user.userName }}</p>
+          
+          <div class="mt-3 pt-3 border-top w-100">
+            <span class="text-primary fw-bold small">Ver Perfil <i class="fas fa-chevron-right ms-1"></i></span>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>

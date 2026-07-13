@@ -61,9 +61,30 @@ export class DestinationsListComponent implements OnInit {
    */
   readonly defaultImage = 'assets/images/destination-placeholder.svg';
 
+  /**
+   * Destinos populares locales
+   */
+  populares: any[] = []; // O usar DestinoTuristicoDto si está disponible en models.ts
+  loadingPopulares = false;
+
   ngOnInit(): void {
     // Cargar los destinos al inicializar el componente
     //this.loadDestinations();
+    this.loadPopulares();
+  }
+
+  private loadPopulares(): void {
+    this.loadingPopulares = true;
+    this.destinationService.getDestinosPopulares(4)
+      .pipe(finalize(() => this.loadingPopulares = false))
+      .subscribe({
+        next: (res) => {
+          this.populares = res;
+        },
+        error: (err) => {
+          console.error('Error loading populares', err);
+        }
+      });
   }
 
   /**
@@ -122,6 +143,8 @@ export class DestinationsListComponent implements OnInit {
   clearSearch(): void {
     this.searchParams.partialName = '';
     this.searchParams.country = '';
+    this.searchParams.region = '';
+    this.searchParams.minimumPopulation = undefined;
     this.onSearch();
   }
 

@@ -39,5 +39,12 @@ function configureRoutes() {
         order: 4,
         layout: eLayoutType.application,
       },
+      {
+        path: '/viajeros',
+        name: 'Viajeros',
+        iconClass: 'fas fa-users',
+        order: 5,
+        layout: eLayoutType.application,
+      },
   ]);
 }

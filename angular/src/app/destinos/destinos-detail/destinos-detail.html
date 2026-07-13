@@ -141,7 +141,7 @@
                        [ngClass]="star <= review.puntuacion ? 'fas text-warning' : 'far text-muted'">
                     </i>
                   </div>
-                  <strong>{{ review.userName }}</strong>
+                  <a [routerLink]="['/profile', review.userId]" class="text-decoration-none fw-bold">{{ review.userName }}</a>
                   <small class="text-muted ms-2">{{ review.creationTime | date:'mediumDate' }}</small>
                 </div>
                 

@@ -41,7 +41,7 @@
           <span class="stat-label">Destinos</span>
         </div>
         <div class="stat-box">
-          <span class="stat-number">0</span>
+          <span class="stat-number">{{ calificaciones.length }}</span>
           <span class="stat-label">Reseñas</span>
         </div>
       </div>
@@ -51,6 +51,32 @@
         <p class="about-text">
           Hola, soy {{ userProfile.nombre }}. Actualmente no tengo ninguna biografía disponible, pero me encanta explorar el mundo con ExploraYa.
         </p>
+      </div>
+
+      <div class="reviews-section mt-5">
+        <h3>Mis Reseñas de Viaje</h3>
+        
+        <div *ngIf="isLoadingReviews" class="text-center my-3">
+          <div class="spinner-border text-primary" role="status"></div>
+          <p>Cargando reseñas...</p>
+        </div>
+
+        <div *ngIf="!isLoadingReviews && calificaciones.length === 0" class="alert alert-info">
+          Este usuario aún no ha escrito ninguna reseña.
+        </div>
+
+        <div *ngIf="!isLoadingReviews && calificaciones.length > 0" class="list-group">
+          <a *ngFor="let resena of calificaciones" [routerLink]="['/destinos', resena.destinoTuristicoId]" class="list-group-item list-group-item-action flex-column align-items-start mb-2 shadow-sm rounded">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1 text-primary"><i class="fas fa-map-marker-alt"></i> {{ resena.destinoNombre }}</h5>
+              <small class="text-muted">{{ resena.creationTime | date:'mediumDate' }}</small>
+            </div>
+            <p class="mb-1 text-warning">
+              <i class="fas fa-star" *ngFor="let star of [1,2,3,4,5]" [ngClass]="{'text-warning': star <= resena.puntuacion, 'text-muted': star > resena.puntuacion}"></i>
+            </p>
+            <p class="mb-1">{{ resena.comentario }}</p>
+          </a>
+        </div>
       </div>
 
     </div>

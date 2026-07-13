@@ -65,14 +65,54 @@ export class DestinosDetailComponent implements OnInit {
 
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam) {
-      this.cityId = parseInt(idParam, 10);
-      if (!isNaN(this.cityId)) {
-        this.loadDetails(this.cityId);
+      if (idParam.includes('-')) {
+        // Es un GUID (Local Destino)
+        this.loadLocalDestinoAndMockDetails(idParam);
       } else {
-        this.errorMessage = 'ID de destino inválido.';
-        this.loading = false;
+        // Es un ID de GeoDB
+        this.cityId = parseInt(idParam, 10);
+        if (!isNaN(this.cityId)) {
+          this.loadDetails(this.cityId);
+        } else {
+          this.errorMessage = 'ID de destino inválido.';
+          this.loading = false;
+        }
       }
     }
+  }
+
+  loadLocalDestinoAndMockDetails(localId: string): void {
+    this.loading = true;
+    this.errorMessage = '';
+    
+    this.destinationService.get(localId).subscribe({
+      next: (destino) => {
+        this.localDestinoId = localId;
+        // Mock the cityDetails from local Destino properties
+        this.cityDetails = {
+          id: 0,
+          name: destino.nombre || 'Desconocido',
+          country: 'Argentina', // Puede que no esté disponible sin joins
+          region: 'N/A',
+          population: destino.poblacion || 0,
+          latitude: destino.latitud || 0,
+          longitude: destino.longuitud || 0,
+          timezone: 'N/A'
+        } as any;
+
+        const url = `https://maps.google.com/maps?q=${this.cityDetails!.latitude},${this.cityDetails!.longitude}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
+        this.mapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+
+        this.fetchWikipediaInfo(this.cityDetails!.name);
+        this.loadReviews();
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error(err);
+        this.errorMessage = 'No se pudo cargar la información de este destino local.';
+        this.loading = false;
+      }
+    });
   }
 
   loadDetails(id: number): void {
@@ -95,7 +135,7 @@ export class DestinosDetailComponent implements OnInit {
         },
         error: (err) => {
           console.error(err);
-          this.errorMessage = 'No se pudo cargar la información de este destino.';
+          this.errorMessage = 'No se pudo cargar la información de este destino en GeoDB.';
         }
       });
   }

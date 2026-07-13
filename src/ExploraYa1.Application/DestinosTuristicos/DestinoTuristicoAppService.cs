@@ -6,6 +6,7 @@ using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using System.Linq;
 
 namespace ExploraYa1.DestinosTuristicos
 {
@@ -23,24 +24,21 @@ namespace ExploraYa1.DestinosTuristicos
         private readonly IRepository<Region, Guid> _regionRepository;
         private readonly IRepository<Pais, Guid> _paisRepository;
         private readonly ICitySearchService _citySearchService;
-        private ICitySearchService citySearchMock;
-        private IRepository<Pais, Guid> paisRepo;
-        private IRepository<Region, Guid> regionRepo;
-        private ICitySearchService citySearchMock1;
-        private IRepository<Pais, Guid> paisRepo1;
-        private IRepository<Region, Guid> regionRepo1;
+        private readonly IRepository<CalificacionDestino, Guid> _calificacionRepository;
 
         public DestinoTuristicoAppService(
             IRepository<DestinoTuristico, Guid> destinoRepository,
             IRepository<Region, Guid> regionRepository,
             IRepository<Pais, Guid> paisRepository,
-            ICitySearchService citySearchService)
+            ICitySearchService citySearchService,
+            IRepository<CalificacionDestino, Guid> calificacionRepository)
             : base(destinoRepository)
         {
             _destinoRepository = destinoRepository;
             _regionRepository = regionRepository;
             _paisRepository = paisRepository;
             _citySearchService = citySearchService;
+            _calificacionRepository = calificacionRepository;
         }
 
 
@@ -99,6 +97,30 @@ namespace ExploraYa1.DestinosTuristicos
             await _destinoRepository.InsertAsync(destino, autoSave: true);
 
             return ObjectMapper.Map<DestinoTuristico, DestinoTuristicoDTO>(destino);
+        }
+
+        public async Task<System.Collections.Generic.List<DestinoTuristicoDTO>> GetDestinosPopularesAsync(int count)
+        {
+            var calificaciones = await _calificacionRepository.GetListAsync();
+            var promedios = calificaciones
+                .GroupBy(c => c.DestinoTuristicoId)
+                .Select(g => new { Id = g.Key, Promedio = g.Average(x => x.Puntuacion) })
+                .OrderByDescending(x => x.Promedio)
+                .Take(count)
+                .ToList();
+
+            var ids = promedios.Select(p => p.Id).ToList();
+            if (!ids.Any()) return new System.Collections.Generic.List<DestinoTuristicoDTO>();
+
+            var destinos = await _destinoRepository.GetListAsync(d => ids.Contains(d.Id));
+            
+            // Mapeamos los destinos al DTO
+            var dtos = ObjectMapper.Map<System.Collections.Generic.List<DestinoTuristico>, System.Collections.Generic.List<DestinoTuristicoDTO>>(destinos);
+            
+            // Asignamos la calificación promedio al DTO (si agregamos la propiedad en el futuro, por ahora solo devolvemos ordenados)
+            var result = ids.Select(id => dtos.FirstOrDefault(d => d.Id == id)).Where(d => d != null).ToList();
+            
+            return result!;
         }
     }
 

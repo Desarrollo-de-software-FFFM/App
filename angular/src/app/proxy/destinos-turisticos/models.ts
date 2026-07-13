@@ -18,4 +18,5 @@ export interface DestinoTuristicoDTO extends AuditedEntityDto<string> {
   imagenUrl?: string;
   calificacionGeneral: number;
   regionId?: string;
+  geoDbId: number;
 }

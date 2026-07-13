@@ -11,15 +11,6 @@ export class DestinoTuristicoService {
   apiName = 'Default';
   
 
-  syncDestinoLocal = (city: CityInformationDto, config?: Partial<Rest.Config>) =>
-    this.restService.request<any, DestinoTuristicoDTO>({
-      method: 'POST',
-      url: `/api/app/destino-turistico/sync-destino-local`,
-      body: city,
-    },
-    { apiName: this.apiName,...config });
-  
-
   create = (input: CrearActualizarDestinoDTO, config?: Partial<Rest.Config>) =>
     this.restService.request<any, DestinoTuristicoDTO>({
       method: 'POST',
@@ -53,6 +44,15 @@ export class DestinoTuristicoService {
     { apiName: this.apiName,...config });
   
 
+  getDestinosPopulares = (count: number, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, DestinoTuristicoDTO[]>({
+      method: 'GET',
+      url: '/api/app/destino-turistico/destinos-populares',
+      params: { count },
+    },
+    { apiName: this.apiName,...config });
+  
+
   getList = (input: PagedAndSortedResultRequestDto, config?: Partial<Rest.Config>) =>
     this.restService.request<any, PagedResultDto<DestinoTuristicoDTO>>({
       method: 'GET',
@@ -67,6 +67,15 @@ export class DestinoTuristicoService {
       method: 'POST',
       url: '/api/app/destino-turistico/search-cities',
       body: request,
+    },
+    { apiName: this.apiName,...config });
+  
+
+  syncDestinoLocal = (city: CityInformationDto, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, DestinoTuristicoDTO>({
+      method: 'POST',
+      url: '/api/app/destino-turistico/sync-destino-local',
+      body: city,
     },
     { apiName: this.apiName,...config });
   

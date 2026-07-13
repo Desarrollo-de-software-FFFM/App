@@ -38,6 +38,33 @@
           />
         </div>
 
+        <!-- Filtro por región -->
+        <div class="search-field">
+          <label for="search-region">Región / Estado</label>
+          <input
+            id="search-region"
+            type="text"
+            class="form-control"
+            [(ngModel)]="searchParams.region"
+            (keyup.enter)="onSearch()"
+            placeholder="Ej: Texas, CA"
+          />
+        </div>
+
+        <!-- Filtro por población mínima -->
+        <div class="search-field">
+          <label for="search-population">Población Mínima</label>
+          <input
+            id="search-population"
+            type="number"
+            class="form-control"
+            [(ngModel)]="searchParams.minimumPopulation"
+            (keyup.enter)="onSearch()"
+            placeholder="Ej: 1000000"
+            min="0"
+          />
+        </div>
+
         <!-- Botones de acción -->
         <div class="search-actions">
           <button type="button" class="btn btn-primary" (click)="onSearch()">
@@ -48,6 +75,22 @@
             <i class="fa fa-times"></i>
             {{ '::Clear' | abpLocalization }}
           </button>
+        </div>
+      </div>
+
+      <!-- Destinos Populares -->
+      <div class="populares-section mb-4" *ngIf="populares.length > 0">
+        <h4 class="mb-3"><i class="fas fa-star text-warning"></i> Destinos Más Populares</h4>
+        <div class="row">
+          <div class="col-md-3 mb-3" *ngFor="let pop of populares">
+            <div class="card h-100 shadow-sm destination-card" style="cursor: pointer;" (click)="goToDetail(pop.id)">
+              <img [src]="getDestinationImage(pop.imagenUrl)" class="card-img-top" style="height: 140px; object-fit: cover;" (error)="onImageError($event)">
+              <div class="card-body p-3">
+                <h5 class="card-title text-truncate mb-1" [title]="pop.nombre">{{ pop.nombre }}</h5>
+                <small class="text-muted"><i class="fa fa-users me-1"></i> Pop: {{ formatPopulation(pop.poblacion) }}</small>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

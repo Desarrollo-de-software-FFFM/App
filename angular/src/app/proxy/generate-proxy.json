@@ -1273,6 +1273,40 @@
                   }
                 },
                 {
+                  "name": "SyncDestinoLocalAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "city",
+                      "typeAsString": "ExploraYa1.Destinos.CityInformationDto, ExploraYa1.Application.Contracts",
+                      "type": "ExploraYa1.Destinos.CityInformationDto",
+                      "typeSimple": "ExploraYa1.Destinos.CityInformationDto",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "ExploraYa1.DestinosTuristicos.DestinoTuristicoDTO",
+                    "typeSimple": "ExploraYa1.DestinosTuristicos.DestinoTuristicoDTO"
+                  }
+                },
+                {
+                  "name": "GetDestinosPopularesAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "count",
+                      "typeAsString": "System.Int32, System.Private.CoreLib",
+                      "type": "System.Int32",
+                      "typeSimple": "number",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.List<ExploraYa1.DestinosTuristicos.DestinoTuristicoDTO>",
+                    "typeSimple": "[ExploraYa1.DestinosTuristicos.DestinoTuristicoDTO]"
+                  }
+                },
+                {
                   "name": "GetAsync",
                   "parametersOnMethod": [
                     {
@@ -1443,15 +1477,52 @@
               "allowAnonymous": null,
               "implementFrom": "ExploraYa1.DestinosTuristicos.DestinoTuristicoAppService"
             },
-            "CrearDesdeGeoDbAsyncByCityId": {
-              "uniqueName": "CrearDesdeGeoDbAsyncByCityId",
-              "name": "CrearDesdeGeoDbAsync",
+            "SyncDestinoLocalAsyncByCity": {
+              "uniqueName": "SyncDestinoLocalAsyncByCity",
+              "name": "SyncDestinoLocalAsync",
               "httpMethod": "POST",
-              "url": "api/app/destino-turistico/crear-desde-geo-db/{cityId}",
+              "url": "api/app/destino-turistico/sync-destino-local",
               "supportedVersions": [],
               "parametersOnMethod": [
                 {
-                  "name": "cityId",
+                  "name": "city",
+                  "typeAsString": "ExploraYa1.Destinos.CityInformationDto, ExploraYa1.Application.Contracts",
+                  "type": "ExploraYa1.Destinos.CityInformationDto",
+                  "typeSimple": "ExploraYa1.Destinos.CityInformationDto",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "city",
+                  "name": "city",
+                  "jsonName": null,
+                  "type": "ExploraYa1.Destinos.CityInformationDto",
+                  "typeSimple": "ExploraYa1.Destinos.CityInformationDto",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "ExploraYa1.DestinosTuristicos.DestinoTuristicoDTO",
+                "typeSimple": "ExploraYa1.DestinosTuristicos.DestinoTuristicoDTO"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "ExploraYa1.DestinosTuristicos.IDestinoTuristicoAppService"
+            },
+            "GetDestinosPopularesAsyncByCount": {
+              "uniqueName": "GetDestinosPopularesAsyncByCount",
+              "name": "GetDestinosPopularesAsync",
+              "httpMethod": "GET",
+              "url": "api/app/destino-turistico/destinos-populares",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "count",
                   "typeAsString": "System.Int32, System.Private.CoreLib",
                   "type": "System.Int32",
                   "typeSimple": "number",
@@ -1461,24 +1532,24 @@
               ],
               "parameters": [
                 {
-                  "nameOnMethod": "cityId",
-                  "name": "cityId",
+                  "nameOnMethod": "count",
+                  "name": "count",
                   "jsonName": null,
                   "type": "System.Int32",
                   "typeSimple": "number",
                   "isOptional": false,
                   "defaultValue": null,
-                  "constraintTypes": [],
-                  "bindingSourceId": "Path",
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
                   "descriptorName": ""
                 }
               ],
               "returnValue": {
-                "type": "ExploraYa1.DestinosTuristicos.DestinoTuristicoDTO",
-                "typeSimple": "ExploraYa1.DestinosTuristicos.DestinoTuristicoDTO"
+                "type": "System.Collections.Generic.List<ExploraYa1.DestinosTuristicos.DestinoTuristicoDTO>",
+                "typeSimple": "[ExploraYa1.DestinosTuristicos.DestinoTuristicoDTO]"
               },
               "allowAnonymous": null,
-              "implementFrom": "ExploraYa1.DestinosTuristicos.DestinoTuristicoAppService"
+              "implementFrom": "ExploraYa1.DestinosTuristicos.IDestinoTuristicoAppService"
             },
             "CreateAsyncByInput": {
               "uniqueName": "CreateAsyncByInput",
@@ -2608,6 +2679,23 @@
                     "type": "ExploraYa1.Usuarios.UserProfileDto",
                     "typeSimple": "ExploraYa1.Usuarios.UserProfileDto"
                   }
+                },
+                {
+                  "name": "SearchUsersAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "query",
+                      "typeAsString": "System.String, System.Private.CoreLib",
+                      "type": "System.String",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.List<ExploraYa1.Usuarios.UserProfileDto>",
+                    "typeSimple": "[ExploraYa1.Usuarios.UserProfileDto]"
+                  }
                 }
               ]
             }
@@ -2824,6 +2912,43 @@
               "returnValue": {
                 "type": "ExploraYa1.Usuarios.UserProfileDto",
                 "typeSimple": "ExploraYa1.Usuarios.UserProfileDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "ExploraYa1.IUserAppService"
+            },
+            "SearchUsersAsyncByQuery": {
+              "uniqueName": "SearchUsersAsyncByQuery",
+              "name": "SearchUsersAsync",
+              "httpMethod": "POST",
+              "url": "api/app/user/search-users",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "query",
+                  "typeAsString": "System.String, System.Private.CoreLib",
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "query",
+                  "name": "query",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Collections.Generic.List<ExploraYa1.Usuarios.UserProfileDto>",
+                "typeSimple": "[ExploraYa1.Usuarios.UserProfileDto]"
               },
               "allowAnonymous": null,
               "implementFrom": "ExploraYa1.IUserAppService"
@@ -5069,9 +5194,33 @@
           "regex": null
         },
         {
+          "name": "DestinoNombre",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
           "name": "UserId",
           "jsonName": null,
           "type": "System.Guid",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "UserName",
+          "jsonName": null,
+          "type": "System.String",
           "typeSimple": "string",
           "isRequired": false,
           "minLength": null,
@@ -5685,6 +5834,18 @@
           "jsonName": null,
           "type": "System.Guid",
           "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "GeoDbId",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,

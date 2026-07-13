@@ -1,4 +1,4 @@
-﻿using ExploraYa1.Usuarios;
+using ExploraYa1.Usuarios;
 using System;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Services;
@@ -14,7 +14,7 @@ namespace ExploraYa1
         Task ChangePasswordAsync(ChangePasswordDto input);
         Task DeleteMyAccountAsync();
         Task<UserProfileDto> GetPublicProfileAsync(Guid userId);
-
+        Task<System.Collections.Generic.List<UserProfileDto>> SearchUsersAsync(string query);
     }
 }
 

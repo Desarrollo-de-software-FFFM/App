@@ -3,6 +3,7 @@ import type { PagedAndSortedResultRequestDto } from '@abp/ng.core';
 export interface CalificacionDto {
   id?: string;
   destinoTuristicoId?: string;
+  destinoNombre?: string;
   userId?: string;
   userName?: string;
   puntuacion: number;

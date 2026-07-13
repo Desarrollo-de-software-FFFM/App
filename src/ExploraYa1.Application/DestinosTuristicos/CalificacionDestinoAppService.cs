@@ -35,22 +35,37 @@ namespace ExploraYa1.DestinosTuristicos
             return await _crearOpinionService.CrearCalificacionAsync(input);
         }
 
-        // ------------------- Obtener calificaciones por usuario -------------------
         public async Task<List<CalificacionDto>> ObtenerPorUsuarioAsync(Guid usuarioId)
         {
             if (!_currentUser.IsAuthenticated)
-                throw new AbpAuthorizationException("Debe estar autenticado para ver sus opiniones.");
-
-            if (_currentUser.Id != usuarioId)
-                throw new AbpAuthorizationException("No tiene permiso para ver las opiniones de otro usuario.");
+                throw new AbpAuthorizationException("Debe estar autenticado para ver perfiles.");
 
             var opiniones = await _opinionRepository.GetListAsync(o => o.UserId == usuarioId);
+
+            // Intentar cargar nombres de destinos
+            var destinosIds = opiniones.Select(o => o.DestinoTuristicoId).Distinct().ToList();
+            var destinos = new Dictionary<Guid, string>();
+            
+            try
+            {
+                var destinoRepository = LazyServiceProvider.LazyGetRequiredService<IRepository<DestinoTuristico, Guid>>();
+                var destinosEntities = await destinoRepository.GetListAsync(d => destinosIds.Contains(d.Id));
+                foreach(var d in destinosEntities)
+                {
+                    destinos[d.Id] = d.Nombre;
+                }
+            }
+            catch
+            {
+                // Ignorar si falla
+            }
 
             return opiniones.Select(o => new CalificacionDto
             {
                 Id = o.Id,
                 UserId = o.UserId,
                 DestinoTuristicoId = o.DestinoTuristicoId,
+                DestinoNombre = destinos.ContainsKey(o.DestinoTuristicoId) ? destinos[o.DestinoTuristicoId] : "Destino",
                 Comentario = o.Comentario,
                 Puntuacion = o.Puntuacion,
                 CreationTime = o.CreationTime
