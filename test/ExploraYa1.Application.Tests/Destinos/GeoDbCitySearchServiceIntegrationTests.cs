@@ -1,4 +1,5 @@
-﻿using ExploraYa1.DestinosTuristicos;
+using ExploraYa1.DestinosTuristicos;
+using Microsoft.Extensions.Caching.Memory;
 using Shouldly;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,8 @@ namespace ExploraYa1.Destinos
             // Configura los headers como en la implementación real
             httpClient.DefaultRequestHeaders.Add("X-RapidAPI-Key", "41c717a457mshcfe32e8d4cdaf10p198265jsn4230693ac3f1");
             httpClient.DefaultRequestHeaders.Add("X-RapidAPI-Host", "wft-geo-db.p.rapidapi.com");
-            return new GeoDbCitySearchService(httpClient);
+            var cache = new MemoryCache(new MemoryCacheOptions());
+            return new GeoDbCitySearchService(httpClient, cache);
         }
 
         [Fact]
@@ -62,7 +64,8 @@ namespace ExploraYa1.Destinos
 
             // Pasamos un cliente común porque tu servicio ignora el handler inyectado en el paso 4
             using var httpClient = new HttpClient();
-            var service = new GeoDbCitySearchService(httpClient);
+            var cache = new MemoryCache(new MemoryCacheOptions());
+            var service = new GeoDbCitySearchService(httpClient, cache);
 
             CitySearchResultDto result;
             try
@@ -90,7 +93,8 @@ namespace ExploraYa1.Destinos
             // Arrange
             // Creamos un HttpClient vacío (el servicio lo ignorará igualmente)
             using var httpClient = new HttpClient();
-            var service = new GeoDbCitySearchService(httpClient);
+            var cache = new MemoryCache(new MemoryCacheOptions());
+            var service = new GeoDbCitySearchService(httpClient, cache);
             var request = new CitySearchRequestDto { PartialName = "Rio" };
 
             // CAPTURA / CONFIGURACIÓN DEL PROXY FANTASMA

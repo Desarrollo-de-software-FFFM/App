@@ -20,12 +20,14 @@ namespace ExploraYa1.Destinos
             var destinoRepo = Substitute.For<IRepository<DestinoTuristico, Guid>>();
             var paisRepo = Substitute.For<IRepository<Pais, Guid>>();
             var regionRepo = Substitute.For<IRepository<Region, Guid>>();
+            var calificacionRepo = Substitute.For<IRepository<CalificacionDestino, Guid>>();
 
             return new DestinoTuristicoAppService(
                 destinoRepo,
                 regionRepo,
                 paisRepo,
-                citySearchMock
+                citySearchMock,
+                calificacionRepo
             );
         }
 
@@ -250,16 +252,7 @@ namespace ExploraYa1.Destinos
                 .GetCityDetailsAsync(cityId)
                 .Returns(expectedCity);
 
-            var destinoRepo = Substitute.For<IRepository<DestinoTuristico, Guid>>();
-            var paisRepo = Substitute.For<IRepository<Pais, Guid>>();
-            var regionRepo = Substitute.For<IRepository<Region, Guid>>();
-
-            var service = new DestinoTuristicoAppService(
-                destinoRepo,
-                regionRepo,
-                paisRepo,
-                citySearchMock
-            );
+            var service = BuildService(citySearchMock);
 
             // Act
             var result = await service.GetCityDetailsAsync(cityId);
@@ -287,16 +280,7 @@ namespace ExploraYa1.Destinos
                 .GetCityDetailsAsync(cityId)
                 .ThrowsAsync(new Exception("No se encontró información de la ciudad."));
 
-            var destinoRepo = Substitute.For<IRepository<DestinoTuristico, Guid>>();
-            var paisRepo = Substitute.For<IRepository<Pais, Guid>>();
-            var regionRepo = Substitute.For<IRepository<Region, Guid>>();
-
-            var service = new DestinoTuristicoAppService(
-                destinoRepo,
-                regionRepo,
-                paisRepo,
-                citySearchMock
-            );
+            var service = BuildService(citySearchMock);
 
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() => service.GetCityDetailsAsync(cityId));
@@ -312,13 +296,7 @@ namespace ExploraYa1.Destinos
                 .GetCityDetailsAsync(cityId)
                 .ThrowsAsync(new HttpRequestException("Response status code does not indicate success: 404 (Not Found)."));
 
-            var destinoRepo = Substitute.For<IRepository<DestinoTuristico, Guid>>();
-            var paisRepo = Substitute.For<IRepository<Pais, Guid>>();
-            var regionRepo = Substitute.For<IRepository<Region, Guid>>();
-
-            var service = new DestinoTuristicoAppService(
-                destinoRepo, regionRepo, paisRepo, citySearchMock
-            );
+            var service = BuildService(citySearchMock);
 
             await Assert.ThrowsAsync<HttpRequestException>(() => service.GetCityDetailsAsync(cityId));
 
@@ -338,13 +316,7 @@ namespace ExploraYa1.Destinos
                 .GetCityDetailsAsync(cityId)
                 .ThrowsAsync(new Exception("No se encontró información de la ciudad."));
 
-            var destinoRepo = Substitute.For<IRepository<DestinoTuristico, Guid>>();
-            var paisRepo = Substitute.For<IRepository<Pais, Guid>>();
-            var regionRepo = Substitute.For<IRepository<Region, Guid>>();
-
-            var service = new DestinoTuristicoAppService(
-                destinoRepo, regionRepo, paisRepo, citySearchMock
-            );
+            var service = BuildService(citySearchMock);
 
             var exception = await Assert.ThrowsAsync<Exception>(() => service.GetCityDetailsAsync(cityId));
 
